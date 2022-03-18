@@ -40,8 +40,9 @@ if __name__ == "__main__":
     VALIDDIR = Path("data/AIC22_Track2_NL_Retrieval/validation/")
     OUTDIR = Path("data/meta/extracted_frames/")
 
-    for stage, path in [("train", TRAINDIR), ("validation", VALIDDIR)]:
-        for d in TRAINDIR.glob("*"):
+    # for stage, path in [("train", TRAINDIR), ("validation", VALIDDIR)]:
+    for stage, path in [("validation", VALIDDIR)]:
+        for d in path.glob("*"):
             camera_name = d.name
             files = []
             print(f"Processing [{stage}][{camera_name}]")
