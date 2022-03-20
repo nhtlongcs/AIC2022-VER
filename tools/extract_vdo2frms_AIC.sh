@@ -9,7 +9,7 @@ for d in $TRAINDIR/* ; do
         echo "Processing [TRAIN][$camera_name][$vdo_name]"
         outdir=$OUTDIR/train/$camera_name/$vdo_name/img1
         mkdir -p $outdir
-        ffmpeg -i $vdo/vdo.avi -loglevel error -vf fps=1 $outdir/%06d.jpg 
+        ffmpeg -i $vdo/vdo.avi -loglevel error $outdir/%06d.jpg 
     done
 done
 
@@ -20,6 +20,6 @@ for d in $VALIDDIR/* ; do
         echo "Processing [VALID][$camera_name][$vdo_name]"
         outdir=$OUTDIR/validation/$camera_name/$vdo_name/img1
         mkdir -p $outdir
-        ffmpeg -i $vdo/vdo.avi -loglevel error -vf fps=1 $outdir/%06d.jpg 
+        ffmpeg -i $vdo/vdo.avi -loglevel error $outdir/%06d.jpg 
     done
 done
