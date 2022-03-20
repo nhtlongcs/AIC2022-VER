@@ -1,0 +1,13 @@
+.container {
+    display: inline-block;
+    width: 30%;
+    margin: 0% 1.5%;
+}
+
+.video-element {
+    width: 100%;
+}
+
+.video-name {
+    text-align: center;
+}
