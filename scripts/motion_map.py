@@ -32,7 +32,8 @@ def get_bk_map(info):
     img = glob.glob(path + "/img1/*.jpg")
     img.sort()
     interval = min(5, max(1, int(len(img) / 200)))
-    img = img[::interval][:1000]
+    img = img[::interval][:10]
+    # img = img[::interval][:1000]
     imgs = []
     outpath = save_bk_dir / f"{save_name}.jpg"
     if outpath.exists():
