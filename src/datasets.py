@@ -9,6 +9,11 @@ import torch.nn.functional as F
 import torchvision
 from src.utils.logger import get_logger
 from registry import Registry
+from transformers import AutoTokenizer
+
+os.environ[
+    "TOKENIZERS_PARALLELISM"
+] = "true"  # https://github.com/huggingface/transformers/issues/5486
 
 DATASET_REGISTRY = Registry("DATASET")
 
@@ -19,7 +24,9 @@ def default_loader(path):
 
 @DATASET_REGISTRY.register()
 class CityFlowNLDataset(Dataset):
-    def __init__(self, data_cfg, json_path, transform=None, Random=True):
+    def __init__(
+        self, data_cfg, json_path, tok_model_name, transform=None, Random=True, **kwargs
+    ):
         """
         Dataset for training.
         :param data_cfg: CfgNode for CityFlow NL.
@@ -34,6 +41,8 @@ class CityFlowNLDataset(Dataset):
         self.transform = transform
         self.bk_dic = {}
         self._logger = get_logger()
+
+        self.tokenizer = AutoTokenizer.from_pretrained(tok_model_name)
 
         self.all_indexs = list(range(len(self.list_of_uuids)))
         self.flip_tag = [False] * len(self.list_of_uuids)
@@ -115,10 +124,31 @@ class CityFlowNLDataset(Dataset):
             if flag:
                 crop = torch.flip(crop, [1])
                 bk = torch.flip(bk, [1])
-            return crop, text, bk, tmp_index
+
+            return crop, text, bk, torch.tensor(tmp_index)
         if flag:
             crop = torch.flip(crop, [1])
-        return crop, text, tmp_index
+        return crop, text, torch.tensor(tmp_index)
+
+    def collate_fn(self, batch):
+        if self.data_cfg["USE_MOTION"]:
+            batch_dict = {
+                "images": torch.stack([x[0] for x in batch]),
+                "texts": [x[1] for x in batch],
+                "motions": torch.stack([x[2] for x in batch]),
+                "car_ids": torch.stack([x[3] for x in batch]),
+            }
+        else:
+            batch_dict = {
+                "images": torch.stack([x[0] for x in batch]),
+                "texts": [x[1] for x in batch],
+                "car_ids": torch.stack([x[2] for x in batch]),
+            }
+
+        batch_dict["tokens"] = self.tokenizer.batch_encode_plus(
+            batch_dict["texts"], padding="longest", return_tensors="pt"
+        )
+        return batch_dict
 
 
 @DATASET_REGISTRY.register()
