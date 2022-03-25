@@ -6,6 +6,7 @@ global:
   use_fp16: true
   pretrained: null
   verbose: true
+  SEED: 1337
 data:
   name: CityFlowNLDataset
   args:
