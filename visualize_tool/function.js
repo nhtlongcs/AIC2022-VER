@@ -1,6 +1,6 @@
-import result_json from "./results/result_refine.js";
-import order_json from "./order.js";
-import test_queries from "./test_queries.js"
+import result_json from "./queries/gt_queries.js";
+import order_json from "./track_vids/train_order.js";
+import test_queries from "./queries/train_queries.js";
 
 const button_input = document.getElementsByClassName("btn-input")[0];
 
@@ -44,7 +44,7 @@ function createOutput(result_json, order_json, search_key){
     const outputDisplay = document.getElementsByClassName("video-output")[0];
     outputDisplay.innerHTML = ""
     var output = result_json[search_key]
-    for (let i=0; i< 21; i++) {
+    for (let i=0; i< 1; i++) {
         var vidName = order_json[output[i]]
         var vidNameDisplay = `${i+1}-${vidName}`
         var container = document.createElement("div")
@@ -77,7 +77,7 @@ function createOutput(result_json, order_json, search_key){
         );
         source.setAttribute(
             "src",
-            `./video_mp4/${vidName}.mp4`
+            `./track_vids/train/${vidName}.mp4`
         );
         video.appendChild(source);
         var nameDisplay = document.createElement("p")
