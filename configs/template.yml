@@ -45,11 +45,16 @@ model:
   name: UTS
   args:
     NUM_CLASS: 2498 # total tracks
-    EMBED_DIM: 1024
+    # EMBED_DIM: 1024
+    EMBED_DIM: 768
     car_idloss: True
     mo_idloss: True
     share_idloss: True
-
+metric:
+  - name: Accuracy
+    args:
+      topk: [1, 5]
+      dimension: 768 # as same as embed dim
 trainer:
   lr: 0.000001
   num_epochs: 10000
