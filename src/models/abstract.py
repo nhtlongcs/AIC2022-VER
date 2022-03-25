@@ -1,7 +1,7 @@
 import pytorch_lightning as pl
 import torch
 from src.datasets import DATASET_REGISTRY
-from src.extractors import EXTRCT_REGISTRY
+from src.metrics import METRIC_REGISTRY
 from . import MODEL_REGISTRY
 import torchvision
 
@@ -15,6 +15,10 @@ class AICBase(pl.LightningModule):
         super().__init__()
         self.cfg = config
         self.init_model()
+        self.metric = {
+            mcfg["name"]: METRIC_REGISTRY.get(mcfg["name"])(**mcfg["args"])
+            for mcfg in config["metric"]
+        }
 
     def init_model(self):
         raise NotImplementedError
@@ -43,12 +47,7 @@ class AICBase(pl.LightningModule):
         )
 
     def forward(self, batch):
-        visual_embeddings = self.visualExtrct(batch["images"])
-        nlang_embeddings = self.nlangExtrct(batch["tokens"])
-        return {
-            "visual_embeddings": visual_embeddings,
-            "nlang_embeddings": nlang_embeddings,
-        }
+        raise NotImplementedError
 
     def training_step(self, batch, batch_idx):
         # 1. Get embeddings from model
@@ -70,7 +69,7 @@ class AICBase(pl.LightningModule):
         loss = self.compute_loss(**output, batch=batch)
         # 3. Update metric for each batch
         for m in self.metric.values():
-            value = m.calculate(**output, batch=batch)
+            value = m.calculate(output, batch=batch)
             m.update(value)
 
         return {"loss": loss}
@@ -81,9 +80,11 @@ class AICBase(pl.LightningModule):
         # 2. Calculate metric value
         out = {"val_loss": loss}
         for k in self.metric.keys():
-            out[k] = self.metric[k].value()
+            out[k] = self.metric[k].value()["score"]
             self.metric[k].summary()
             self.log(f"val/{k}", out[k])
+            for kk, vv in self.metric[k].value()["score_dict"].items():
+                self.log(f"val/{k}/{kk}", vv)
 
         # 3. Reset metric
         for m in self.metric.values():
