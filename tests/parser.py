@@ -1,3 +1,4 @@
+# python tests/parser.py -c configs/template.yml -o global.debug=False
 from opt import Opts
 
 if __name__ == "__main__":

@@ -1,9 +1,12 @@
-# python tests/dataset.py
-from opt import Opts
+from sklearn import datasets
+import torch
+from tqdm import tqdm
+from src.models import MODEL_REGISTRY
 from src.datasets import DATASET_REGISTRY
+from src.metrics import METRIC_REGISTRY
+from opt import Opts
 import torchvision
 
-from torch.utils.data import DataLoader
 
 if __name__ == "__main__":
     cfg = Opts(cfg="configs/template.yml").parse_args()
@@ -23,12 +26,17 @@ if __name__ == "__main__":
         tok_model_name=cfg.extractors["lang_encoder"]["args"]["pretrained"],
         transform=image_transform,
     )
-    dataloader = DataLoader(
-        ds, collate_fn=ds.collate_fn, batch_size=8, shuffle=False, num_workers=0
+    dataloader = torch.utils.data.DataLoader(
+        **cfg.data["args"]["train"]["loader"], dataset=ds, collate_fn=ds.collate_fn,
     )
-    for i, batch in enumerate(dataloader):
-        print(batch["images"].shape)
-        print(batch["tokens"]["input_ids"].shape)
-        print(batch["texts"])
-        print(batch["car_ids"])
-        break
+    model = MODEL_REGISTRY.get("UTS")(cfg)
+    metric = METRIC_REGISTRY.get("Accuracy")(dimension=768, topk=(1, 5, 10))
+
+    for i, batch in tqdm(enumerate(dataloader), total=5):
+        pairs = model(batch, is_validate=True)
+        v = metric.calculate(pairs)
+        metric.update(v)
+        if (i % 5 == 0) and (i > 0):
+            metric.summary()
+            break
+
