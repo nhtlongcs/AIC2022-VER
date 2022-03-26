@@ -10,3 +10,4 @@ if __name__ == "__main__":
             "LangExtractor": {"pretrained": "bert-base-uncased"},
         }
         model = EXTRCT_REGISTRY.get(name)(**args[name])
+    print("Test case passed")

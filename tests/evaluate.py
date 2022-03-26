@@ -1,6 +1,6 @@
 from sklearn import datasets
 import torch
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from src.models import MODEL_REGISTRY
 from src.datasets import DATASET_REGISTRY
 from src.metrics import METRIC_REGISTRY
@@ -33,10 +33,12 @@ if __name__ == "__main__":
     metric = METRIC_REGISTRY.get("Accuracy")(dimension=768, topk=(1, 5, 10))
 
     for i, batch in tqdm(enumerate(dataloader), total=5):
-        pairs = model(batch, is_validate=True)
+        pairs = model(batch)
         v = metric.calculate(pairs)
         metric.update(v)
         if (i % 5 == 0) and (i > 0):
             metric.summary()
             break
+
+    print("Test case passed")
 

@@ -31,3 +31,5 @@ if __name__ == "__main__":
         print(batch["texts"])
         print(batch["car_ids"])
         break
+    print("Test case passed")
+
