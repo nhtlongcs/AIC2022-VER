@@ -44,7 +44,8 @@ function createOutput(result_json, order_json, search_key){
     const outputDisplay = document.getElementsByClassName("video-output")[0];
     outputDisplay.innerHTML = ""
     var output = result_json[search_key]
-    for (let i=0; i< 1; i++) {
+    var top_k = 20; 
+    for (let i=0; i< top_k; i++) {
         var vidName = order_json[output[i]]
         var vidNameDisplay = `${i+1}-${vidName}`
         var container = document.createElement("div")
@@ -77,7 +78,7 @@ function createOutput(result_json, order_json, search_key){
         );
         source.setAttribute(
             "src",
-            `./track_vids/train2/${vidName}.webm`
+            `./track_vids/test/${vidName}.webm`
         );
         video.appendChild(source);
         var nameDisplay = document.createElement("p")
