@@ -3,7 +3,7 @@ from opt import Opts
 
 import pytorch_lightning as pl
 
-from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
+from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.trainer import seed_everything
 
@@ -24,10 +24,20 @@ def train(config):
 
     checkpoint_callback = ModelCheckpoint(
         dirpath=cp_path,
-        filename="/{epoch}-{train_loss:.3f}-{Accurracy:.2f}",
-        monitor="Accuracy",
+        filename=str(config["model"]["name"])
+        + "{epoch}-{train_loss:.3f}-{val/Accurracy:.2f}",
+        monitor="val/Accuracy",
         verbose=config["global"]["verbose"],
         save_top_k=3,
+        mode="max",
+    )
+
+    early_stop_callback = EarlyStopping(
+        monitor="val/Accurracy",
+        min_delta=0.0001,
+        patience=15,
+        verbose=False,
+        mode="max",
     )
 
     Wlogger = WandbLogger(
@@ -41,12 +51,13 @@ def train(config):
         max_epochs=config.trainer["num_epochs"],
         gpus=-1 if torch.cuda.device_count() else None,  # Use all gpus available
         check_val_every_n_epoch=config.trainer["evaluate_interval"],
-        enable_checkpointing=[checkpoint_callback],
+        enable_checkpointing=[checkpoint_callback, early_stop_callback],
         accelerator="ddp" if torch.cuda.device_count() > 1 else None,
         sync_batchnorm=True if torch.cuda.device_count() > 1 else False,
         precision=16 if config["global"]["use_fp16"] else 32,
         fast_dev_run=config["global"]["debug"],
         logger=Wlogger,
+        # auto_lr_find=True,
     )
     trainer.fit(model)
 
