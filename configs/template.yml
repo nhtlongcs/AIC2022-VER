@@ -1,12 +1,10 @@
 global:
   name: "template"
-  debug: true
   save_dir: ./runs
-  device: cuda:0
   use_fp16: true
-  pretrained: null
-  verbose: true
+  debug: false
   SEED: 1337
+  pretrained: null
 data:
   name: CityFlowNLDataset
   args:
@@ -17,6 +15,7 @@ data:
     USE_MOTION: True
     MOTION_PATH: "data/meta/motion_map"
     train:
+      mo_cache: False
       json_path: "data/meta/train.json"
       loader:
         batch_size: 8
@@ -24,6 +23,7 @@ data:
         shuffle: True
         drop_last: True
     val:
+      mo_cache: False
       json_path: "data/meta/val.json"
       loader:
         batch_size: 8

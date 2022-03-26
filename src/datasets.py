@@ -22,7 +22,14 @@ def default_loader(path):
 @DATASET_REGISTRY.register()
 class CityFlowNLDataset(Dataset):
     def __init__(
-        self, data_cfg, json_path, tok_model_name, transform=None, Random=True, **kwargs
+        self,
+        data_cfg,
+        json_path,
+        tok_model_name,
+        transform=None,
+        Random=True,
+        mo_cache=False,
+        **kwargs
     ):
         """
         Dataset for training.
@@ -37,7 +44,7 @@ class CityFlowNLDataset(Dataset):
         self.list_of_tracks = list(tracks.values())
         self.transform = transform
         self.bk_dic = {}
-
+        self.bk_cache = mo_cache
         self.tokenizer = AutoTokenizer.from_pretrained(tok_model_name)
 
         self.all_indexs = list(range(len(self.list_of_uuids)))
@@ -114,8 +121,10 @@ class CityFlowNLDataset(Dataset):
                     self.data_cfg["MOTION_PATH"]
                     + "/%s.jpg" % self.list_of_uuids[tmp_index]
                 )
+            if self.bk_cache:
                 self.bk_dic[self.list_of_uuids[tmp_index]] = bk
-                bk = self.transform(bk)
+
+            bk = self.transform(bk)
 
             if flag:
                 crop = torch.flip(crop, [1])
