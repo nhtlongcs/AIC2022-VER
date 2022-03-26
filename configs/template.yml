@@ -36,12 +36,12 @@ extractors:
     args:
       version: 0
       from_pretrained: True
-      freeze: False
+      freeze: True
   lang_encoder:
     name: LangExtractor
     args:
       pretrained: "bert-base-uncased"
-      freeze: False
+      freeze: True
 model:
   name: UTS
   args:
