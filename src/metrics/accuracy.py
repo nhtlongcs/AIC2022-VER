@@ -22,7 +22,7 @@ class Accuracy:
         ngpus = faiss.get_num_gpus()
         if ngpus > 0:
             self.faiss_pool = faiss.index_cpu_to_all_gpus(self.faiss_pool)
-            print(f"Using {ngpus} to evaluate")
+            print(f"Using {ngpus} GPU to evaluate")
         else:
             print("Using CPU to evaluate")
         self.reset()
