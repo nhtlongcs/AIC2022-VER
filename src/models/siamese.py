@@ -178,10 +178,10 @@ class UTS(AICBase):
             )
             sim_t_2_i = sim_i_2_t.t()
             loss_t_2_i = F.cross_entropy(
-                sim_t_2_i, torch.arange(batch["images"].size(0))
+                sim_t_2_i, torch.arange(batch["images"].size(0), device=self.device)
             )
             loss_i_2_t = F.cross_entropy(
-                sim_i_2_t, torch.arange(batch["images"].size(0))
+                sim_i_2_t, torch.arange(batch["images"].size(0), device=self.device)
             )
             loss += (loss_t_2_i + loss_i_2_t) / 2
         for cls_logit in cls_logits:
