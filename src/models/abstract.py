@@ -72,7 +72,7 @@ class AICBase(pl.LightningModule):
             value = m.calculate(output, batch=batch)
             m.update(value)
 
-        return {"loss": loss}
+        return {"loss": detach(loss)}
 
     def validation_epoch_end(self, outputs):
         # 1. Calculate average validation loss
@@ -90,7 +90,7 @@ class AICBase(pl.LightningModule):
         for m in self.metric.values():
             m.reset()
 
-        self.log("val/loss", loss)
+        self.log("val/loss", loss.cpu().numpy().item())
         return {**out, "log": out}
 
     def train_dataloader(self):
