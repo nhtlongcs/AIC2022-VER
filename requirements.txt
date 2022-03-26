@@ -1,3 +1,9 @@
+transformers
+spacy
 tabulate
-yaml
-json
+efficientnet_pytorch
+transformers
+spacy
+tabulate
+efficientnet_pytorch
+pytorch_lightning
