@@ -7,7 +7,9 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-Extract data notebook: [colab](https://colab.research.google.com/drive/18Jmz-e4AvH1QAG_WVZqjlT3XgnPcWOMY?authuser=1#scrollTo=KlZeCu9CC8mR)
+Extract data notebook: [colab](https://colab.research.google.com/drive/18Jmz-e4AvH1QAG_WVZqjlT3XgnPcWOMY)
+
+Training notebook: [colab](https://colab.research.google.com/drive/1o5g9fUndIFmHr-DYKczXq9q_-aiLQh-P)
 
 ## Prepare data
 
