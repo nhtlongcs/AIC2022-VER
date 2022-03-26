@@ -1,6 +1,6 @@
-import result_json from "./queries/gt_queries.js";
-import order_json from "./track_vids/train_order.js";
-import test_queries from "./queries/train_queries.js";
+import result_json from "";
+import order_json from "./track_vids/test_order.js";
+import test_queries from "./queries/test_queries.js";
 
 const button_input = document.getElementsByClassName("btn-input")[0];
 
@@ -73,11 +73,11 @@ function createOutput(result_json, order_json, search_key){
         var source = document.createElement("source");
         source.setAttribute(
             "type",
-            "video/mp4"
+            "video/webm"
         );
         source.setAttribute(
             "src",
-            `./track_vids/train/${vidName}.mp4`
+            `./track_vids/train2/${vidName}.webm`
         );
         video.appendChild(source);
         var nameDisplay = document.createElement("p")
