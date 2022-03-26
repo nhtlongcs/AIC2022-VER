@@ -1,13 +1,12 @@
 # python tests/dataset.py
+import torchvision
 from opt import Opts
 from src.datasets import DATASET_REGISTRY
-import torchvision
-
 from torch.utils.data import DataLoader
 
 if __name__ == "__main__":
     cfg = Opts(cfg="configs/template.yml").parse_args()
-
+    print(DATASET_REGISTRY)
     image_transform = torchvision.transforms.Compose(
         [
             torchvision.transforms.Resize((288, 288)),
