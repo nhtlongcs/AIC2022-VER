@@ -2,8 +2,5 @@ transformers
 spacy
 tabulate
 efficientnet_pytorch
-transformers
-spacy
-tabulate
-efficientnet_pytorch
 pytorch_lightning
+wandb
