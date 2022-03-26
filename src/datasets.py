@@ -1,14 +1,11 @@
 import json
 import os
 import random
-from PIL import Image
-import cv2
+
 import torch
-from torch.utils.data import Dataset
-import torch.nn.functional as F
-import torchvision
-from src.utils.logger import get_logger
+from PIL import Image
 from registry import Registry
+from torch.utils.data import Dataset
 from transformers import AutoTokenizer
 
 os.environ[
@@ -40,7 +37,6 @@ class CityFlowNLDataset(Dataset):
         self.list_of_tracks = list(tracks.values())
         self.transform = transform
         self.bk_dic = {}
-        self._logger = get_logger()
 
         self.tokenizer = AutoTokenizer.from_pretrained(tok_model_name)
 
