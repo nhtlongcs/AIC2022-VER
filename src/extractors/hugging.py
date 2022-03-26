@@ -1,13 +1,9 @@
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import transformers
 
 from transformers import (
     AutoConfig,
     AutoModel,
 )
-from transformers.models.longformer.modeling_longformer import LongformerModel
 
 from .extrct_net import ExtractorNetwork
 from . import EXTRCT_REGISTRY
