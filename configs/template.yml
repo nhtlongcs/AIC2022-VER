@@ -3,6 +3,7 @@ global:
   save_dir: ./runs
   use_fp16: true
   debug: false
+  verbose: true
   SEED: 1337
   pretrained: null
 data:
