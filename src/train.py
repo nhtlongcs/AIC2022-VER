@@ -13,6 +13,10 @@ from src.utils.path import prepare_checkpoint_path
 
 def train(config):
     model = MODEL_REGISTRY.get(config["model"]["name"])(config)
+    pretrained_path = config["global"]["pretrained"]
+
+    if pretrained_path:
+        model = model.load_from_checkpoint(pretrained_path)
 
     cp_path, train_id = prepare_checkpoint_path(
         config["global"]["save_dir"], config["global"]["name"]
@@ -37,8 +41,11 @@ def train(config):
         max_epochs=config.trainer["num_epochs"],
         gpus=-1 if torch.cuda.device_count() else None,  # Use all gpus available
         check_val_every_n_epoch=config.trainer["evaluate_interval"],
-        enable_checkpointing=checkpoint_callback,
-        default_root_dir="runs",
+        enable_checkpointing=[checkpoint_callback],
+        accelerator="ddp" if torch.cuda.device_count() > 1 else None,
+        sync_batchnorm=True if torch.cuda.device_count() > 1 else False,
+        precision=16 if config["global"]["use_fp16"] else 32,
+        fast_dev_run=config["global"]["debug"],
         logger=Wlogger,
     )
     trainer.fit(model)
