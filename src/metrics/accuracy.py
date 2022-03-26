@@ -44,7 +44,10 @@ class Accuracy:
         target_ids = np.array(range(len(pairs[0])))
         gallery_ids = np.array(range(len(pairs[0])))
 
-        visual_embeddings, lang_embeddings = pairs[0].numpy(), pairs[1].numpy()
+        visual_embeddings, lang_embeddings = (
+            pairs[0].cpu().numpy(),
+            pairs[1].cpu().numpy(),
+        )
 
         top_k_scores_all, top_k_indexes_all = self.similarity_search(
             queries_embedding=lang_embeddings,
