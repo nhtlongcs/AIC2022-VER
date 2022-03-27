@@ -1,5 +1,4 @@
 global:
-  username: hcmus-aic22-ver
   name: "template"
   save_dir: ./runs
   use_fp16: true
@@ -21,7 +20,7 @@ data:
       json_path: "data/meta/train.json"
       loader:
         batch_size: 8
-        num_workers: 4
+        num_workers: 0
         shuffle: True
         drop_last: True
     val:
@@ -29,7 +28,7 @@ data:
       json_path: "data/meta/val.json"
       loader:
         batch_size: 8
-        num_workers: 4
+        num_workers: 0
         shuffle: False
         drop_last: False
 extractors:
@@ -37,7 +36,7 @@ extractors:
     name: EfficientNetExtractor
     args:
       version: 0
-      from_pretrained: True
+      from_pretrained: False
       freeze: True
   lang_encoder:
     name: LangExtractor
