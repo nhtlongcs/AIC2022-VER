@@ -1,31 +1,64 @@
 global:
-  debug: true
+  name: "template"
   save_dir: ./runs
-  device: cuda:0
   use_fp16: true
+  debug: false
+  verbose: true
+  SEED: 1337
   pretrained: null
 data:
-  CITYFLOW_PATH: "data/meta/extracted_frames"
-  TRAIN_JSON_PATH: "data/meta/train.json"
-  EVAL_JSON_PATH: "data/meta/val.json"
-  SIZE: 288
-  CROP_AREA: 1.0 ## new_= CROP_AREA * old_w
-  TEST_TRACKS_JSON_PATH: "data/meta/test-tracks.json"
-  USE_MOTION: True
-  MOTION_PATH: "data/meta/motion_map"
-model:
-  name: base
+  name: CityFlowNLDataset
   args:
-    NAME: base
-    BERT_TYPE: "BERT"
-    BERT_NAME: "bert-base-uncased"
-    IMG_ENCODER: se_resnext50_32x4d
+    CITYFLOW_PATH: "data/meta/extracted_frames"
+    SIZE: 288
+    CROP_AREA: 1.0 ## new_= CROP_AREA * old_w
+    TEST_TRACKS_JSON_PATH: "data/meta/test-tracks.json"
+    USE_MOTION: True
+    MOTION_PATH: "data/meta/motion_map"
+    train:
+      mo_cache: False
+      json_path: "data/meta/train.json"
+      loader:
+        batch_size: 8
+        num_workers: 4
+        shuffle: True
+        drop_last: True
+    val:
+      mo_cache: False
+      json_path: "data/meta/val.json"
+      loader:
+        batch_size: 8
+        num_workers: 4
+        shuffle: False
+        drop_last: False
+extractors:
+  img_encoder:
+    name: EfficientNetExtractor
+    args:
+      version: 0
+      from_pretrained: True
+      freeze: True
+  lang_encoder:
+    name: LangExtractor
+    args:
+      pretrained: "bert-base-uncased"
+      freeze: True
+model:
+  name: UTS
+  args:
     NUM_CLASS: 2498 # total tracks
-    EMBED_DIM: 1024
+    # EMBED_DIM: 1024
+    EMBED_DIM: 768
     car_idloss: True
     mo_idloss: True
     share_idloss: True
+metric:
+  - name: Accuracy
+    args:
+      topk: [1, 5]
+      dimension: 768 # as same as embed dim
 trainer:
+  lr: 0.000001
   num_epochs: 10000
   clip_grad: 10.0
   evaluate_interval: 1
