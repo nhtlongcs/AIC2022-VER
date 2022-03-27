@@ -36,7 +36,6 @@ def test_evaluate(tmp_path, model_name):
     )
     model = MODEL_REGISTRY.get(model_name)(cfg)
     metric = METRIC_REGISTRY.get("Accuracy")(dimension=768, topk=(1, 5, 10))
-    # b = next(iter(dataloader))
     for i, batch in tqdm(enumerate(dataloader), total=5):
         pairs = model(batch)
         v = metric.calculate(pairs)
