@@ -34,9 +34,9 @@ if __name__ == "__main__":
 
     for i, batch in tqdm(enumerate(dataloader), total=5):
         pairs = model(batch)
-        v = metric.calculate(pairs)
-        metric.update(v)
+        metric.update(pairs)
         if (i % 5 == 0) and (i > 0):
+            metric.calculate()
             metric.summary()
             break
 
