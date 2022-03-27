@@ -2,10 +2,11 @@
 import json
 import sys
 
-with open(sys.argv[1]) as f:
-    train = json.load(f)
 import spacy
 from tqdm import tqdm
+
+with open(sys.argv[1]) as f:
+    train = json.load(f)
 
 nlp = spacy.load("en_core_web_sm")
 track_ids = list(train.keys())

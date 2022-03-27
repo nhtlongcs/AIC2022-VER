@@ -2,6 +2,8 @@ import torch
 import random
 import numpy as np
 
+SEED = 1337
+
 
 def set_deterministic():
     torch.backends.cudnn.benchmark = False

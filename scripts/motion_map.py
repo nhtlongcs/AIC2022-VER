@@ -2,20 +2,20 @@ import glob
 import json
 import multiprocessing
 from pathlib import Path
-
+import sys
 import cv2
 import numpy as np
 from tqdm import tqdm
 
 n_worker = multiprocessing.cpu_count() // 2
+meta_data_path = sys.argv[1]
+root = Path(f"{meta_data_path}meta/extracted_frames/")
+save_bk_dir = Path(f"{meta_data_path}meta/bk_map")
+save_mo_dir = Path(f"{meta_data_path}meta/motion_map")
 
-root = Path("data/meta/extracted_frames/")
-save_bk_dir = Path("data/meta/bk_map")
-save_mo_dir = Path("data/meta/motion_map")
-
-with open("data/AIC22_Track2_NL_Retrieval/test_tracks.json") as f:
+with open(f"{meta_data_path}test_tracks.json") as f:
     tracks_test = json.load(f)
-with open("data/AIC22_Track2_NL_Retrieval/train_tracks.json") as f:
+with open(f"{meta_data_path}train_tracks.json") as f:
     tracks_train = json.load(f)
 
 all_tracks = tracks_train
