@@ -45,6 +45,7 @@ def train(config):
         name=train_id,
         save_dir=config["global"]["save_dir"],
         log_model="all",
+        entity="hcmus-aic22-ver"
     )
 
     trainer = pl.Trainer(
