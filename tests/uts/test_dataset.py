@@ -1,12 +1,16 @@
-# python tests/dataset.py
+import pytest
 import torchvision
 from opt import Opts
 from src.datasets import DATASET_REGISTRY
 from torch.utils.data import DataLoader
+from pathlib import Path
 
-if __name__ == "__main__":
-    cfg = Opts(cfg="configs/template.yml").parse_args()
-    print(DATASET_REGISTRY)
+
+@pytest.mark.parametrize("dataset_name", ["CityFlowNLDataset"])
+def test_dataset(tmp_path, dataset_name):
+    cfg_path = "tests/uts/default.yml"
+    assert Path(cfg_path).exists(), "config file not found"
+    cfg = Opts(cfg=cfg_path).parse_args([])
     image_transform = torchvision.transforms.Compose(
         [
             torchvision.transforms.Resize((288, 288)),
@@ -16,7 +20,7 @@ if __name__ == "__main__":
             ),
         ]
     )
-    ds = DATASET_REGISTRY.get("CityFlowNLDataset")(
+    ds = DATASET_REGISTRY.get(dataset_name)(
         **cfg.data["args"]["train"],
         data_cfg=cfg.data["args"],
         tok_model_name=cfg.extractors["lang_encoder"]["args"]["pretrained"],
@@ -31,5 +35,4 @@ if __name__ == "__main__":
         print(batch["texts"])
         print(batch["car_ids"])
         break
-    print("Test case passed")
 
