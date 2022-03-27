@@ -4,3 +4,4 @@ tabulate
 efficientnet_pytorch
 pytorch_lightning
 wandb
+pytest
