@@ -25,6 +25,31 @@ $ python -m spacy download en_core_web_sm
 $ python scripts/nlpaug_uts.py ./data/meta/train_tracks.json
 ```
 
+## Deployment
+
+For deployment/training purpose, docker is an ready-to-use solution.
+
+To build docker image:
+
+```bash
+$ cd <this-repo>
+$ DOCKER_BUILDKIT=1 docker build -t aic22:latest .
+```
+
+To start docker container:
+
+```bash
+docker run --rm --gpus device=0 --shm-size 16G -it -v (pwd)/:/home/workspace/src/ aic22:latest /bin/bash
+```
+
+With device is the GPU device number, and shm-size is the shared memory size (should be larger than the size of the model).
+
+To attach to the container:
+
+```
+$ docker attach <container-id>
+```
+
 ## Contribution guide
 
 If you want to contribute to this repo, please follow steps below:
