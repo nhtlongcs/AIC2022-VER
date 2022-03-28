@@ -125,3 +125,9 @@ class AICBase(pl.LightningModule):
             "optimizer": optimizer,
             "lr_scheduler": lr_scheduler,
         }
+
+
+    # def visualize_prediction(self, outputs):
+    #     columns = ["caption", "image", "sound"]
+    #     data = [["cheese", wandb.Image(img_1), wandb.Audio(snd_1)], ["wine", wandb.Image(img_2), wandb.Audio(snd_2)]]
+    #     self.log_table(key="prediction", columns=columns, data=data)
