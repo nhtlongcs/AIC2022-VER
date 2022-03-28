@@ -56,7 +56,7 @@ ENV PYTORCH_VERSION ${PYTORCH_VERSION}
 # # # Install repo dependencies 
 COPY requirements.txt $WORKDIR
 RUN conda install -c pytorch -y faiss-gpu && \
-    conda init bash && activate && \
+    conda init bash && conda activate && \
     python -m pip install -r requirements.txt
 
 USER $USERNAME
