@@ -1,4 +1,5 @@
 global:
+  username: hcmus-aic22-ver
   name: "template"
   save_dir: ./runs
   use_fp16: true

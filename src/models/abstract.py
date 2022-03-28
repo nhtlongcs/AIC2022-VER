@@ -69,8 +69,7 @@ class AICBase(pl.LightningModule):
         loss = self.compute_loss(**output, batch=batch)
         # 3. Update metric for each batch
         for m in self.metric.values():
-            value = m.calculate(output, batch=batch)
-            m.update(value)
+            m.update(output)
 
         return {"loss": detach(loss)}
 
@@ -80,10 +79,12 @@ class AICBase(pl.LightningModule):
         # 2. Calculate metric value
         out = {"val_loss": loss}
         for k in self.metric.keys():
-            out[k] = self.metric[k].value()["score"]
+            self.metric[k].calculate()
+            metric_dict = self.metric[k].value()
+            out[k] = metric_dict["score"]
             self.metric[k].summary()
             self.log(f"val/{k}", out[k])
-            for kk, vv in self.metric[k].value()["score_dict"].items():
+            for kk, vv in metric_dict["score_dict"].items():
                 self.log(f"val/{k}/{kk}", vv)
 
         # 3. Reset metric
