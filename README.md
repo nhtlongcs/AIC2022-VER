@@ -39,15 +39,15 @@ $ DOCKER_BUILDKIT=1 docker build -t aic22:latest .
 To start docker container:
 
 ```bash
-docker run --rm --gpus device=0 --shm-size 16G -it -v (pwd)/:/home/workspace/src/ aic22:latest /bin/bash
+$ docker run --rm --name aic-t2 --gpus device=0 --shm-size 16G -it -v $(pwd)/:/home/workspace/src/ aic22:latest /bin/bash
 ```
 
 With device is the GPU device number, and shm-size is the shared memory size (should be larger than the size of the model).
 
 To attach to the container:
 
-```
-$ docker attach <container-id>
+```bash
+$ docker attach aic-t2
 ```
 
 ## Contribution guide
