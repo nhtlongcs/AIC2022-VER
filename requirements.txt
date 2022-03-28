@@ -1,18 +1,12 @@
-
-   
--f https://download.pytorch.org/whl/torch_stable.html
-numpy
-torch==1.10.0+cpu
-torchvision==0.11.1+cpu
+pytorch_lightning==1.5.10
+transformers==4.16.1
+spacy
 requests
 tabulate
 tqdm
 opencv-python
 pillow
-transformers
-spacy
 tabulate
 efficientnet_pytorch
-pytorch_lightning
 wandb
 pytest
