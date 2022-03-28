@@ -2,4 +2,6 @@ from registry import Registry
 
 METRIC_REGISTRY = Registry("METRIC")
 
-from .accuracy import Accuracy
+from .metric_wrapper import RetrievalMetric
+from .topkrecall import TopKRecall
+from .mrr import MeanReciprocalRank

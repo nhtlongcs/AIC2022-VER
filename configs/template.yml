@@ -54,10 +54,14 @@ model:
     mo_idloss: True
     share_idloss: True
 metric:
-  - name: Accuracy
-    args:
-      topk: [1, 5]
-      dimension: 768 # as same as embed dim
+- name: TopKRecall
+  args: 
+    top_k: [5, 10, 25]
+- name: MeanReciprocalRank
+  args:
+metric_configs:
+  dimension: 768
+  max_k: 30
 trainer:
   lr: 0.000001
   num_epochs: 10000
