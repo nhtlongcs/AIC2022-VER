@@ -22,7 +22,7 @@ class VisualizerCallback(Callback):
         # Save mapping for visualization
         os.makedirs('temps', exist_ok=True)
         with open('temps/track_id_mapping.json', 'w') as f:
-            json.dump(self.val_dataset.list_of_uuids, f)
+            json.dump(pl_module.val_dataset.list_of_uuids, f)
 
     def on_validation_epoch_end(self, trainer, pl_module):
 
@@ -76,12 +76,12 @@ class VisualizerCallback(Callback):
             record = [
                 query_id, 
                 query, 
-                pred_grid_img.permute(2,0,1), 
-                gt_grid_img.permute(2,0,1)
+                wandb.Image(pred_grid_img.permute(2,0,1)), 
+                wandb.Image(gt_grid_img.permute(2,0,1))
             ]
             my_table.append(record)
 
-        trainer.log_table(
+        trainer.logger.log_table(
             "val/prediction", data=my_table, columns=columns
         )
 
