@@ -15,11 +15,11 @@ class AICBase(pl.LightningModule):
         super().__init__()
         self.cfg = config
         self.init_model()
-
         self.metric = RetrievalMetric(
             metrics = [
                 METRIC_REGISTRY.get(mcfg["name"])(**mcfg["args"])
-                for mcfg in config["metric"]
+                if mcfg["args"] else METRIC_REGISTRY.get(mcfg["name"])()
+                for mcfg in config["metric"] 
             ], **self.cfg['metric_configs']
         )
 
@@ -76,6 +76,7 @@ class AICBase(pl.LightningModule):
         return {"loss": detach(loss)}
 
     def validation_epoch_end(self, outputs):
+
         # 1. Calculate average validation loss
         loss = torch.mean(torch.stack([o["loss"] for o in outputs], dim=0))
         # 2. Calculate metric value

@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional
 
 import torch
 import numpy as np
-from src.utils.device import detach
+from src.utils.device import detach, move_to
 from src.utils.faiss_retrieval import FaissRetrieval
 
 
@@ -22,8 +22,8 @@ class RetrievalMetric:
         """
         Perform calculation based on prediction and targets
         """
-        pairs = detach(output["pairs"])
-        ids = batch['car_ids']
+        pairs = move_to(detach(output["pairs"]), torch.device('cpu'))
+        ids = move_to(batch['car_ids'], torch.device('cpu'))
         visual_embedding, lang_embedding = pairs[0].numpy(), pairs[1].numpy()
         self.gallery_embeddings.append(visual_embedding)
         self.query_embeddings.append(lang_embedding)
