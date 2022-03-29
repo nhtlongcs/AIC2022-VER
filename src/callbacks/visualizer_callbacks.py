@@ -7,6 +7,7 @@ import os.path as osp
 from pytorch_lightning.callbacks import Callback
 from torchvision.transforms import functional as TFF
 from src.utils.visualization.visualizer import Visualizer
+import matplotlib.pyplot as plt
 
 class VisualizerCallback(Callback):
 
@@ -17,6 +18,15 @@ class VisualizerCallback(Callback):
         self.query_results_json = query_results_json
         self.mapping_json = mapping_json
         self.visualizer = Visualizer()
+
+    def on_sanity_check_start(self, trainer, pl_module):
+        """Called when the validation batch ends."""
+        val_batch = next(pl_module.val_dataloader())
+        train_batch = next(pl_module.train_dataloader())
+        print("Visualizing dataset...")
+        self.visualize_instance_gt(train_batch, val_batch, trainer.logger)
+        self.visualize_motion_gt(train_batch, val_batch, trainer.logger)
+        self.visualize_text_gt(train_batch, val_batch, trainer.logger)
 
     def on_validation_epoch_start(self, trainer, pl_module):
         # Save mapping for visualization
@@ -29,6 +39,8 @@ class VisualizerCallback(Callback):
         """
         After finish validation
         """
+
+        print('Visualizing predictions...')
 
         with open(self.query_results_json, 'r') as f:
             results = json.load(f)
@@ -84,6 +96,120 @@ class VisualizerCallback(Callback):
         trainer.logger.log_table(
             "val/prediction", data=my_table, columns=columns
         )
+
+    def visualize_instance_gt(self, train_batch, val_batch,  logger):
+        """
+        Visualize dataloader for sanity check 
+        """
+
+        # Train batch
+        images = train_batch["images"]
+
+        batch = []
+        for idx, inputs in enumerate(images):
+            img_show = self.visualizer.denormalize(inputs)
+            img_cam = TFF.to_tensor(img_show)
+            batch.append(img_cam)
+        grid_img = self.visualizer.make_grid(batch)
+
+        fig = plt.figure(figsize=(8,8))
+        plt.axis('off')
+        plt.imshow(grid_img)
+        plt.tight_layout(pad=0)
+
+        logger.log_image(
+            key='sanity/train_instances', 
+            images=fig, 
+        )
+
+        # Validation batch
+        images = val_batch["images"]
+
+        batch = []
+        for idx, inputs in enumerate(images):
+            img_show = self.visualizer.denormalize(inputs)
+            img_cam = TFF.to_tensor(img_show)
+            batch.append(img_cam)
+        grid_img = self.visualizer.make_grid(batch)
+
+        fig = plt.figure(figsize=(8,8))
+        plt.axis('off')
+        plt.imshow(grid_img)
+        plt.tight_layout(pad=0)
+
+        logger.log_image(
+            key='sanity/val_instances', 
+            images=fig, 
+        )
+
+        plt.cla()   # Clear axis
+        plt.clf()   # Clear figure
+        plt.close()
+
+    def visualize_motion_gt(self, train_batch, val_batch, logger):
+        """
+        Visualize dataloader for sanity check 
+        """
+        # Train batch
+        images = train_batch["motions"]
+
+        batch = []
+        for idx, inputs in enumerate(images):
+            img_show = self.visualizer.denormalize(inputs)
+            img_cam = TFF.to_tensor(img_show)
+            batch.append(img_cam)
+        grid_img = self.visualizer.make_grid(batch)
+
+        fig = plt.figure(figsize=(8,8))
+        plt.axis('off')
+        plt.imshow(grid_img)
+        plt.tight_layout(pad=0)
+        logger.log_image(
+            key='sanity/val_motions', 
+            images=fig, 
+        )
+
+        # Validation batch
+        images = val_batch["motions"]
+
+        batch = []
+        for idx, inputs in enumerate(images):
+            img_show = self.visualizer.denormalize(inputs)
+            img_cam = TFF.to_tensor(img_show)
+            batch.append(img_cam)
+        grid_img = self.visualizer.make_grid(batch)
+
+        fig = plt.figure(figsize=(8,8))
+        plt.axis('off')
+        plt.imshow(grid_img)
+        plt.tight_layout(pad=0)
+
+        logger.log_image(
+            key='sanity/train_motions', 
+            images=fig, 
+        )
+
+        plt.cla()   # Clear axis
+        plt.clf()   # Clear figure
+        plt.close()
+
+    def visualize_text_gt(self, train_batch, val_batch, logger):
+        """
+        Visualize dataloader for sanity check 
+        """
+
+        # Train batch
+        texts = train_batch["texts"]
+        batch = "\n".join([f"{i}. "+text for i, text in enumerate(texts)])
+
+        logger.log_text(key="sanity/train_queries", data=batch)
+
+        # Validation batch
+        texts = val_batch["texts"]
+        batch = "\n".join([f"{i}. "+text for i, text in enumerate(texts)])
+
+        logger.log_text(key="sanity/val_queries", data=batch)
+
 
 def show_motion(track_id, motion_dir):
     motion_image = cv2.imread(osp.join(motion_dir, track_id+'.jpg'))
