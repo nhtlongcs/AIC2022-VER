@@ -6,9 +6,7 @@ import numpy as np
 from PIL import Image
 from typing import Any, List, Optional, Tuple, Union
 from .colors import color_list
-from .utils import (
-    draw_mask, draw_polylines, draw_text,
-    get_font_size, reduce_opacity, draw_text_cv2)
+from .utils import (draw_text_cv2)
 
 class Visualizer():
     r"""Visualizer class that do all the visualization stuffs
@@ -93,52 +91,6 @@ class Visualizer():
 
         self.image = white_canvas.copy()
 
-
-    def draw_polygon_ocr(self, polygons, texts=None, font='assets/fonts/aachenb.ttf'):
-        image = self.image.copy()
-        maskIm = Image.new('L', (self.image.shape[1], self.image.shape[0]), 0)
-
-        if texts is not None:
-            zipped = zip(polygons, texts)
-        else:
-            zipped = polygons
-
-        for item in zip(zipped): 
-            if texts is not None:
-                polygon, text = item
-            else:
-                polygon, text = item, None
-
-            maskIm = draw_mask(polygon, maskIm) 
-            image = draw_polylines(image, polygon)
-
-            if text:
-                font_size = get_font_size(image, text, polygon, font)
-                color = tuple([random.randint(0,255)/255.0 for _ in range(3)])
-                white_img = draw_text(white_img, text, polygon, font, color, font_size)
-
-        # Mask out polygons
-        mask = np.stack([maskIm, maskIm, maskIm], axis=2)
-        masked = image * mask
-
-        # Reduce opacity of original image
-        o_image = reduce_opacity(image)
-        i_masked = (np.bitwise_not(mask)/255).astype(np.int)
-        o_image = o_image * i_masked
-
-        # Add two image
-        new_img = o_image + masked
-
-        new_img = new_img.astype(np.float32)
-
-        if text:
-            white_img = white_img.astype(np.float32)
-            stacked = np.concatenate([new_img, white_img], axis=1)
-            self.image = stacked.copy()
-        else:
-            self.image = new_img.copy()
-
-
     def draw_bbox(self, boxes, labels=None) -> None:
         assert self.image is not None
         
@@ -214,31 +166,3 @@ class Visualizer():
         img_show = (img_show * std+mean)
         img_show = np.clip(img_show,0,1)
         return img_show
-
-    def decode_segmap(self, segmap: np.ndarray, num_classes: Optional[int] = None) -> np.ndarray:
-        """
-        Decode an segmentation mask into colored mask based on class indices
-
-        segmap: `np.ndarray`
-            1-channel segmentation masks with each pixel represent one class
-        num_classes: `int`
-            number of class indices that segmentation mask has
-
-        return: `np.ndarray`
-            rgb image, with each color represent different class
-        """
-
-        if len(segmap.shape) == 3: # (NC, H, W), need argmax
-            segmap = np.argmax(segmap, axis=0)
-
-        if num_classes is None:
-            num_classes = int(np.max(segmap)) + 1
-
-        palette = np.array(color_list[:num_classes])*255 
-        palette = palette[:, ::-1].astype(np.uint8)
-
-        segmap = segmap.astype(np.uint8)
-        rgb = Image.fromarray(segmap, 'P')
-        rgb.putpalette(palette)
-
-        return np.array(rgb.convert('RGB'))
