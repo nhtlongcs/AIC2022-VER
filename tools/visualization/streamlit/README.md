@@ -10,8 +10,8 @@ install [Streamlit](https://docs.streamlit.io/en/stable/)
 ```
 streamlit run app.py -- \
   --result_folder ./results \
-  --query_json ./data/test-queries.json \
-  --video_dir ./new_videos
+  --query_json ./test-queries.json \
+  --video_dir ./track_videos
 ```
 
 ## File formats
@@ -20,8 +20,8 @@ Directory structure:
 ```
 video_dir
 |
---- <video1_id1>.mp4
---- <video1_id2>.mp4
+--- <track_id1>.mp4
+--- <track_id2>.mp4
 
 json_result_dir
 |
@@ -33,8 +33,8 @@ Json result file:
 ```
 {
     <query_id1>: [
-        <video1_id1>,
-        <video1_id2>,
+        <track_id1>,
+        <track_id2>,
     ],
     ...
 }
