@@ -21,8 +21,8 @@ class VisualizerCallback(Callback):
 
     def on_sanity_check_start(self, trainer, pl_module):
         """Called when the validation batch ends."""
-        val_batch = next(pl_module.val_dataloader())
-        train_batch = next(pl_module.train_dataloader())
+        val_batch = next(iter(pl_module.val_dataloader()))
+        train_batch = next(iter(pl_module.train_dataloader()))
         print("Visualizing dataset...")
         self.visualize_instance_gt(train_batch, val_batch, trainer.logger)
         self.visualize_motion_gt(train_batch, val_batch, trainer.logger)
@@ -112,14 +112,9 @@ class VisualizerCallback(Callback):
             batch.append(img_cam)
         grid_img = self.visualizer.make_grid(batch)
 
-        fig = plt.figure(figsize=(8,8))
-        plt.axis('off')
-        plt.imshow(grid_img)
-        plt.tight_layout(pad=0)
-
         logger.log_image(
             key='sanity/train_instances', 
-            images=fig, 
+            images=[wandb.Image(grid_img.permute(2,0,1))], 
         )
 
         # Validation batch
@@ -132,19 +127,11 @@ class VisualizerCallback(Callback):
             batch.append(img_cam)
         grid_img = self.visualizer.make_grid(batch)
 
-        fig = plt.figure(figsize=(8,8))
-        plt.axis('off')
-        plt.imshow(grid_img)
-        plt.tight_layout(pad=0)
-
         logger.log_image(
             key='sanity/val_instances', 
-            images=fig, 
+            images=[wandb.Image(grid_img.permute(2,0,1))],
         )
 
-        plt.cla()   # Clear axis
-        plt.clf()   # Clear figure
-        plt.close()
 
     def visualize_motion_gt(self, train_batch, val_batch, logger):
         """
@@ -160,13 +147,9 @@ class VisualizerCallback(Callback):
             batch.append(img_cam)
         grid_img = self.visualizer.make_grid(batch)
 
-        fig = plt.figure(figsize=(8,8))
-        plt.axis('off')
-        plt.imshow(grid_img)
-        plt.tight_layout(pad=0)
         logger.log_image(
-            key='sanity/val_motions', 
-            images=fig, 
+            key='sanity/train_motions', 
+            images=[wandb.Image(grid_img.permute(2,0,1))],
         )
 
         # Validation batch
@@ -179,19 +162,10 @@ class VisualizerCallback(Callback):
             batch.append(img_cam)
         grid_img = self.visualizer.make_grid(batch)
 
-        fig = plt.figure(figsize=(8,8))
-        plt.axis('off')
-        plt.imshow(grid_img)
-        plt.tight_layout(pad=0)
-
         logger.log_image(
-            key='sanity/train_motions', 
-            images=fig, 
+            key='sanity/val_motions', 
+            images=[wandb.Image(grid_img.permute(2,0,1))], 
         )
-
-        plt.cla()   # Clear axis
-        plt.clf()   # Clear figure
-        plt.close()
 
     def visualize_text_gt(self, train_batch, val_batch, logger):
         """
@@ -202,13 +176,19 @@ class VisualizerCallback(Callback):
         texts = train_batch["texts"]
         batch = "\n".join([f"{i}. "+text for i, text in enumerate(texts)])
 
-        logger.log_text(key="sanity/train_queries", data=batch)
+        logger.log_text(
+          key="sanity/train_queries", 
+          columns=['texts'],
+          data=[[batch]])
 
         # Validation batch
         texts = val_batch["texts"]
         batch = "\n".join([f"{i}. "+text for i, text in enumerate(texts)])
 
-        logger.log_text(key="sanity/val_queries", data=batch)
+        logger.log_text(
+          key="sanity/val_queries", 
+          columns=['texts'],
+          data=[[batch]])
 
 
 def show_motion(track_id, motion_dir):
