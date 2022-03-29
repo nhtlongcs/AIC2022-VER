@@ -10,7 +10,7 @@ from pytorch_lightning.trainer import seed_everything
 from src.models import MODEL_REGISTRY
 from src.callbacks import CALLBACKS_REGISTRY
 from src.utils.path import prepare_checkpoint_path
-
+from src.callbacks.visualizer_callbacks import VisualizerCallback
 
 def train(config):
     model = MODEL_REGISTRY.get(config["model"]["name"])(config)
@@ -27,6 +27,14 @@ def train(config):
         CALLBACKS_REGISTRY.get(mcfg["name"])(**mcfg["args"]) 
         for mcfg in config["callbacks"]
     ]
+    
+    
+#     callbacks=[VisualizerCallback(
+#         motion_path = "/content/AIC2022-VER/data/meta/motion_map",
+#         gt_json_path = "/content/AIC2022-VER/data/meta/val.json",
+#         query_results_json = "temps/query_results.json",
+#         mapping_json = "temps/track_id_mapping.json"
+#       )],
 
     Wlogger = WandbLogger(
         project="aic",
@@ -50,7 +58,8 @@ def train(config):
         precision=16 if config["global"]["use_fp16"] else 32,
         fast_dev_run=config["global"]["debug"],
         logger=Wlogger,
-        callbacks=callbacks
+        callbacks=callbacks,
+        num_sanity_val_steps=-1
         # auto_lr_find=True,
     )
 
