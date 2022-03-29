@@ -14,3 +14,4 @@ tmp/
 *.trt
 *.egg-info
 *.eggs
+*.json
