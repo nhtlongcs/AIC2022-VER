@@ -3,7 +3,7 @@
 Before using this repo, please install the following packages by running the following commands:
 
 ```bash
-pip install -r requirements.txt
+conda install
 pip install -e .
 ```
 
@@ -22,7 +22,23 @@ Generate augment data for training (Optional)
 
 ```
 $ python -m spacy download en_core_web_sm
-$ python scripts/nlpaug_uts.py ./data/meta/train_tracks.json
+$ python scripts/data/nlpaug_uts.py ./data/meta/train_tracks.json
+$ python scripts/data/nlpaug_uts.py ./data/meta/test_tracks.json
+```
+
+Split data, train and test data into train and test data (Optional)
+By running the following commands, you can split the data into train and test data in same folder.
+
+```
+$ python scripts/data/split.py ./data/meta/train_tracks.json
+```
+
+## Prepare data (HCMUS-team)
+
+Extract train and test's queries into separated parts following the English PropBank Semantic Role Labeling rules.
+
+```
+$ python scripts/srl/extraction.py data/AIC22_Track2_NL_Retrieval/ data/meta
 ```
 
 ## Deployment
