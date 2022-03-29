@@ -27,13 +27,10 @@ def test_trainer(tmp_path, model_name):
     trainer = pl.Trainer(
         default_root_dir="./runs",
         log_every_n_steps=1,
-        max_steps=10,
+        max_steps=1,
         gpus=-1 if torch.cuda.device_count() else None,  # Use all gpus available
         check_val_every_n_epoch=cfg.trainer["evaluate_interval"],
         enable_checkpointing=True,
-        accelerator="ddp" if torch.cuda.device_count() > 1 else None,
-        sync_batchnorm=True if torch.cuda.device_count() > 1 else False,
-        precision=16 if cfg["global"]["use_fp16"] else 32,
         fast_dev_run=False,
         callbacks=[checkpoint_callback]
     )
@@ -43,13 +40,10 @@ def test_trainer(tmp_path, model_name):
     # Resume
     trainer = pl.Trainer(
         log_every_n_steps=1,
-        max_steps=10,
+        max_steps=1,
         gpus=-1 if torch.cuda.device_count() else None,  # Use all gpus available
         check_val_every_n_epoch=cfg.trainer["evaluate_interval"],
         enable_checkpointing=False,
-        accelerator="ddp" if torch.cuda.device_count() > 1 else None,
-        sync_batchnorm=True if torch.cuda.device_count() > 1 else False,
-        precision=16 if cfg["global"]["use_fp16"] else 32,
         fast_dev_run=True,
     )
 
