@@ -27,14 +27,6 @@ def train(config):
         CALLBACKS_REGISTRY.get(mcfg["name"])(**mcfg["args"]) 
         for mcfg in config["callbacks"]
     ]
-    
-    
-#     callbacks=[VisualizerCallback(
-#         motion_path = "/content/AIC2022-VER/data/meta/motion_map",
-#         gt_json_path = "/content/AIC2022-VER/data/meta/val.json",
-#         query_results_json = "temps/query_results.json",
-#         mapping_json = "temps/track_id_mapping.json"
-#       )],
 
     Wlogger = WandbLogger(
         project="aic",
@@ -59,7 +51,7 @@ def train(config):
         fast_dev_run=config["global"]["debug"],
         logger=Wlogger,
         callbacks=callbacks,
-        num_sanity_val_steps=-1
+        num_sanity_val_steps=-1 # Sanity full validation required for visualization callbacks
         # auto_lr_find=True,
     )
 

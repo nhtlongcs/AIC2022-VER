@@ -73,7 +73,7 @@ trainer:
 callbacks:
 - name: ModelCheckpoint
   args:
-    filename: "UTS-{epoch}-{mrr:.4f}"
+    filename: "UTS-{epoch}-{mrr/val:.4f}"
     monitor: "val/mrr"
     verbose: True
     save_top_k: 3
@@ -85,3 +85,9 @@ callbacks:
     patience: 15
     verbose: False
     mode: max
+- name: VisualizerCallback
+  args:
+    motion_path: "data/meta/motion_map",
+    gt_json_path: "data/meta/val.json",
+    query_results_json: "temps/query_results.json",
+    mapping_json: "temps/track_id_mapping.json"
