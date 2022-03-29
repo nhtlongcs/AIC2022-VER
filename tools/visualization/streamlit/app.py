@@ -3,7 +3,7 @@ import json
 import argparse
 import os.path as osp 
 import streamlit as st
-from .config import StreamlitConfig
+from config import StreamlitConfig
 
 
 parser = argparse.ArgumentParser(description='Streamlit visualization')
@@ -20,7 +20,7 @@ def json_load(json_path: str):
         data = json.load(f)
     return data
 
-def main(config, args):
+def main(config):
     st.set_page_config(layout="wide")
     st.title(config.TITLE)
 
@@ -73,3 +73,6 @@ if __name__ == '__main__':
         result_dir = args.result_folder, 
         video_dir = args.video_dir
     )
+
+
+    main(config)
