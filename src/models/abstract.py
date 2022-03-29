@@ -7,7 +7,7 @@ import torchvision
 
 from src.utils.device import detach
 from torch.utils.data import DataLoader
-
+from src.metrics.metric_wrapper import RetrievalMetric
 
 @MODEL_REGISTRY.register()
 class AICBase(pl.LightningModule):
@@ -15,10 +15,13 @@ class AICBase(pl.LightningModule):
         super().__init__()
         self.cfg = config
         self.init_model()
-        self.metric = {
-            mcfg["name"]: METRIC_REGISTRY.get(mcfg["name"])(**mcfg["args"])
-            for mcfg in config["metric"]
-        }
+        self.metric = RetrievalMetric(
+            metrics = [
+                METRIC_REGISTRY.get(mcfg["name"])(**mcfg["args"])
+                if mcfg["args"] else METRIC_REGISTRY.get(mcfg["name"])()
+                for mcfg in config["metric"] 
+            ], **self.cfg['metric_configs']
+        )
 
     def init_model(self):
         raise NotImplementedError
@@ -68,28 +71,33 @@ class AICBase(pl.LightningModule):
         # 2. Calculate loss
         loss = self.compute_loss(**output, batch=batch)
         # 3. Update metric for each batch
-        for m in self.metric.values():
-            m.update(output)
+        self.metric.update(output, batch)
 
         return {"loss": detach(loss)}
 
     def validation_epoch_end(self, outputs):
+
         # 1. Calculate average validation loss
         loss = torch.mean(torch.stack([o["loss"] for o in outputs], dim=0))
         # 2. Calculate metric value
         out = {"val_loss": loss}
-        for k in self.metric.keys():
-            self.metric[k].calculate()
-            metric_dict = self.metric[k].value()
-            out[k] = metric_dict["score"]
-            self.metric[k].summary()
-            self.log(f"val/{k}", out[k])
-            for kk, vv in metric_dict["score_dict"].items():
-                self.log(f"val/{k}/{kk}", vv)
 
-        # 3. Reset metric
-        for m in self.metric.values():
-            m.reset()
+        # 3. Update metric for each batch
+        metric_dict = self.metric.value()
+        out.update(metric_dict)
+        for k in metric_dict.keys():
+            self.log(f"val/{k}", out[k])
+
+        # Log string
+        log_string = ""
+        for metric, score in out.items():
+            if isinstance(score, (int, float)):
+                log_string += metric +': ' + f"{score:.5f}" +' | '
+        log_string +='\n'
+        print(log_string)
+
+        # 4. Reset metric
+        self.metric.reset()
 
         self.log("val/loss", loss.cpu().numpy().item())
         return {**out, "log": out}
@@ -118,3 +126,9 @@ class AICBase(pl.LightningModule):
             "optimizer": optimizer,
             "lr_scheduler": lr_scheduler,
         }
+
+
+    # def visualize_prediction(self, outputs):
+    #     columns = ["caption", "image", "sound"]
+    #     data = [["cheese", wandb.Image(img_1), wandb.Audio(snd_1)], ["wine", wandb.Image(img_2), wandb.Audio(snd_2)]]
+    #     self.log_table(key="prediction", columns=columns, data=data)
