@@ -93,7 +93,8 @@ class Opts(ArgumentParser):
                     if idx == len(sub_keys) - 2:
                         if sub_key in cur.keys():
                             cur[sub_key] = value
-                        print(f"'{key}' not found in config")
+                        else:
+                            print(f"'{key}' not found in config")
                     else:
                         cur = cur[sub_key]
         return global_config

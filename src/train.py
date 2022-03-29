@@ -8,6 +8,7 @@ from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.trainer import seed_everything
 
 from src.models import MODEL_REGISTRY
+from src.callbacks import CALLBACKS_REGISTRY
 from src.utils.path import prepare_checkpoint_path
 
 
@@ -22,23 +23,10 @@ def train(config):
         config["global"]["save_dir"], config["global"]["name"]
     )
 
-    checkpoint_callback = ModelCheckpoint(
-        dirpath=cp_path,
-        filename=str(config["model"]["name"])
-        + "{epoch}-{train_loss:.3f}-{val/Accurracy:.2f}",
-        monitor="val/Accuracy",
-        verbose=config["global"]["verbose"],
-        save_top_k=3,
-        mode="max",
-    )
-
-    early_stop_callback = EarlyStopping(
-        monitor="val/Accurracy",
-        min_delta=0.0001,
-        patience=15,
-        verbose=False,
-        mode="max",
-    )
+    callbacks = [
+        CALLBACKS_REGISTRY.get(mcfg["name"])(**mcfg["args"]) 
+        for mcfg in config["callbacks"]
+    ]
 
     Wlogger = WandbLogger(
         project="aic",
@@ -47,20 +35,26 @@ def train(config):
         log_model="all",
         entity=config['global']['username']
     )
+    
+    # Save config to wandb
+    Wlogger.experiment.config.update(config)
 
     trainer = pl.Trainer(
+        default_root_dir=cp_path,
         max_epochs=config.trainer["num_epochs"],
         gpus=-1 if torch.cuda.device_count() else None,  # Use all gpus available
         check_val_every_n_epoch=config.trainer["evaluate_interval"],
-        enable_checkpointing=[checkpoint_callback, early_stop_callback],
+        enable_checkpointing=True,
         accelerator="ddp" if torch.cuda.device_count() > 1 else None,
         sync_batchnorm=True if torch.cuda.device_count() > 1 else False,
         precision=16 if config["global"]["use_fp16"] else 32,
         fast_dev_run=config["global"]["debug"],
         logger=Wlogger,
+        callbacks=callbacks
         # auto_lr_find=True,
     )
-    trainer.fit(model)
+
+    trainer.fit(model, ckpt_path=config['global']['resume'])
 
 
 if __name__ == "__main__":
