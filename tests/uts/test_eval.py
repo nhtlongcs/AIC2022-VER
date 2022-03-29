@@ -8,7 +8,7 @@ from src.datasets import DATASET_REGISTRY
 from src.metrics import METRIC_REGISTRY
 from opt import Opts
 import torchvision
-
+from src.metrics.metric_wrapper import RetrievalMetric
 
 @pytest.mark.parametrize("model_name", ["UTS"])
 def test_evaluate(tmp_path, model_name):
@@ -35,12 +35,28 @@ def test_evaluate(tmp_path, model_name):
         **cfg.data["args"]["train"]["loader"], dataset=ds, collate_fn=ds.collate_fn,
     )
     model = MODEL_REGISTRY.get(model_name)(cfg)
-    metric = METRIC_REGISTRY.get("Accuracy")(dimension=768, topk=(1, 5, 10))
+    metric = RetrievalMetric(
+      metrics = [
+          METRIC_REGISTRY.get(mcfg["name"])(**mcfg["args"])
+          if mcfg["args"] else METRIC_REGISTRY.get(mcfg["name"])()
+          for mcfg in cfg["metric"] 
+      ], **cfg['metric_configs']
+    )
     for i, batch in tqdm(enumerate(dataloader), total=5):
         pairs = model(batch)
-        metric.update(pairs)
+        metric.update(pairs, batch)
         if (i % 5 == 0) and (i > 0):
-            metric.calculate()
-            metric.summary()
+            metric_dict = metric.value()
+            
+            # Log string
+            log_string = ""
+            for metric_name, score in metric_dict.items():
+                if isinstance(score, (int, float)):
+                    log_string += metric_name +': ' + f"{score:.5f}" +' | '
+            log_string +='\n'
+            print(log_string)
+
+            # 4. Reset metric
+            metric.reset()
             break
 
