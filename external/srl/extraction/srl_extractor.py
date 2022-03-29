@@ -12,7 +12,7 @@ from .srl_helper import SRLHelper
 
 
 class SRL(object):
-    def __init__(self, path=None, filetype=1):
+    def __init__(self, path=None):
         module_dir = osp.dirname(osp.abspath(__file__))
         self.srl_helper = SRLHelper(
             osp.join(module_dir, "configs/srl_helper/srl_helper.json"),

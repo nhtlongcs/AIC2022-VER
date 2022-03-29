@@ -1,27 +1,27 @@
+# Usage
 import json
 from external.srl.extraction import SRL
-import os.path as osp
+from pathlib import Path
+import sys
+
+
+def extract_textual_metadata(json_path, out_dir):
+    assert Path(json_path).exists(), "json file not found"
+    srl_test = SRL(path=json_path)
+    filename = "srl_" + Path(json_path).stem
+    out_path = Path(out_dir) / filename
+    with open(str(out_path), "w") as f:
+        ans_test = srl_test.extract_data(srl_test.data)
+        json.dump(ans_test, f, indent=2)
+        f.close()
 
 
 def main():
-    # Running on train queries
-    # Un-comment if you want to run on train data
-    # srl_train = SRL(path=TRAIN_TRACK_JSON, filetype=1)
-    # ans_train = srl_train.extract_data(srl_train.data)
-    # f = open(osp.join(RESULT_DIR, "srl/result_train.json"), 'w')
-    # json.dump(ans_train, f, indent=2)
-    # f.close()
-
-    # Running on test queries
-    # Un-comment if you want to run on test data
-    srl_test = SRL(path=TEST_QUERY_JSON, filetype=0)
-    ans_test = srl_test.extract_data(srl_test.data)
-    f = open(osp.join(RESULT_DIR, "result_test_fix_thereis_fix_semi.json"), "w")
-    json.dump(ans_test, f, indent=2)
-    f.close()
+    meta_data_dir = Path(sys.argv[1])
+    out_dir = Path(sys.argv[2])
+    extract_textual_metadata(meta_data_dir / "train_tracks.json", out_dir)
+    extract_textual_metadata(meta_data_dir / "test_queries.json", out_dir)
 
 
 if __name__ == "__main__":
-    TEST_QUERY_JSON = "data/AIC22_Track2_NL_Retrieval/test_queries.json"
-    RESULT_DIR = "./"
     main()
