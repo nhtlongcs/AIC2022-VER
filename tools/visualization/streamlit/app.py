@@ -1,82 +1,75 @@
 import os 
+import json
+import argparse
 import os.path as osp 
 import streamlit as st
-
-from utils import json_load
-from constant import (
-    COLUMN, TOP_TO_SHOW,TITLE,
-    video_dir,
-    test_track_map, test_query_map, test_query,
-    version_map
-)
-
-st.set_page_config(layout="wide")
-st.title(TITLE)
-
-list_versions = sorted(list(version_map.keys()))
-
-st.sidebar.subheader("Choose version")
-version = st.sidebar.radio(label="", options=list_versions)
-# Choose result file:
-# result_name = list_results[0]
-# result_name = st.sidebar.selectbox(f"Result versions, default: {result_name}", options=list_results)
-result_dict = json_load(version_map[version])
-
-top_to_show = st.sidebar.slider('Show top-? results', 3, 30, TOP_TO_SHOW)
-
-# Choose query
-list_qids = list(result_dict.keys())
-display = [] 
-for qid in list_qids:
-    display.append(f'{test_query_map[qid]}.{qid}')
-
-query_o2i = st.selectbox(f"Choose query", options=display)
-choose_qid = query_o2i.split('.')[-1]
-list_caps = test_query[choose_qid]
-list_vids = result_dict[choose_qid]
-
-st.markdown("### Query captions")
-for cap in list_caps:
-    st.write(cap)
-# st.write('\n'.join(list_caps))
+from .config import StreamlitConfig
 
 
-ROWS = top_to_show // COLUMN 
-i = 0
+parser = argparse.ArgumentParser(description='Streamlit visualization')
+parser.add_argument('--result_folder', type=str,
+                    help="Path to folder contains json result files")
+parser.add_argument('--query_json', type=str,
+                    help="Path to json query file")
+parser.add_argument('--video_dir', type=str,
+                    help="Path to folder contains all gallery track videos  ")
 
-st.markdown("### Video results")
-if st.button('Search'):
-    for r in range(ROWS):
-        cols = st.beta_columns(COLUMN)
-        for c in range(COLUMN):
-            vid_order = 3*r + c
-            video_name = f'{test_track_map[list_vids[vid_order]]}.mp4'
-            video_path = osp.join(video_dir, video_name)
-            video_file = open(video_path, 'rb')
-            video_bytes = video_file.read()
-            cols[c].video(video_bytes)
-            cols[c].text(f'{vid_order+1}. {video_name}')
+def json_load(json_path: str):
+    data = None
+    with open(json_path, 'r') as f:
+        data = json.load(f)
+    return data
 
-        # video_name = f'{test_track_map[list_vids[3*i]]}.mp4'
-        # video_path = osp.join(video_dir, video_name)
-        # video_file = open(video_path, 'rb')
-        # video_bytes = video_file.read()
-        # cols[0].video(video_bytes)
-        # cols[0].text(f'{3*i+1}. {video_name}')
+def main(config, args):
+    st.set_page_config(layout="wide")
+    st.title(config.TITLE)
 
-        # video_name = f'{test_track_map[list_vids[3*i+1]]}.mp4'
-        # video_path = osp.join(video_dir, video_name)
-        # video_file = open(video_path, 'rb')
-        # video_bytes = video_file.read()
-        # cols[1].video(video_bytes)
-        # cols[1].text(f'{3*i+2}. {video_name}')
+    list_versions = sorted(list(config.version_map.keys()))
 
-        # video_name = f'{test_track_map[list_vids[3*i+2]]}.mp4'
-        # video_path = osp.join(video_dir, video_name)
-        # video_file = open(video_path, 'rb')
-        # video_bytes = video_file.read()
-        # cols[2].video(video_bytes)
-        # cols[2].text(f'{3*i+3}. {video_name}')
+    # Choose result version
+    st.sidebar.subheader("Choose version")
+    version = st.sidebar.radio(label="", options=list_versions)
+    result_dict = json_load(config.version_map[version])
 
-        # i += 1
-        pass
+    # Choose top k to retrieve
+    top_to_show = st.sidebar.slider(
+        'Show top-? results', 3, 30, config.TOP_TO_SHOW)
+
+    # Choose query id
+    list_qids = list(result_dict.keys())
+    display = [] 
+    for qid in list_qids:
+        display.append(f'{qid}')
+
+    choose_qid = st.selectbox(f"Choose query", options=display)
+    list_caps = json_load(config.query_json)[choose_qid]
+    list_vid_ids = result_dict[choose_qid]
+
+    # Write out query captions
+    st.markdown("### Query captions")
+    for cap in list_caps:
+        st.write(cap)
+
+    ROWS = top_to_show // config.COLUMNS 
+
+    # Show retrieved video results
+    st.markdown("### Video results")
+    if st.button('Search'):
+        for r in range(ROWS):
+            cols = st.beta_columns(config.COLUMNS)
+            for c in range(config.COLUMNS):
+                vid_order = 3*r + c
+                video_name = f'{list_vid_ids[vid_order]}.mp4'
+                video_path = osp.join(config.video_dir, video_name)
+                video_file = open(video_path, 'rb')
+                video_bytes = video_file.read()
+                cols[c].video(video_bytes)
+                cols[c].text(f'{vid_order+1}. {video_name}')
+
+if __name__ == '__main__':
+    args = parser.parse_args()
+    config = StreamlitConfig(
+        query_json = args.query_json, 
+        result_dir = args.result_folder, 
+        video_dir = args.video_dir
+    )
