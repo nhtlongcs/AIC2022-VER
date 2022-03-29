@@ -28,24 +28,6 @@ def train(config):
         for mcfg in config["callbacks"]
     ]
 
-    # checkpoint_callback = ModelCheckpoint(
-    #     dirpath=cp_path,
-    #     filename=str(config["model"]["name"])
-    #     + "{epoch}-{train_loss:.3f}-{val/Accurracy:.2f}",
-    #     monitor="val/Accuracy",
-    #     verbose=config["global"]["verbose"],
-    #     save_top_k=3,
-    #     mode="max",
-    # )
-
-    # early_stop_callback = EarlyStopping(
-    #     monitor="val/Accurracy",
-    #     min_delta=0.0001,
-    #     patience=15,
-    #     verbose=False,
-    #     mode="max",
-    # )
-
     Wlogger = WandbLogger(
         project="aic",
         name=train_id,
@@ -53,6 +35,9 @@ def train(config):
         log_model="all",
         entity=config['global']['username']
     )
+    
+    # Save config to wandb
+    Wlogger.experiment.config.update(config)
 
     trainer = pl.Trainer(
         default_root_dir=cp_path,

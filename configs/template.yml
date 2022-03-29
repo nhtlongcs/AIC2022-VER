@@ -55,12 +55,16 @@ model:
     mo_idloss: True
     share_idloss: True
 metric:
-  - name: Accuracy
-    args:
-      topk: [1, 5]
-      dimension: 768 # as same as embed dim
+- name: TopKRecall
+  args: 
+    top_k: [5, 10, 25]
+- name: MeanReciprocalRank
+  args:
+metric_configs:
+  dimension: 768
+  max_k: 30
 trainer:
-  lr: 0.000001
+  lr: 0.001
   num_epochs: 10000
   clip_grad: 10.0
   evaluate_interval: 1
@@ -69,13 +73,14 @@ trainer:
 callbacks:
 - name: ModelCheckpoint
   args:
-    filename: UTS-{epoch}-{train_loss:.3f}-{val/Accurracy:.2f}
-    monitor: val/Accuracy
+    filename: "UTS-{epoch}-{mrr:.4f}"
+    monitor: "val/mrr"
     verbose: True
     save_top_k: 3
     mode: max
 - name: EarlyStopping
-    monitor: val/Accurracy
+  args:
+    monitor: "val/mrr"
     min_delta: 0.0001
     patience: 15
     verbose: False
