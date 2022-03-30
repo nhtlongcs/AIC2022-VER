@@ -31,8 +31,8 @@ class VisualizerCallback(Callback):
     def on_validation_epoch_start(self, trainer, pl_module):
         # Save mapping for visualization
         os.makedirs('temps', exist_ok=True)
-        with open('temps/track_id_mapping.json', 'w') as f:
-            json.dump(pl_module.val_dataset.list_of_uuids, f)
+        with open(self.mapping_json, 'w') as f:
+            json.dump(pl_module.val_dataset.classnames, f)
 
     def on_validation_epoch_end(self, trainer, pl_module):
 
