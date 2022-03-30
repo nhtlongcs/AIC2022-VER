@@ -20,6 +20,8 @@ data:
     train:
       mo_cache: False
       json_path: "data/meta/train.json"
+      flip_aug: false
+      txt_classnames: configs/track_uuids.txt
       loader:
         batch_size: 8
         num_workers: 4
@@ -28,6 +30,8 @@ data:
     val:
       mo_cache: False
       json_path: "data/meta/val.json"
+      flip_aug: false
+      txt_classnames: configs/track_uuids.txt
       loader:
         batch_size: 8
         num_workers: 4
