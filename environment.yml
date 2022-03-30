@@ -57,7 +57,10 @@ dependencies:
 
   # Examples
   - torchvision
-  - pip #
+  - pip
+  # CI/CD
+  - pytest
+
   - pip:
       ## classifier
       - efficientnet_pytorch
