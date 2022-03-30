@@ -120,15 +120,9 @@ class AICBase(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer = torch.optim.AdamW(self.parameters(), lr=self.cfg.trainer["lr"])
-        lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer=optimizer, step_size=5)
+        lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer=optimizer, step_size=50)
 
         return {
             "optimizer": optimizer,
             "lr_scheduler": lr_scheduler,
         }
-
-
-    # def visualize_prediction(self, outputs):
-    #     columns = ["caption", "image", "sound"]
-    #     data = [["cheese", wandb.Image(img_1), wandb.Audio(snd_1)], ["wine", wandb.Image(img_2), wandb.Audio(snd_2)]]
-    #     self.log_table(key="prediction", columns=columns, data=data)

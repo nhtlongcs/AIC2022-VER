@@ -49,7 +49,6 @@ model:
   name: UTS
   args:
     NUM_CLASS: 2498 # total tracks
-    # EMBED_DIM: 1024
     EMBED_DIM: 768
     car_idloss: True
     mo_idloss: True

@@ -3,14 +3,12 @@ from opt import Opts
 
 import pytorch_lightning as pl
 
-from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.trainer import seed_everything
 
 from src.models import MODEL_REGISTRY
 from src.callbacks import CALLBACKS_REGISTRY
 from src.utils.path import prepare_checkpoint_path
-from src.callbacks.visualizer_callbacks import VisualizerCallback
 
 def train(config):
     model = MODEL_REGISTRY.get(config["model"]["name"])(config)
