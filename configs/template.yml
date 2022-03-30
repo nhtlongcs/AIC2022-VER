@@ -21,20 +21,20 @@ data:
       mo_cache: False
       json_path: "data/meta/train.json"
       flip_aug: false
-      txt_classnames: configs/track_uuids.txt
+      txt_classnames: configs/train_track_uuids.txt
       loader:
-        batch_size: 8
-        num_workers: 4
+        batch_size: 64
+        num_workers: 2
         shuffle: True
         drop_last: True
     val:
       mo_cache: False
       json_path: "data/meta/val.json"
       flip_aug: false
-      txt_classnames: configs/track_uuids.txt
+      txt_classnames: configs/val_track_uuids.txt
       loader:
-        batch_size: 8
-        num_workers: 4
+        batch_size: 64
+        num_workers: 2
         shuffle: False
         drop_last: False
 extractors:
@@ -94,3 +94,6 @@ callbacks:
     gt_json_path: "data/meta/val.json",
     query_results_json: "temps/query_results.json",
     mapping_json: "temps/track_id_mapping.json"
+- name: LearningRateMonitor
+  args:
+    logging_interval: step
