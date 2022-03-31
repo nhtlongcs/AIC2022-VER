@@ -42,6 +42,7 @@ def train(config):
         max_epochs=config.trainer["num_epochs"],
         gpus=-1 if torch.cuda.device_count() else None,  # Use all gpus available
         check_val_every_n_epoch=config.trainer["evaluate_interval"],
+        log_every_n_steps=config.trainer['print_interval'],
         enable_checkpointing=True,
         accelerator="ddp" if torch.cuda.device_count() > 1 else None,
         sync_batchnorm=True if torch.cuda.device_count() > 1 else False,
