@@ -24,23 +24,9 @@ channels:
   - conda-forge
 
 dependencies:
-  - pytorch
-  - pytorch-lightning>=1.5.0
-  - cudatoolkit
-  - python
-  - allennlp<2.9
-  - allennlp-models
+  - cudatoolkit=10.2
+  - pytorch=1.10
 
-  ## Retrieval Core
-  - transformers
-  - spacy
-  # stuffs
-  - opencv
-  - requests
-  - tabulate
-  - tqdm
-  - pillow
-  - tabulate
   - pytest
   ## Plot
   - matplotlib
@@ -60,8 +46,3 @@ dependencies:
   - pip
   # CI/CD
   - pytest
-
-  - pip:
-      ## classifier
-      - efficientnet_pytorch
-      # - detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cpu/torch1.10/index.html
