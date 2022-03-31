@@ -5,8 +5,14 @@ import random
 RATIO = 0.2
 SHUFFLE = True
 random.seed(1812)
+import sys
+from pathlib import Path
 
-with open("data/AIC22_Track2_NL_Retrieval/train_tracks.json") as f:
+path = Path(sys.argv[1])
+path_dir = str(path.parent)
+assert path.exists(), "json file not found"
+
+with open(path) as f:
     tracks_train = json.load(f)
 
 keys = list(tracks_train.keys())
@@ -21,6 +27,6 @@ for key in keys[:val_len]:
 for key in keys[val_len:]:
     train_data[key] = tracks_train[key]
 
-with open("data/meta/train.json", "w") as f, open("data/meta/val.json", "w") as g:
+with open(f"{path_dir}/train.json", "w") as f, open(f"{path_dir}/val.json", "w") as g:
     json.dump(train_data, f, indent=4)
     json.dump(val_data, g, indent=4)

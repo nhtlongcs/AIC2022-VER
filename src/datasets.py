@@ -46,8 +46,8 @@ class CityFlowNLDataset(Dataset):
 
         with open(json_path) as f:
             tracks = json.load(f)
-        self.list_of_uuids = list(tracks.keys())
-        self.list_of_tracks = list(tracks.values())
+        self.list_of_uuids = sorted(list(tracks.keys()))
+        self.list_of_tracks = [tracks[i] for i in self.list_of_uuids]
         self.transform = transform
         self.bk_dic = {}
         self.bk_cache = mo_cache
