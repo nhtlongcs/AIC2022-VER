@@ -29,8 +29,6 @@ class CityFlowNLDataset(Dataset):
         transform=None,
         Random=True,
         mo_cache=False,
-        flip_aug=False,
-        txt_classnames=None,
         **kwargs
     ):
         """
@@ -40,10 +38,6 @@ class CityFlowNLDataset(Dataset):
         self.data_cfg = data_cfg
         self.crop_area = data_cfg["CROP_AREA"]
         self.random = Random
-        self.txt_classnames = txt_classnames
-        if txt_classnames is not None:
-            self._load_classnames()
-
         with open(json_path) as f:
             tracks = json.load(f)
         self.list_of_uuids = sorted(list(tracks.keys()))
@@ -53,38 +47,25 @@ class CityFlowNLDataset(Dataset):
         self.bk_cache = mo_cache
         self.tokenizer = AutoTokenizer.from_pretrained(tok_model_name)
 
-        self.all_indexs = [self.classes_idx[i] for i in self.list_of_uuids]
+        self.all_indexs = list(range(len(self.list_of_uuids)))
         self.flip_tag = [False] * len(self.list_of_uuids)
+        flip_aug = False
         if flip_aug:
-            for uuid, description in zip(self.list_of_uuids, self.list_of_tracks):
-                texts = description["nl"]
-                for j in range(len(texts)):
-                    nl = texts[j]
+            for i in range(len(self.list_of_uuids)):
+                text = self.list_of_tracks[i]["nl"]
+                for j in range(len(text)):
+                    nl = text[j]
                     if "turn" in nl:
                         if "left" in nl:
-                            self.all_indexs.append(self.classes_idx[uuid])
+                            self.all_indexs.append(i)
                             self.flip_tag.append(True)
                             break
                         elif "right" in nl:
-                            self.all_indexs.append(self.classes_idx[uuid])
+                            self.all_indexs.append(i)
                             self.flip_tag.append(True)
                             break
         print(len(self.all_indexs))
         print("data load")
-    
-    def _load_classnames(self):
-        """
-        Read data from csv and load into memory
-        """
-       
-        with open(self.txt_classnames, 'r') as f:
-            self.classnames = f.read().splitlines()
-        
-        self.classes_idx = {}
-        # Mapping between classnames and indices
-        for idx, classname in enumerate(self.classnames):
-            self.classes_idx[classname] = idx
-        self.num_classes = len(self.classnames)
 
     def __len__(self):
         return len(self.all_indexs)
