@@ -26,15 +26,19 @@ channels:
 dependencies:
   - cudatoolkit=10.2
   - pytorch=1.10
-  - opencv
+
+  - requests
+  - tqdm
   - pytest
   ## Plot
   - matplotlib
+  - tabulate
   ## Logging
   - wandb
   ## Metric
   - faiss
-
+  - opencv
+  - pillow
   ## SRL - text
   - pandas
   - nltk
