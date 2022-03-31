@@ -1,7 +1,7 @@
 global:
   name: "template"
   save_dir: ./runs
-  use_fp16: true
+  use_fp16: false
   debug: false
   verbose: true
   SEED: 1337
