@@ -71,7 +71,7 @@ class CityFlowNLDataset(Dataset):
         if self.use_other_views:
             all_texts += track['nl_other_views']
         random.shuffle(all_texts)
-        texts = np.random.choice(all_texts, size=self.num_texts_used, replace=False)
+        texts = np.random.choice(all_texts, size=min(len(all_texts), self.num_texts_used), replace=False)
         text = '. '.join(texts)
 
         is_flip = False
