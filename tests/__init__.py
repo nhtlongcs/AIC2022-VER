@@ -1,8 +1,6 @@
 import os
 
 from pytorch_lightning import seed_everything
-from .helper import create_fake_data
-
 TEST_ROOT = os.path.realpath(os.path.dirname(__file__))
 PACKAGE_ROOT = os.path.dirname(TEST_ROOT)
 DATASETS_PATH = os.path.join(PACKAGE_ROOT, "data_sample")
