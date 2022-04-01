@@ -1,8 +1,8 @@
 import os
 import nltk
 
-nltk.download("punkt")
-nltk.download("wordnet")
+# nltk.download("punkt")
+# nltk.download("wordnet")
 
 from pytorch_lightning import seed_everything
 
