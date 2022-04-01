@@ -25,16 +25,11 @@ This module handles the following tasks:
             |- ...
 ```
 
-```
-
 ## Run extraction
 
 ```
-
 python color_prep.py
 python veh_prep.py
 python action_prep.py
-
-```
 
 ```
