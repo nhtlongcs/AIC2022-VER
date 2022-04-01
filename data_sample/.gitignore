@@ -3,3 +3,4 @@
 !train_tracks.json
 !test_tracks.json
 !test_queries.json
+*.csv
