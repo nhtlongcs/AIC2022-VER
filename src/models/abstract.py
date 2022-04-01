@@ -103,32 +103,30 @@ class AICBase(pl.LightningModule):
         return {**out, "log": out}
 
     def train_dataloader(self):
-        train_dataloader = DataLoader(
+        train_loader  = DataLoader(
             **self.cfg["data"]["args"]["train"]["loader"],
             dataset=self.train_dataset,
             collate_fn=self.train_dataset.collate_fn,
         )
-        return train_dataloader
+
+        self.num_train_steps = int(len(train_loader))
+        return train_loader 
 
     def val_dataloader(self):
-        val_dataloader = DataLoader(
+        val_loader = DataLoader(
             **self.cfg["data"]["args"]["val"]["loader"],
             dataset=self.val_dataset,
             collate_fn=self.val_dataset.collate_fn,
         )
-        return val_dataloader
+        self.num_val_steps = int(len(val_loader))
+        return val_loader
 
     def configure_optimizers(self):
-        optimizer = torch.optim.AdamW(self.parameters(), lr=self.cfg.trainer["lr"])
-        lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer=optimizer, step_size=5)
+        optimizer = torch.optim.AdamW(self.parameters(), self.cfg.trainer['lr'])
+        
+        scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr=self.cfg.trainer['lr'], 
+                        steps_per_epoch=self.num_train_steps,
+                        epochs=self.cfg.trainer['num_epochs'],
+                        anneal_strategy='linear')
 
-        return {
-            "optimizer": optimizer,
-            "lr_scheduler": lr_scheduler,
-        }
-
-
-    # def visualize_prediction(self, outputs):
-    #     columns = ["caption", "image", "sound"]
-    #     data = [["cheese", wandb.Image(img_1), wandb.Audio(snd_1)], ["wine", wandb.Image(img_2), wandb.Audio(snd_2)]]
-    #     self.log_table(key="prediction", columns=columns, data=data)
+        return {"optimizer": optimizer, "lr_scheduler": {"scheduler": scheduler, "interval": "step"}}
