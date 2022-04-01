@@ -12,6 +12,8 @@ def json_save(data, save_path, verbose=True):
 
 # change path
 data_path = sys.argv[1]
+save_path = sys.argv[2]
+
 train_tracks = json.load(open(osp.join(data_path, "train_tracks.json")))
 test_tracks = json.load(open(osp.join(data_path, "test_tracks.json")))
 test_queries = json.load(open(osp.join(data_path, "test_queries.json")))
@@ -24,7 +26,7 @@ for key in train_tracks:
 train_tracks_json = ans
 
 json_save(
-    data=train_tracks_json, save_path=osp.join(data_path, "train_tracks_order.json"),
+    data=train_tracks_json, save_path=osp.join(save_path, "train_tracks_order.json"),
 )
 
 
@@ -35,7 +37,7 @@ for key in test_tracks:
     count += 1
 test_tracks_json = ans
 json_save(
-    data=test_tracks_json, save_path=osp.join(data_path, "test_tracks_order.json")
+    data=test_tracks_json, save_path=osp.join(save_path, "test_tracks_order.json")
 )
 
 count = 0
@@ -45,5 +47,5 @@ for key in test_queries:
     count += 1
 test_queries_json = ans
 json_save(
-    data=test_queries_json, save_path=osp.join(data_path, "test_queries_order.json"),
+    data=test_queries_json, save_path=osp.join(save_path, "test_queries_order.json"),
 )

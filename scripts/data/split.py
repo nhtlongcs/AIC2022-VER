@@ -9,7 +9,8 @@ import sys
 from pathlib import Path
 
 path = Path(sys.argv[1])
-path_dir = str(path.parent)
+out_dir = path.parent / 'split'
+out_dir.mkdir(exist_ok=True)
 assert path.exists(), "json file not found"
 
 with open(path) as f:
@@ -26,7 +27,9 @@ for key in keys[:val_len]:
     val_data[key] = tracks_train[key]
 for key in keys[val_len:]:
     train_data[key] = tracks_train[key]
+out_train_path = os.path.join(out_dir, "train.json")
+out_val_path = os.path.join(out_dir,"val.json")
 
-with open(f"{path_dir}/train.json", "w") as f, open(f"{path_dir}/val.json", "w") as g:
+with open(out_train_path, "w") as f, open(out_val_path, "w") as g:
     json.dump(train_data, f, indent=4)
     json.dump(val_data, g, indent=4)
