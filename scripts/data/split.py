@@ -21,7 +21,7 @@ random.shuffle(keys)
 
 train_data = dict()
 val_data = dict()
-val_len = int(len(keys) * RATIO)
+val_len = max(int(len(keys) * RATIO), 1)
 
 for key in keys[:val_len]:
     val_data[key] = tracks_train[key]
