@@ -7,7 +7,6 @@ import subprocess
 
 
 def run(cmd: str):
-
     process = subprocess.Popen(
         cmd.split(), stderr=subprocess.PIPE, stdout=subprocess.PIPE
     )
@@ -23,10 +22,14 @@ def gen_motion_map(DATAPATH):
 
 
 def gen_nlpaug(DATAPATH):
+    command = "python -m spacy download en_core_web_sm"
+    status, output = run(command)
+    assert status == 0, f"{output}\nRun test augment nlp failed, please check"
+
     command = f"python scripts/data/nlpaug_uts.py {DATAPATH}/train_tracks.json"
     status, output = run(command)
-
     assert status == 0, f"{output}\nRun test augment nlp failed, please check"
+
     command = f"python scripts/data/nlpaug_uts.py {DATAPATH}/test_queries.json"
     status, output = run(command)
 
