@@ -20,6 +20,7 @@ python scripts/data/split.py $DATAPATH/train_tracks.json && echo OK || echo Run 
 python scripts/srl/extraction.py $DATAPATH $DATAPATH && echo OK || echo Run FAILED please check
 
 SRL_PATH=$DATAPATH/srl
+mkdir $SRL_PATH
 mkdir $SRL_PATH/action
 mkdir $SRL_PATH/color
 mkdir $SRL_PATH/veh
