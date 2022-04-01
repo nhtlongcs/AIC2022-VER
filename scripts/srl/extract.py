@@ -2,27 +2,23 @@ import os, json, cv2, sys
 import os.path as osp
 import pandas as pd
 from tqdm import tqdm
-import numpy as np
 
-from srl_handler.library.text.query import Query
-from srl_handler.utils.constant import (
-    TRAIN_SRL_JSON,
-    TEST_SRL_JSON,
-    TRAIN_TRACK_JSON,
-    TEST_TRACK_JSON,
-    VEHICLE_VOCAB,
-    VEHICLE_GROUP_JSON,
-    COLOR_VOCAB,
-    COLOR_GROUP_JSON,
-    ACTION_VOCAB_JSON,
-    ACTION_GROUP_JSON,
-)
-from srl_handler.utils.common import refine_list_colors, refine_list_subjects
-from data_manager import test_query_map, train_track_map
+from external.extraction.heuristic.query import Query
+TRAIN_SRL_JSON = 'data/meta/hcmus/srl_train_tracks.json'
+TEST_SRL_JSON = 'data/meta/hcmus/srl_test_queries.json'
 
+TRAIN_TRACK_MAP_JSON = "data/AIC22_Track2_NL_Retrieval/train_tracks_order.json"
+TEST_TRACK_MAP_JSON = None
+TEST_QUERY_MAP_JSON = "data/AIC22_Track2_NL_Retrieval/test_queries_order.json"
+
+SAVE_DIR = "./"
+
+from external.extraction.utils.mapping import get_map_dict
+from external.extraction.utils.common import refine_list_colors, refine_list_subjects
+
+train_track_map, _, test_query_map= get_map_dict(TRAIN_TRACK_MAP_JSON,TEST_TRACK_MAP_JSON, TEST_QUERY_MAP_JSON)
 srl_json = {"train": TRAIN_SRL_JSON, "test": TEST_SRL_JSON}
 key_map = {"train": train_track_map, "test": test_query_map}
-SAVE_DIR = "/home/ntphat/projects/AI_City_2021/srl_handler/results"
 
 
 def parse(mode: str, mode_save_dir: str):
@@ -82,12 +78,12 @@ def parse(mode: str, mode_save_dir: str):
         # if is_svo:
         #     print(res_dict)
         #     break
+
         with open(json_save_path, "w") as f:
             json.dump(res_dict, f, indent=2)
 
     print(f"{mode} has {len(stat_dict['svo_query'])} svo tracks")
     df_mode = pd.DataFrame(list_res)
-    # df_mode.to_csv(osp.join(mode_save_dir, f'{mode}_srl.csv'), index=False)
 
     print(f"{mode} EDA:")
     for k in stat_dict:
@@ -106,7 +102,6 @@ def main():
         with open(osp.join(SAVE_DIR, f"{mode}_stat.json"), "w") as f:
             json.dump(stat_dict, f, indent=2)
 
-    pass
 
 
 if __name__ == "__main__":
