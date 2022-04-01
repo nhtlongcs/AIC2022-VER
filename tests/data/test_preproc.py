@@ -33,7 +33,7 @@ def extract_srl_prep(DATAPATH):
     assert os.system(command) == 0, "Run test extract srl failed, please check"
     command = f'python scripts/srl/veh_prep.py {DATAPATH} {SRL_PATH} {DATAPATH}/extracted_frames {SRL_PATH}/veh'
     assert os.system(command) == 0, "Run test extract srl failed, please check"
-
+@pytest.mark.first
 def test_preproc(tmp_path):
     DATAPATH = osp.join(DATASETS_PATH,'meta')
     gen_motion_map(DATAPATH)
