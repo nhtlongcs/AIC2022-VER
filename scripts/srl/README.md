@@ -10,6 +10,9 @@ This module handles the following tasks:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c094f38dbfe02f04d81e6adebdfc1fac140d4966
 ```bash
 |- this-repo
     |- data
@@ -27,6 +30,7 @@ This module handles the following tasks:
             |- ...
 ```
 
+<<<<<<< HEAD
 ```
 =======
 - `data`: defined attribute vocabulary and group used for the system.
@@ -43,11 +47,17 @@ This module handles the following tasks:
 <<<<<<< HEAD
 <<<<<<< HEAD
 
+=======
+## Run extraction
+
+```
+>>>>>>> c094f38dbfe02f04d81e6adebdfc1fac140d4966
 python color_prep.py
 python veh_prep.py
 python action_prep.py
 
 ```
+<<<<<<< HEAD
 
 =======
 python color_prep.py
@@ -60,3 +70,5 @@ python veh_prep.py
 python action_prep.py
 >>>>>>> fcf7e10 (update almost cleaned SRL scripts)
 ```
+=======
+>>>>>>> c094f38dbfe02f04d81e6adebdfc1fac140d4966
