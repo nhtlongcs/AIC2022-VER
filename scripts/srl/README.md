@@ -8,13 +8,33 @@ This module handles the following tasks:
 
 ## Module organization
 
-- `data`: defined attribute vocabulary and group used for the system.
-- `results`: cropped images for each target objects and their labels. Our results are stored at [gdrive](https://drive.google.com/drive/folders/14Aho7AblVm6dHQzkTFTXGRpHFYuMmjNi?usp=sharing)
+```bash
+|- this-repo
+    |- data
+    |- external
+        |- extraction
+            |- heuristic
+            |- localize (not working yet)
+            |- textual
+    |- scripts
+        |- srl
+            |- veh-prep.py
+            |- color-prep.py
+            |- action-prep.py
+            |- README.md
+            |- ...
+```
+
+```
 
 ## Run extraction
 
 ```
+
 python color_prep.py
 python veh_prep.py
 python action_prep.py
+
+```
+
 ```
