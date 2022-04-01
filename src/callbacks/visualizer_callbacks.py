@@ -32,7 +32,7 @@ class VisualizerCallback(Callback):
         # Save mapping for visualization
         os.makedirs('temps', exist_ok=True)
         with open(self.mapping_json, 'w') as f:
-            json.dump(pl_module.val_dataset.classnames, f)
+            json.dump(pl_module.val_dataset.list_of_uuids, f)
 
     def on_validation_epoch_end(self, trainer, pl_module):
 
@@ -54,16 +54,17 @@ class VisualizerCallback(Callback):
             query_id = mapping[index]
             pred_ids = [mapping[i] for i in results[str(index)]['pred_ids']]
             target_ids = [mapping[i] for i in results[str(index)]['target_ids']]
+            colors = [[0,1,0] if id in target_ids else [1,0,0] for id in pred_ids]
             scores = results[str(index)]['scores']
             
             # Predictions
             pred_batch = []
             pred_images = [show_motion(i, self.motion_path) for i in pred_ids]
-            for idx, (img_show, prob) in enumerate(zip(pred_images, scores)):
+            for idx, (img_show, prob, color) in enumerate(zip(pred_images, scores, colors)):
                 self.visualizer.set_image(img_show)
                 self.visualizer.draw_label(
                     f"C: {prob:.4f}", 
-                    fontColor=[1,0,0], 
+                    fontColor=color, 
                     fontScale=0.5,
                     thickness=1,
                     outline=None,
