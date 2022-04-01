@@ -123,12 +123,12 @@ class CityFlowNLDataset(Dataset):
             bk = self.transform(bk)
 
             if self.flip_aug and is_flip:
-                crop = torch.flip(crop, [1])
-                bk = torch.flip(bk, [1])
+                crop = torch.flip(crop, [2])
+                bk = torch.flip(bk, [2])
 
             return crop, text, bk, torch.tensor(tmp_index)
         if self.flip_aug and is_flip:
-            crop = torch.flip(crop, [1])
+            crop = torch.flip(crop, [2])
         return crop, text, torch.tensor(tmp_index)
 
     def collate_fn(self, batch):
