@@ -6,7 +6,7 @@
       "./validation/S02/c006/img1/000003.jpg",
       "./validation/S02/c006/img1/000004.jpg",
       "./validation/S02/c006/img1/000005.jpg",
-      "./validation/S02/c006/img1/000006.jpg"
+      "./validation/S02/c006/img1/000006.jpg",
     ],
     "boxes": [
       [539, 606, 273, 277],
