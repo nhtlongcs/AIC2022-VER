@@ -19,18 +19,24 @@ data:
     MOTION_PATH: "data/meta/motion_map"
     train:
       mo_cache: False
+      flip_aug: false
+      num_texts_used: 1
+      use_other_views: false
       json_path: "data/meta/train.json"
       loader:
-        batch_size: 8
-        num_workers: 4
+        batch_size: 32
+        num_workers: 2
         shuffle: True
         drop_last: True
     val:
       mo_cache: False
+      flip_aug: false
+      num_texts_used: 1
+      use_other_views: false
       json_path: "data/meta/val.json"
       loader:
-        batch_size: 8
-        num_workers: 4
+        batch_size: 32
+        num_workers: 2
         shuffle: False
         drop_last: False
 extractors:
@@ -49,7 +55,6 @@ model:
   name: UTS
   args:
     NUM_CLASS: 2498 # total tracks
-    # EMBED_DIM: 1024
     EMBED_DIM: 768
     car_idloss: True
     mo_idloss: True
