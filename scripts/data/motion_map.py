@@ -6,16 +6,22 @@ import sys
 import cv2
 import numpy as np
 from tqdm import tqdm
+import os.path as osp
 
 n_worker = multiprocessing.cpu_count() // 2
 meta_data_path = sys.argv[1]
-root = Path(f"{meta_data_path}meta/extracted_frames/")
-save_bk_dir = Path(f"{meta_data_path}meta/bk_map")
-save_mo_dir = Path(f"{meta_data_path}meta/motion_map")
+root = Path(meta_data_path) / 'extracted_frames'
+save_bk_dir = Path(meta_data_path) / 'bk_map'
+save_mo_dir = Path(meta_data_path) / 'motion_map'
 
-with open(f"{meta_data_path}test_tracks.json") as f:
+test_track_path = osp.join(meta_data_path,"test_tracks.json")
+train_track_path = osp.join(meta_data_path,"train_tracks.json")
+
+assert test_track_path and train_track_path, "Paths to test and train tracks are not provided"
+
+with open(test_track_path) as f:
     tracks_test = json.load(f)
-with open(f"{meta_data_path}train_tracks.json") as f:
+with open(train_track_path) as f:
     tracks_train = json.load(f)
 
 all_tracks = tracks_train

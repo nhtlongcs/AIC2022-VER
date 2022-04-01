@@ -125,7 +125,7 @@ class AICBase(pl.LightningModule):
         train_bs = self.cfg["data"]["args"]["train"]["loader"]['batch_size']
 
         scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr=self.cfg.trainer['lr'], 
-                        steps_per_epoch=int(train_set_len//train_bs),
+                        steps_per_epoch=max(1, int(train_set_len//train_bs)),
                         epochs=self.cfg.trainer['num_epochs'],
                         anneal_strategy='linear')
 
