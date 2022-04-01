@@ -9,12 +9,12 @@ global:
 data:
   name: CityFlowNLDataset
   args:
-    CITYFLOW_PATH: "data/meta/extracted_frames"
+    CITYFLOW_PATH: "data_sample/meta/extracted_frames"
     SIZE: 288
     CROP_AREA: 1.0 ## new_= CROP_AREA * old_w
-    TEST_TRACKS_JSON_PATH: "data/meta/test-tracks.json"
+    TEST_TRACKS_JSON_PATH: "data_sample/meta/test_tracks.json"
     USE_MOTION: True
-    MOTION_PATH: "data/meta/motion_map"
+    MOTION_PATH: "data_sample/meta/motion_map"
     train:
       mo_cache: False
       flip_aug: false
@@ -22,7 +22,7 @@ data:
       use_other_views: false
       json_path: "data/meta/train.json"
       loader:
-        batch_size: 8
+        batch_size: 2
         num_workers: 0
         shuffle: True
         drop_last: True
@@ -33,7 +33,7 @@ data:
       use_other_views: false
       json_path: "data/meta/val.json"
       loader:
-        batch_size: 8
+        batch_size: 2
         num_workers: 0
         shuffle: False
         drop_last: False

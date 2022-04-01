@@ -23,6 +23,7 @@ data:
       num_texts_used: 1
       use_other_views: false
       json_path: "data/meta/train.json"
+      flip_aug: false
       loader:
         batch_size: 32
         num_workers: 2
@@ -34,6 +35,7 @@ data:
       num_texts_used: 1
       use_other_views: false
       json_path: "data/meta/val.json"
+      flip_aug: false
       loader:
         batch_size: 32
         num_workers: 2
@@ -78,7 +80,7 @@ trainer:
 callbacks:
 - name: ModelCheckpoint
   args:
-    filename: "UTS-{epoch}-{mrr:.4f}"
+    filename: "UTS-{epoch}-{mrr/val:.4f}"
     monitor: "val/mrr"
     verbose: True
     save_top_k: 3
@@ -90,3 +92,12 @@ callbacks:
     patience: 15
     verbose: False
     mode: max
+- name: VisualizerCallback
+  args:
+    motion_path: "data/meta/motion_map",
+    gt_json_path: "data/meta/val.json",
+    query_results_json: "temps/query_results.json",
+    mapping_json: "temps/track_id_mapping.json"
+- name: LearningRateMonitor
+  args:
+    logging_interval: step

@@ -27,7 +27,7 @@ def test_dataset(tmp_path, dataset_name):
         transform=image_transform,
     )
     dataloader = DataLoader(
-        ds, collate_fn=ds.collate_fn, batch_size=8, shuffle=False, num_workers=0
+        ds, collate_fn=ds.collate_fn, batch_size=cfg.data['args']['train']['loader']['batch_size'], shuffle=False, num_workers=0
     )
     for i, batch in enumerate(dataloader):
         print(batch["images"].shape)
