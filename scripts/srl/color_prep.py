@@ -13,7 +13,7 @@ pd.set_option("display.max_columns", None)
 IS_TEST = True
 BOX_FIELD = "boxes"
 TYPE = "col"
-EXTRCTED_FRMS_DIR = "./meta/extracted_frames"
+EXTRCTED_FRMS_DIR = None
 PRINT_CSV = True
 
 NUM_CLS, VEH_MAP = None, None
@@ -201,13 +201,13 @@ def prepare_color_metadata(track_path, srl_path, save_dir, parse_func=None, mode
 def main():
     global EXTRCTED_FRMS_DIR 
     track_dir = sys.argv[1]
-    meta_data_dir = sys.argv[2]
-    out_dir =  sys.argv[3]
-    EXTRCTED_FRMS_DIR = sys.argv[4]
+    srl_data_dir = sys.argv[2]
+    EXTRCTED_FRMS_DIR = sys.argv[3]
+    out_dir =  sys.argv[4]
     print("RUN TRAIN")
-    prepare_color_metadata(osp.join(track_dir,'train_tracks.json'),osp.join(meta_data_dir,'srl_train_tracks.json'),osp.join(out_dir,'train'),mode="train",parse_func=parse_to_csv)
+    prepare_color_metadata(osp.join(track_dir,'train_tracks.json'),osp.join(srl_data_dir,'srl_train_tracks.json'),osp.join(out_dir,'train'),mode="train",parse_func=parse_to_csv)
     print("RUN TEST")
-    prepare_color_metadata(osp.join(track_dir,'test_queries.json'),osp.join(meta_data_dir,'srl_test_queries.json'),osp.join(out_dir,'test'),mode="test",parse_func=parse_to_csv_test)
+    prepare_color_metadata(osp.join(track_dir,'test_queries.json'),osp.join(srl_data_dir,'srl_test_queries.json'),osp.join(out_dir,'test'),mode="test",parse_func=parse_to_csv_test)
 if __name__ == "__main__":
     NUM_CLS, VEH_MAP = init()
     main()

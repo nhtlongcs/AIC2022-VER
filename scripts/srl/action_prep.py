@@ -105,10 +105,10 @@ def prepare_action_metadata(srl_path, save_dir, use_fraction=True):
         parse_to_csv(data_srl, mode, use_fraction=type, is_csv=PRINT_CSV, save_dir=save_dir)
 
 def main():
-    meta_data_dir = sys.argv[1]
+    srl_dir = sys.argv[1]
     out_dir = sys.argv[2]
-    prepare_action_metadata(osp.join(meta_data_dir , "srl_train_tracks.json"), out_dir,use_fraction=[True,False])
-    prepare_action_metadata(osp.join(meta_data_dir , "srl_test_queries.json"), out_dir,use_fraction=[True,False])
+    prepare_action_metadata(osp.join(srl_dir , "srl_train_tracks.json"), out_dir,use_fraction=[True,False])
+    prepare_action_metadata(osp.join(srl_dir , "srl_test_queries.json"), out_dir,use_fraction=[True,False])
 
 
 if __name__ == "__main__":

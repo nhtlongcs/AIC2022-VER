@@ -4,14 +4,17 @@ import pandas as pd
 from tqdm import tqdm
 
 from external.extraction.heuristic.query import Query
-TRAIN_SRL_JSON = 'data/meta/hcmus/srl_train_tracks.json'
-TEST_SRL_JSON = 'data/meta/hcmus/srl_test_queries.json'
+SRL_DIR = sys.argv[1]
+ORDER_DIR = sys.argv[2]
+SAVE_DIR = sys.argv[3]
 
-TRAIN_TRACK_MAP_JSON = "data/AIC22_Track2_NL_Retrieval/train_tracks_order.json"
+TRAIN_SRL_JSON = osp.join(SRL_DIR,'srl_train_tracks.json')
+TEST_SRL_JSON = osp.join(SRL_DIR,'srl_test_queries.json')
+
+TRAIN_TRACK_MAP_JSON = osp.join(ORDER_DIR,"train_tracks_order.json")
+TEST_QUERY_MAP_JSON = osp.join(ORDER_DIR,"test_queries_order.json")
 TEST_TRACK_MAP_JSON = None
-TEST_QUERY_MAP_JSON = "data/AIC22_Track2_NL_Retrieval/test_queries_order.json"
 
-SAVE_DIR = "./"
 
 from external.extraction.utils.mapping import get_map_dict
 from external.extraction.utils.common import refine_list_colors, refine_list_subjects

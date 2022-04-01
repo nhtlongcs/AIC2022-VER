@@ -12,8 +12,7 @@ pd.set_option("display.max_columns", None)
 
 TYPE = "veh"
 BOX_FIELD = "boxes"
-SAVE_DIR = "./results"
-EXTRCTED_FRMS_DIR = "./data/extracted_frames"
+EXTRCTED_FRMS_DIR = None
 NUM_CLS, VEH_MAP = None, None
 
 def init():
@@ -88,11 +87,11 @@ def parse_to_csv(data_srl, data_track, mode="train", fraction=True,save_dir = '.
         "height": [],
         "labels": [],
         "vehicles": [],
-        "vehicle_code": [],
+        # "vehicle_code": [],
         "paths": [],
     }
     box_id = 0
-    train_vis_dir = osp.join(SAVE_DIR, "veh_imgs")
+    train_vis_dir = osp.join(save_dir, "veh_imgs")
     os.makedirs(train_vis_dir, exist_ok=True)
 
     fail_query_ids = []
@@ -120,9 +119,9 @@ def parse_to_csv(data_srl, data_track, mode="train", fraction=True,save_dir = '.
             df_dict["paths"].append(res["paths"][i])
 
     df_final = pd.DataFrame.from_dict(df_dict)
-    csv_save_path = osp.join(SAVE_DIR, f"{mode}.csv")
+    csv_save_path = osp.join(save_dir, f"{mode}.csv")
     if fraction is True:
-        csv_save_path = osp.join(SAVE_DIR, f"{mode}_fraction.csv")
+        csv_save_path = osp.join(save_dir, f"{mode}_fraction.csv")
 
     df_final.to_csv(csv_save_path, index=False)
     print(f"Extract dataframe to {csv_save_path}")
@@ -157,9 +156,9 @@ def parse_to_csv_test(data_srl, data_track, mode="test", fraction=True,save_dir 
         df_dict["vehicles"].append(query.subjects)
 
     df_final = pd.DataFrame.from_dict(df_dict)
-    csv_save_path = osp.join(SAVE_DIR, f"{TYPE}_{mode}.csv")
+    csv_save_path = osp.join(save_dir, f"{TYPE}_{mode}.csv")
     if fraction is True:
-        csv_save_path = osp.join(SAVE_DIR, f"{TYPE}_{mode}_fraction.csv")
+        csv_save_path = osp.join(save_dir, f"{TYPE}_{mode}_fraction.csv")
 
     df_final.to_csv(csv_save_path, index=False)
     print(f"Extract dataframe to {csv_save_path}")
@@ -172,8 +171,9 @@ def main():
     global EXTRCTED_FRMS_DIR 
     track_dir = sys.argv[1]
     meta_data_dir = sys.argv[2]
-    out_dir =  sys.argv[3]
-    EXTRCTED_FRMS_DIR = sys.argv[4]
+    EXTRCTED_FRMS_DIR = sys.argv[3]
+    out_dir =  sys.argv[4]
+
 
     TRAIN_SRL_JSON = osp.join(meta_data_dir, "srl_train_tracks.json")
     TEST_SRL_JSON = osp.join(meta_data_dir, "srl_test_queries.json")

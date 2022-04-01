@@ -6,7 +6,7 @@ import sys
 
 
 def extract_textual_metadata(json_path, out_dir):
-    assert Path(json_path).exists(), "json file not found"
+    assert Path(json_path).exists(), "json file not found, ensure the path {} is correct".format(json_path)
     srl_test = SRL(path=json_path)
     filename = "srl_" + Path(json_path).name
     out_path = Path(out_dir)
@@ -19,10 +19,10 @@ def extract_textual_metadata(json_path, out_dir):
 
 
 def main():
-    meta_data_dir = Path(sys.argv[1])
-    out_dir = Path(sys.argv[2])
-    extract_textual_metadata(meta_data_dir / "train_tracks.json", out_dir)
-    extract_textual_metadata(meta_data_dir / "test_queries.json", out_dir)
+    data_dir = Path(sys.argv[1])
+    meta_data_dir = Path(sys.argv[2]) / "srl"
+    extract_textual_metadata(data_dir / "train_tracks.json", meta_data_dir)
+    extract_textual_metadata(data_dir / "test_queries.json", meta_data_dir)
 
 
 if __name__ == "__main__":
