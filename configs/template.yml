@@ -20,17 +20,21 @@ data:
     train:
       mo_cache: False
       json_path: "data/meta/train.json"
+      flip_aug: false
+      txt_classnames: configs/train_track_uuids.txt
       loader:
-        batch_size: 8
-        num_workers: 4
+        batch_size: 64
+        num_workers: 2
         shuffle: True
         drop_last: True
     val:
       mo_cache: False
       json_path: "data/meta/val.json"
+      flip_aug: false
+      txt_classnames: configs/val_track_uuids.txt
       loader:
-        batch_size: 8
-        num_workers: 4
+        batch_size: 64
+        num_workers: 2
         shuffle: False
         drop_last: False
 extractors:
@@ -49,7 +53,6 @@ model:
   name: UTS
   args:
     NUM_CLASS: 2498 # total tracks
-    # EMBED_DIM: 1024
     EMBED_DIM: 768
     car_idloss: True
     mo_idloss: True
@@ -73,7 +76,7 @@ trainer:
 callbacks:
 - name: ModelCheckpoint
   args:
-    filename: "UTS-{epoch}-{mrr:.4f}"
+    filename: "UTS-{epoch}-{mrr/val:.4f}"
     monitor: "val/mrr"
     verbose: True
     save_top_k: 3
@@ -85,3 +88,12 @@ callbacks:
     patience: 15
     verbose: False
     mode: max
+- name: VisualizerCallback
+  args:
+    motion_path: "data/meta/motion_map",
+    gt_json_path: "data/meta/val.json",
+    query_results_json: "temps/query_results.json",
+    mapping_json: "temps/track_id_mapping.json"
+- name: LearningRateMonitor
+  args:
+    logging_interval: step
