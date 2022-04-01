@@ -66,7 +66,25 @@ To attach to the container:
 $ docker attach aic-t2
 ```
 
-## Contribution guide
+## Contribution
+
+### Development environment
+
+If you want to contribute to this repo, please use the environment setup as below.
+
+Pre-installation
+
+Install conda according to the instructions on the homepage
+Before installing the repo, we need to install the CUDA driver version >=10.2.
+
+```
+$ conda env create -f environment.yml
+$ conda activate hcmus
+$ pip install -r requirements.txt
+$ pip install -e .
+```
+
+### Contribution guide
 
 If you want to contribute to this repo, please follow steps below:
 
