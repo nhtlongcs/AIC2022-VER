@@ -63,6 +63,8 @@ class RetrievalMetric:
         self.gallery_embeddings = []
         self.query_embeddings = []
         self.all_ids = []
+        for metric in self.metrics:
+            metric.reset()
 
     def value(self):
         metric_dict = self.compute()
