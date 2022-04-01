@@ -108,8 +108,6 @@ class AICBase(pl.LightningModule):
             dataset=self.train_dataset,
             collate_fn=self.train_dataset.collate_fn,
         )
-
-        self.num_train_steps = int(len(train_loader))
         return train_loader 
 
     def val_dataloader(self):
@@ -118,14 +116,16 @@ class AICBase(pl.LightningModule):
             dataset=self.val_dataset,
             collate_fn=self.val_dataset.collate_fn,
         )
-        self.num_val_steps = int(len(val_loader))
         return val_loader
 
     def configure_optimizers(self):
         optimizer = torch.optim.AdamW(self.parameters(), self.cfg.trainer['lr'])
         
+        train_set_len = len(self.train_dataset)
+        train_bs = self.cfg["data"]["args"]["train"]["loader"]['batch_size']
+
         scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr=self.cfg.trainer['lr'], 
-                        steps_per_epoch=self.num_train_steps,
+                        steps_per_epoch=int(train_set_len//train_bs),
                         epochs=self.cfg.trainer['num_epochs'],
                         anneal_strategy='linear')
 
