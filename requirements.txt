@@ -3,5 +3,5 @@ pytorch_lightning==1.6.0
 transformers==4.11.3
 allennlp==2.9.2
 allennlp-models==2.9.0
-spacy
 efficientnet_pytorch
+spacy
