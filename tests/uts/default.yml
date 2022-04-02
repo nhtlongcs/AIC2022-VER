@@ -20,7 +20,7 @@ data:
       flip_aug: false
       num_texts_used: 1
       use_other_views: false
-      json_path: "data/meta/train.json"
+      json_path: "data_sample/meta/split/train.json"
       loader:
         batch_size: 2
         num_workers: 0
@@ -31,7 +31,7 @@ data:
       flip_aug: false
       num_texts_used: 1
       use_other_views: false
-      json_path: "data/meta/val.json"
+      json_path: "data_sample/meta/split/val.json"
       loader:
         batch_size: 2
         num_workers: 0
