@@ -187,3 +187,18 @@ class UTS(AICBase):
         for cls_logit in cls_logits:
             loss += 0.5 * F.cross_entropy(cls_logit, batch["car_ids"].long())
         return loss
+
+    def predict_step(self, batch, batch_idx):
+        
+        step_results = {'ids': batch['ids']}
+
+        if "tokens" in batch.keys():
+            lang_embeds = self.encode_nlang_feats(batch)
+            step_results.update({'lang_embeds': lang_embeds})
+        elif "images" in batch.keys() and "motions" in batch.keys():     
+            visual_embeds, motion_embeds = self.encode_visual_feats(batch)
+            step_results.update({'visual_embeds': visual_embeds}) 
+        else:
+            raise NotImplementedError
+        return step_results
+    
