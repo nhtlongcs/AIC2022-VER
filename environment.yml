@@ -50,4 +50,3 @@ dependencies:
   - pip
   # CI/CD
   - pytest
-  - pytest-ordering
