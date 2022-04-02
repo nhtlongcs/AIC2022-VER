@@ -7,7 +7,7 @@ import pytest
 
 @pytest.mark.parametrize("model_name", ["UTS"])
 def test_model(tmp_path, model_name):
-    cfg_path = "tests/uts/default.yml"
+    cfg_path = "tests/configs/default.yml"
     assert Path(cfg_path).exists(), "config file not found"
     cfg = Opts(cfg=cfg_path).parse_args([])
 

@@ -157,6 +157,7 @@ if __name__ == "__main__":
     model.load_from_checkpoint(resume_ckpt, config=cfg)
 
     infer = Predictor(cfg=cfg, model=model, mode="complex", batch_size=1, savedir="./",)
-    # infer = Predictor(cfg=cfg, model=model, mode="simple", batch_size=1, savedir="./",)
-    # infer = Predictor(cfg=cfg, model=model, mode="simple", batch_size=2, savedir="./",)
+    infer = Predictor(cfg=cfg, model=model, mode="complex", batch_size=2, savedir="./",)
+    infer = Predictor(cfg=cfg, model=model, mode="simple", batch_size=1, savedir="./",)
+    infer = Predictor(cfg=cfg, model=model, mode="simple", batch_size=2, savedir="./",)
     infer.predict()

@@ -15,10 +15,7 @@ import pytest
 def train(model_name, cfg_path, resume_ckpt=None):
     cfg = Opts(cfg=cfg_path).parse_args([])
     model = MODEL_REGISTRY.get(model_name)(cfg)
-    checkpoint_callback = ModelCheckpoint(
-        verbose=True,
-        save_last=True,
-    )
+    checkpoint_callback = ModelCheckpoint(verbose=True, save_last=True,)
     trainer = pl.Trainer(
         default_root_dir="./runs",
         log_every_n_steps=1,
@@ -42,7 +39,7 @@ def train(model_name, cfg_path, resume_ckpt=None):
 
 @pytest.mark.parametrize("model_name", ["UTS"])
 def test_trainer(tmp_path, model_name):
-    cfg_path = "tests/uts/default.yml"
+    cfg_path = "tests/configs/default.yml"
     assert Path(cfg_path).exists(), "config file not found"
     print(cfg_path)
     train(model_name, cfg_path)
@@ -51,3 +48,7 @@ def test_trainer(tmp_path, model_name):
         cfg_path,
         resume_ckpt="./runs/lightning_logs/version_0/checkpoints/last.ckpt",
     )
+
+
+test_trainer("", "UTS")
+
