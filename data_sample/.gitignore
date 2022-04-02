@@ -1,0 +1,8 @@
+meta/*
+!AIC22_Track2_NL_Retrieval
+!meta/extracted_frames
+!train_tracks.json
+!test_tracks.json
+!test_queries.json
+*.csv
+*.jpg

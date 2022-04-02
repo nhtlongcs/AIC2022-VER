@@ -13,33 +13,16 @@ Training notebook: [colab](https://colab.research.google.com/drive/1o5g9fUndIFmH
 
 ## Prepare data
 
-```
-$ ./tools/extract_vdo2frms_AIC.sh  ./data/ ./data
-$ python scripts/motion_map.py /content/AIC2022-VER/data/meta/
-```
-
-Generate augment data for training (Optional)
+Ensure your data folder structure as same as our `data_sample`
 
 ```
-$ python -m spacy download en_core_web_sm
-$ python scripts/data/nlpaug_uts.py ./data/meta/train_tracks.json
-$ python scripts/data/nlpaug_uts.py ./data/meta/test_tracks.json
+$ ./tools/extract_vdo2frms_AIC.sh  ./data/AIC22_Track2_NL_Retrieval/ ./data/meta/extracted_frames/
+$ ./tools/preproc.sh ./data/meta
 ```
 
-Split data, train and test data into train and test data (Optional)
-By running the following commands, you can split the data into train and test data in same folder.
+For testing purpose, you can use the command `./tools/preproc.sh ./data_sample/meta`
 
-```
-$ python scripts/data/split.py ./data/meta/train_tracks.json
-```
-
-## Prepare data (HCMUS-team)
-
-Extract train and test's queries into separated parts following the English PropBank Semantic Role Labeling rules.
-
-```
-$ python scripts/srl/extraction.py data/AIC22_Track2_NL_Retrieval/ data/meta
-```
+Reading detail document of preprocessing part can be found in the [srl part](external/extraction/README.md) and [basic part](scripts/data/README.md) (adapted from hcmus team and alibaba team source code).
 
 ## Deployment
 
