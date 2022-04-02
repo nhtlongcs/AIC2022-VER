@@ -107,6 +107,5 @@ def inference(savedir='./', top_k=10):
     del query_embeddings
     del gallery_embeddings
 
-
 if __name__ == "__main__":
     inference()
