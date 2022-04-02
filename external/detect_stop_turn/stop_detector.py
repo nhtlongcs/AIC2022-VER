@@ -1,6 +1,6 @@
 import numpy as np
 
-from utils import (
+from external.detect_stop_turn.utils import (
     xyxy_to_xywh, cal_distance
 )
 

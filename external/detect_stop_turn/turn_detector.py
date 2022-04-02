@@ -1,4 +1,4 @@
-from utils import (
+from external.detect_stop_turn.utils import (
     Point, NONE_COSINE,
     euclid_distance, algebra_area, xyxy_to_xywh, cal_distance, sqr_distance,
     calculate_velocity_vector, cosine_similarity, calculate_change_angle_speed,
