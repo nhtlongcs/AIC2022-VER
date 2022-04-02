@@ -1,6 +1,5 @@
 import json
 import os.path as osp
-from typing import Optional
 
 import numpy as np
 import torch
@@ -145,19 +144,3 @@ class Predictor(object):
                 results[id] = feat_batch.tolist()
         return results
 
-
-if __name__ == "__main__":
-    from src.models import MODEL_REGISTRY
-
-    resume_ckpt = "./runs/lightning_logs/version_0/checkpoints/last.ckpt"
-    cfg_path = "test.yml"
-
-    cfg = Opts(cfg=cfg_path).parse_args()
-    model = MODEL_REGISTRY.get(cfg.model["name"])(cfg)
-    model.load_from_checkpoint(resume_ckpt, config=cfg)
-
-    infer = Predictor(cfg=cfg, model=model, mode="complex", batch_size=1, savedir="./",)
-    infer = Predictor(cfg=cfg, model=model, mode="complex", batch_size=2, savedir="./",)
-    infer = Predictor(cfg=cfg, model=model, mode="simple", batch_size=1, savedir="./",)
-    infer = Predictor(cfg=cfg, model=model, mode="simple", batch_size=2, savedir="./",)
-    infer.predict()
