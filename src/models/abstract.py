@@ -1,13 +1,16 @@
+import abc
+from typing import Any
+
 import pytorch_lightning as pl
 import torch
+import torchvision
 from src.datasets import DATASET_REGISTRY
 from src.metrics import METRIC_REGISTRY
-from . import MODEL_REGISTRY
-import torchvision
-from typing import Any
+from src.metrics.metric_wrapper import RetrievalMetric
 from src.utils.device import detach
 from torch.utils.data import DataLoader
-from src.metrics.metric_wrapper import RetrievalMetric
+
+from . import MODEL_REGISTRY
 
 
 @MODEL_REGISTRY.register()
@@ -18,6 +21,7 @@ class AICBase(pl.LightningModule):
         self.cfg = config
         self.init_model()
 
+    @abc.abstractmethod
     def init_model(self):
         raise NotImplementedError
 
@@ -60,9 +64,15 @@ class AICBase(pl.LightningModule):
                 **self.cfg["metric_configs"],
             )
 
+    @abc.abstractmethod
     def forward(self, batch):
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def compute_loss(self, visual_embeddings, nlang_embeddings, batch):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def query_embedding_head(self, batch, inference: bool):
         r"""
         Same as :meth:`self.forward()`, use for inference step.
@@ -75,6 +85,7 @@ class AICBase(pl.LightningModule):
         """
         raise NotImplementedError
 
+    @abc.abstractmethod
     def track_embedding_head(self, batch, inference: bool):
         r"""
         Same as :meth:`self.forward()`, use for inference step.
@@ -96,9 +107,6 @@ class AICBase(pl.LightningModule):
         self.log("train/loss", detach(loss))
 
         return {"loss": loss, "log": {"train_loss": detach(loss)}}
-
-    def compute_loss(self, visual_embeddings, nlang_embeddings, batch):
-        raise NotImplementedError
 
     def validation_step(self, batch, batch_idx):
         # 1. Get embeddings from model

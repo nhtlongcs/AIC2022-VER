@@ -181,7 +181,7 @@ class UTS(AICBase):
             [lang_embeds, lang_car_embeds, lang_mo_embeds]
         )
         if inference:
-            return lang_merge_embeds
+            return {"ids": batch["ids"], "features": lang_merge_embeds}
         return lang_embeds, lang_merge_embeds, lang_car_embeds, lang_mo_embeds
 
     def track_embedding_head(self, batch, inference=False):
@@ -202,7 +202,7 @@ class UTS(AICBase):
         )
 
         if inference:
-            return visual_merge_embeds
+            return {"ids": batch["ids"], "features": visual_merge_embeds}
 
         return (
             visual_embeds,
@@ -214,15 +214,16 @@ class UTS(AICBase):
 
     def predict_step(self, batch, batch_idx):
 
-        step_results = {"ids": batch["ids"]}
+        assert not (
+            "tokens" in batch.keys() and "images" in batch.keys()
+        ), "tokens and images are not allowed in batch at same time"
 
         if "tokens" in batch.keys():
-            lang_embeds = self.lang_embedding_head(batch, inference=True)
-            step_results.update({"lang_embeds": lang_embeds})
+            lang_embeds = self.query_embedding_head(batch, inference=True)
+            return lang_embeds
         elif "images" in batch.keys() and "motions" in batch.keys():
             visual_embeds = self.track_embedding_head(batch, inference=True)
-            step_results.update({"visual_embeds": visual_embeds})
+            return visual_embeds
         else:
             raise NotImplementedError
-        return step_results
 
