@@ -112,16 +112,20 @@ class UTS(AICBase):
     def forward(self, batch):
         # 1. Extract features from the batch
         # 1.1 Extract natural language features
-        lang_embeds = self.encode_nlang_feats(batch)
+        (
+            lang_embeds,
+            lang_merge_embeds,
+            lang_car_embeds,
+            lang_mo_embeds,
+        ) = self.query_embedding_head(batch)
         # 1.2 Extract visual features
-        visual_embeds, motion_embeds = self.encode_visual_feats(batch)
-
-        # 2. Mapping visual features to the same latent space
-        visual_car_embeds = self.vis_car_fc(visual_embeds)
-        visual_mo_embeds = self.vis_motion_fc(motion_embeds)
-        visual_merge_embeds = self.domian_vis_fc_merge(
-            torch.cat([visual_car_embeds, visual_mo_embeds], dim=-1)
-        )
+        (
+            visual_embeds,
+            motion_embeds,
+            visual_merge_embeds,
+            visual_car_embeds,
+            visual_mo_embeds,
+        ) = self.track_embedding_head(batch)
 
         cls_logits_results = []
         if self.cfg.model["args"]["car_idloss"]:
@@ -136,31 +140,12 @@ class UTS(AICBase):
             cls_logits_results.append(merge_cls_t)
             cls_logits_results.append(merge_cls_v)
 
-        lang_car_embeds = self.lang_car_fc(lang_embeds)
-        lang_mo_embeds = self.lang_motion_fc(lang_embeds)
-        (
-            visual_merge_embeds,
-            lang_merge_embeds,
-            visual_car_embeds,
-            lang_car_embeds,
-            visual_mo_embeds,
-            lang_mo_embeds,
-        ) = self.normalize_head(
-            [
-                visual_merge_embeds,
-                lang_embeds,
-                visual_car_embeds,
-                lang_car_embeds,
-                visual_mo_embeds,
-                lang_mo_embeds,
-            ]
-        )
-
         pairs = [
             (visual_car_embeds, lang_car_embeds),
             (visual_mo_embeds, lang_mo_embeds),
             (visual_merge_embeds, lang_merge_embeds),
         ]
+
         return {
             "pairs": pairs[2],
             "all_pairs": pairs,
@@ -188,17 +173,56 @@ class UTS(AICBase):
             loss += 0.5 * F.cross_entropy(cls_logit, batch["car_ids"].long())
         return loss
 
+    def query_embedding_head(self, batch, inference=False):
+        lang_embeds = self.encode_nlang_feats(batch)
+        lang_car_embeds = self.lang_car_fc(lang_embeds)
+        lang_mo_embeds = self.lang_motion_fc(lang_embeds)
+        (lang_merge_embeds, lang_car_embeds, lang_mo_embeds) = self.normalize_head(
+            [lang_embeds, lang_car_embeds, lang_mo_embeds]
+        )
+        if inference:
+            return lang_merge_embeds
+        return lang_embeds, lang_merge_embeds, lang_car_embeds, lang_mo_embeds
+
+    def track_embedding_head(self, batch, inference=False):
+        visual_embeds, motion_embeds = self.encode_visual_feats(batch)
+
+        visual_car_embeds = self.vis_car_fc(visual_embeds)
+        visual_mo_embeds = self.vis_motion_fc(motion_embeds)
+        visual_merge_embeds = self.domian_vis_fc_merge(
+            torch.cat([visual_car_embeds, visual_mo_embeds], dim=-1)
+        )
+
+        (
+            visual_merge_embeds,
+            visual_car_embeds,
+            visual_mo_embeds,
+        ) = self.normalize_head(
+            [visual_merge_embeds, visual_car_embeds, visual_mo_embeds]
+        )
+
+        if inference:
+            return visual_merge_embeds
+
+        return (
+            visual_embeds,
+            motion_embeds,
+            visual_merge_embeds,
+            visual_car_embeds,
+            visual_mo_embeds,
+        )
+
     def predict_step(self, batch, batch_idx):
-        
-        step_results = {'ids': batch['ids']}
+
+        step_results = {"ids": batch["ids"]}
 
         if "tokens" in batch.keys():
-            lang_embeds = self.encode_nlang_feats(batch)
-            step_results.update({'lang_embeds': lang_embeds})
-        elif "images" in batch.keys() and "motions" in batch.keys():     
-            visual_embeds, motion_embeds = self.encode_visual_feats(batch)
-            step_results.update({'visual_embeds': visual_embeds}) 
+            lang_embeds = self.lang_embedding_head(batch, inference=True)
+            step_results.update({"lang_embeds": lang_embeds})
+        elif "images" in batch.keys() and "motions" in batch.keys():
+            visual_embeds = self.track_embedding_head(batch, inference=True)
+            step_results.update({"visual_embeds": visual_embeds})
         else:
             raise NotImplementedError
         return step_results
-    
+
