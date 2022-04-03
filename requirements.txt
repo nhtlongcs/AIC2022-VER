@@ -5,4 +5,4 @@ allennlp==2.9.2
 allennlp-models==2.9.0
 efficientnet_pytorch
 spacy
-pytest-ordering
+pytest-order
