@@ -15,6 +15,8 @@ def move_to(obj: Any, device: torch.device):
     """
     if torch.is_tensor(obj):
         return obj.to(device)
+    elif isinstance(obj, str):
+        return obj
     elif isinstance(obj, dict):
         res = {k: move_to(v, device) for k, v in obj.items()}
         return res
@@ -23,7 +25,10 @@ def move_to(obj: Any, device: torch.device):
     elif isinstance(obj, tuple):
         return tuple(move_to(list(obj), device))
     else:
-        raise TypeError("Invalid type for move_to")
+        try:
+            return obj.to(device)
+        except:
+            raise TypeError(f"Invalid type for move_to {type(obj)}")
 
 
 def detach(obj: Any):

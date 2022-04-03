@@ -49,6 +49,16 @@ To attach to the container:
 $ docker attach aic-t2
 ```
 
+## Inference
+
+We provide a simple inference script for inference purpose.
+
+```bash
+$ ./tools/infer.sh ./data/meta/
+```
+
+For detail, please take a look at `Predictor` class in `src/predictor.py`
+
 ## Contribution
 
 ### Development environment
@@ -61,10 +71,12 @@ Install conda according to the instructions on the homepage
 Before installing the repo, we need to install the CUDA driver version >=10.2.
 
 ```
+
 $ conda env create -f environment.yml
 $ conda activate hcmus
 $ pip install -r requirements.txt
 $ pip install -e .
+
 ```
 
 ### Contribution guide
@@ -80,8 +92,10 @@ If you want to contribute to this repo, please follow steps below:
 1. Create a pull request on this repository
 
 ```
+
 pip install pytest
 python -m pytest tests/
+
 ```
 
 Expected result:

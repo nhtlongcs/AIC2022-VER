@@ -58,6 +58,7 @@ class FaissRetrieval:
             for idx, (top_k_scores, top_k_indexes) in enumerate(zip(top_k_scores_all, top_k_indexes_all)):
                 current_id = query_ids[idx] # current query id
                 pred_ids = [gallery_ids[i] for i in top_k_indexes] # retrieved ids from gallery
+
                 results_dict[current_id] = {
                     'pred_ids': pred_ids,
                     'scores': top_k_scores.tolist() 
@@ -70,7 +71,7 @@ class FaissRetrieval:
                     results_dict[current_id].update({
                         'target_ids': tids,
                     })
-
+                    
             save_json_results(results_dict, save_results)
 
         return top_k_scores_all, top_k_indexes_all

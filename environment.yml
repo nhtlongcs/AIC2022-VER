@@ -18,7 +18,7 @@
 name: hcmus
 
 channels:
-  - nvidia
+  # - nvidia
   - pytorch
   - huggingface
   - conda-forge
@@ -26,17 +26,17 @@ channels:
 dependencies:
   - cudatoolkit=10.2
   - pytorch=1.10
+  - faiss
+  - torchvision
 
   - requests
   - tqdm
-  - pytest
   ## Plot
   - matplotlib
   - tabulate
   ## Logging
   - wandb
   ## Metric
-  - faiss
   - opencv
   - pillow
   ## SRL - text
@@ -46,7 +46,7 @@ dependencies:
   - python-levenshtein
 
   # Examples
-  - torchvision
   - pip
   # CI/CD
   - pytest
+  - pytest-order

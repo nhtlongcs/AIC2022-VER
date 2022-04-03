@@ -71,7 +71,7 @@ def extract_srl_prep(DATAPATH):
     assert status == 0, f"{output}\nRun test extract srl failed, please check"
 
 
-@pytest.mark.first
+@pytest.mark.order("first")
 def test_preproc(tmp_path):
     DATAPATH = osp.join(DATASETS_PATH, "meta")
     gen_motion_map(DATAPATH)
