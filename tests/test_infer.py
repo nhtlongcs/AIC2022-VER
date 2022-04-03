@@ -1,4 +1,3 @@
-from cProfile import run
 import pytest
 
 
@@ -9,7 +8,7 @@ def run_predict(cfg, model, mode, bs, savedir):
     infer.predict()
 
 
-@pytest.mark.last
+@pytest.mark.order("last")
 @pytest.mark.parametrize("mode", ["simple", "complex"])
 @pytest.mark.parametrize("bs", [1, 2])
 def test_prediction(tmp_path, mode, bs):
