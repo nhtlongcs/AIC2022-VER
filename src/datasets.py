@@ -65,6 +65,7 @@ class CityFlowNLDataset(Dataset):
     def __getitem__(self, index):
 
         tmp_index = self.all_indexs[index]
+        track_id = self.list_of_uuids[tmp_index]
         track = self.list_of_tracks[tmp_index]
         frame_idx = int(random.uniform(0, len(track["frames"])))
         all_texts = track["nl"]
@@ -109,6 +110,9 @@ class CityFlowNLDataset(Dataset):
         crop = frame.crop(box)
         if self.transform is not None:
             crop = self.transform(crop)
+            if self.flip_aug and is_flip:
+                crop = torch.flip(crop, [2])   
+
         if self.data_cfg["USE_MOTION"]:
             if self.list_of_uuids[tmp_index] in self.bk_dic:
                 bk = self.bk_dic[self.list_of_uuids[tmp_index]]
@@ -121,29 +125,45 @@ class CityFlowNLDataset(Dataset):
                 self.bk_dic[self.list_of_uuids[tmp_index]] = bk
 
             bk = self.transform(bk)
-
             if self.flip_aug and is_flip:
-                crop = torch.flip(crop, [2])
                 bk = torch.flip(bk, [2])
 
-            return crop, text, bk, torch.tensor(tmp_index)
-        if self.flip_aug and is_flip:
-            crop = torch.flip(crop, [2])
-        return crop, text, torch.tensor(tmp_index)
+
+        if self.data_cfg["USE_MOTION"]:
+            return {
+                'track_id': track_id,
+                'crop': crop,
+                'text': text,
+                'instance_id': torch.tensor(tmp_index),
+                'motion': bk,
+            }
+        else:
+            return {
+                'track_id': track_id,
+                'crop': crop,
+                'text': text,
+                'instance_id': torch.tensor(tmp_index),
+            }
 
     def collate_fn(self, batch):
         if self.data_cfg["USE_MOTION"]:
             batch_dict = {
-                "images": torch.stack([x[0] for x in batch]),
-                "texts": [x[1] for x in batch],
-                "motions": torch.stack([x[2] for x in batch]),
-                "car_ids": torch.stack([x[3] for x in batch]),
+                 "images": torch.stack([x['crop'] for x in batch]),
+                "texts": [x['text'] for x in batch],
+                "motions": torch.stack([x['motion'] for x in batch]),
+                "car_ids": torch.stack([x['instance_id'] for x in batch]),
+                "query_ids": [x['track_id'] for x in batch],
+                "gallery_ids": [x['track_id'] for x in batch],
+                "target_ids": [x['track_id'] for x in batch],
             }
         else:
             batch_dict = {
-                "images": torch.stack([x[0] for x in batch]),
-                "texts": [x[1] for x in batch],
-                "car_ids": torch.stack([x[2] for x in batch]),
+                "images": torch.stack([x['crop'] for x in batch]),
+                "texts": [x['text'] for x in batch],
+                "car_ids": torch.stack([x['instance_id'] for x in batch]),
+                "query_ids": [x['track_id'] for x in batch],
+                "gallery_ids": [x['track_id'] for x in batch],
+                "target_ids": [x['track_id'] for x in batch],
             }
 
         batch_dict["tokens"] = self.tokenizer.batch_encode_plus(
