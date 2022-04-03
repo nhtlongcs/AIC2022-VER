@@ -50,5 +50,4 @@ def test_trainer(tmp_path, model_name):
     )
 
 
-test_trainer("", "UTS")
 
