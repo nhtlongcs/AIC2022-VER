@@ -1,8 +1,7 @@
-ROOT=$1
-DATADIR=$2
-TRAINDIR=$ROOT/AIC22_Track2_NL_Retrieval/train/
-VALIDDIR=$ROOT/AIC22_Track2_NL_Retrieval/validation/
-OUTDIR=$DATADIR/meta/extracted_frames/
+DATADIR=$1
+OUTDIR=$2
+TRAINDIR=$DATADIR/train/
+VALIDDIR=$DATADIR/validation/
 
 for d in $TRAINDIR/* ; do
     camera_name=$(basename $d)
