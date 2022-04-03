@@ -51,7 +51,7 @@ def train(config):
         fast_dev_run=config["global"]["debug"],
         logger=Wlogger,
         callbacks=callbacks,
-        num_sanity_val_steps=-1  # Sanity full validation required for visualization callbacks
+        num_sanity_val_steps=-1,  # Sanity full validation required for visualization callbacks
         deterministic=True,
         # auto_lr_find=True,
     )
