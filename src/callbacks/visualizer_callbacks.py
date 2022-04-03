@@ -47,8 +47,8 @@ class VisualizerCallback(Callback):
         columns = ['id', 'queries', 'prediction', 'groundtruth']
         for index in indexes:
             query_id = mapping[index]
-            pred_ids = [mapping[i] for i in results[query_id]['pred_ids']]
-            target_ids = [mapping[i] for i in results[query_id]['target_ids']]
+            pred_ids = [i for i in results[query_id]['pred_ids']]
+            target_ids = [i for i in results[query_id]['target_ids']]
             colors = [[0,1,0] if id in target_ids else [1,0,0] for id in pred_ids]
             scores = results[query_id]['scores']
             
