@@ -1,4 +1,5 @@
 import os
+import os.path as osp
 import urllib.request as urlreq
 
 def download_url(url, root, filename=None):
@@ -13,6 +14,9 @@ def download_url(url, root, filename=None):
     if not filename:
         filename = os.path.basename(url)
     fpath = os.path.join(root, filename)
+
+    if osp.isfile(fpath):
+        return fpath
 
     os.makedirs(root, exist_ok=True)
 
