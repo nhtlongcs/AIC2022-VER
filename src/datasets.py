@@ -325,16 +325,18 @@ class CityFlowNLClipDataset(Dataset):
         if self.data_cfg["USE_MOTION"]:
             return {
                 'track_id': track_id,
+                'text': text,
                 'crop': crop,
-                'text': [pairs_text, pairs_mask, pairs_segment],
+                'encoded_text': [pairs_text, pairs_mask, pairs_segment],
                 'instance_id': torch.tensor(index),
                 'motion': bk,
             }
         else:
             return {
                 'track_id': track_id,
+                'text': text,
                 'crop': crop,
-                'text': [pairs_text, pairs_mask, pairs_segment],
+                'encoded_text': [pairs_text, pairs_mask, pairs_segment],
                 'instance_id': torch.tensor(index),
             }
 
@@ -342,8 +344,9 @@ class CityFlowNLClipDataset(Dataset):
         batch_dict = {
             "images": torch.stack([x['crop'] for x in batch]),
             "tokens": {
-              "input_ids": torch.stack([x['text'][0] for x in batch]),
+              "input_ids": torch.stack([x['encoded_text'][0] for x in batch]),
             },
+            "texts": [x['text'] for x in batch],
             "car_ids": torch.stack([x['instance_id'] for x in batch]),
             "query_ids": [x['track_id'] for x in batch],
             "gallery_ids": [x['track_id'] for x in batch],
