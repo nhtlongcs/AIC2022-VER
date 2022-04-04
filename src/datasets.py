@@ -152,7 +152,7 @@ class CityFlowNLDataset(Dataset):
     def collate_fn(self, batch):
         if self.data_cfg["USE_MOTION"]:
             batch_dict = {
-                 "images": torch.stack([x['crop'] for x in batch]),
+                "images": torch.stack([x['crop'] for x in batch]),
                 "texts": [x['text'] for x in batch],
                 "motions": torch.stack([x['motion'] for x in batch]),
                 "car_ids": torch.stack([x['instance_id'] for x in batch]),
