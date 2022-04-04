@@ -5,7 +5,12 @@ from functools import lru_cache
 
 import ftfy
 import regex as re
+from src.utils.download import download_url
 
+
+PRETRAINED = {
+    'bpe': "https://github.com/CryhanFang/CLIP2Video/raw/main/modules/bpe_simple_vocab_16e6.txt.gz"
+}
 
 @lru_cache()
 def default_bpe():
@@ -60,7 +65,11 @@ def whitespace_clean(text):
 
 
 class ClipTokenizer(object):
-    def __init__(self, bpe_path: str = default_bpe()):
+    def __init__(self, tok_name: str = None):
+        if tok_name in PRETRAINED.keys():
+            bpe_path = download_url(PRETRAINED[tok_name], root='pretrained')
+        else:
+            raise ValueError()
         self.byte_encoder = bytes_to_unicode()
         self.byte_decoder = {v: k for k, v in self.byte_encoder.items()}
         merges = gzip.open(bpe_path).read().decode("utf-8").split('\n')

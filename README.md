@@ -13,11 +13,23 @@ Training notebook: [colab](https://colab.research.google.com/drive/1o5g9fUndIFmH
 
 ## Prepare data
 
+Create a symbolic link to the data directory in the data directory of the project.
+
+<!-- MAC OSX FAQ https://discussions.apple.com/thread/7423765 -->
+
+```bash
+$ cd /Users/your_short_username/path/to/where/you/want/to/put/the/symlink
+$ ln -s /Volumes/HDD_name/path/to/where/you/are/storing/the/moved/files    symbolic_link_name_you_want_to_use
+```
+
 Ensure your data folder structure as same as our `data_sample`
 
 ```
-$ ./tools/extract_vdo2frms_AIC.sh  ./data/AIC22_Track2_NL_Retrieval/ ./data/meta/extracted_frames/
+
+$ ./tools/extract_vdo2frms_AIC.sh ./data/AIC22_Track2_NL_Retrieval/ ./data/meta/extracted_frames/
+$ cp ./data/AIC22_Track2_NL_Retrieval/*.json ./data/meta/
 $ ./tools/preproc.sh ./data/meta
+
 ```
 
 For testing purpose, you can use the command `./tools/preproc.sh ./data_sample/meta`

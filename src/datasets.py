@@ -13,7 +13,6 @@ import numpy as np
 import os.path as osp
 from src.extractors.clip.tokenization_clip import ClipTokenizer
 
-
 os.environ[
     "TOKENIZERS_PARALLELISM"
 ] = "true"  # https://github.com/huggingface/transformers/issues/5486
@@ -153,7 +152,7 @@ class CityFlowNLDataset(Dataset):
     def collate_fn(self, batch):
         if self.data_cfg["USE_MOTION"]:
             batch_dict = {
-                 "images": torch.stack([x['crop'] for x in batch]),
+                "images": torch.stack([x['crop'] for x in batch]),
                 "texts": [x['text'] for x in batch],
                 "motions": torch.stack([x['motion'] for x in batch]),
                 "car_ids": torch.stack([x['instance_id'] for x in batch]),
@@ -190,7 +189,7 @@ class CityFlowNLClipDataset(Dataset):
         num_texts_used: int = 3, 
         use_other_views: bool = False,
         max_words: int = 30,
-        tokenizer_path: str = None,
+        tok_model_name='bpe',
         **kwargs
     ):
         """
@@ -211,7 +210,7 @@ class CityFlowNLClipDataset(Dataset):
         self.num_texts_used = num_texts_used
         self.use_other_views = use_other_views
 
-        self.tokenizer = ClipTokenizer(tokenizer_path)
+        self.tokenizer = ClipTokenizer(tok_model_name)
         
         print(len(self.list_of_uuids))
         print("data load")
@@ -326,39 +325,37 @@ class CityFlowNLClipDataset(Dataset):
         if self.data_cfg["USE_MOTION"]:
             return {
                 'track_id': track_id,
+                'text': text,
                 'crop': crop,
-                'text': [pairs_text, pairs_mask, pairs_segment],
+                'encoded_text': [pairs_text, pairs_mask, pairs_segment],
                 'instance_id': torch.tensor(index),
                 'motion': bk,
             }
         else:
             return {
                 'track_id': track_id,
+                'text': text,
                 'crop': crop,
-                'text': [pairs_text, pairs_mask, pairs_segment],
+                'encoded_text': [pairs_text, pairs_mask, pairs_segment],
                 'instance_id': torch.tensor(index),
             }
 
     def collate_fn(self, batch):
+        batch_dict = {
+            "images": torch.stack([x['crop'] for x in batch]),
+            "tokens": {
+              "input_ids": torch.stack([x['encoded_text'][0] for x in batch]),
+            },
+            "texts": [x['text'] for x in batch],
+            "car_ids": torch.stack([x['instance_id'] for x in batch]),
+            "query_ids": [x['track_id'] for x in batch],
+            "gallery_ids": [x['track_id'] for x in batch],
+            "target_ids": [x['track_id'] for x in batch],
+        }
         if self.data_cfg["USE_MOTION"]:
-            batch_dict = {
-                "images": torch.stack([x['crop'] for x in batch]),
-                "input_ids": torch.stack([x['text'][0] for x in batch]),
-                "motions": torch.stack([x['motion'] for x in batch]),
-                "car_ids": torch.stack([x['instance_id'] for x in batch]),
-                "query_ids": [x['track_id'] for x in batch],
-                "gallery_ids": [x['track_id'] for x in batch],
-                "target_ids": [x['track_id'] for x in batch],
-            }
-        else:
-            batch_dict = {
-                "images": torch.stack([x['crop'] for x in batch]),
-                "input_ids": torch.stack([x['text'][0] for x in batch]),
-                "car_ids": torch.stack([x['instance_id'] for x in batch]),
-                "query_ids": [x['track_id'] for x in batch],
-                "gallery_ids": [x['track_id'] for x in batch],
-                "target_ids": [x['track_id'] for x in batch],
-            }
+            batch_dict.update({
+              "motions": torch.stack([x['motion'] for x in batch])
+            })
 
         return batch_dict
 

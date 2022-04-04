@@ -29,8 +29,13 @@ class UTS(AICBase):
         )(**self.cfg.extractors["img_encoder"]["args"])
 
         self.img_in_dim = self.visualExtrct.feature_dim
+<<<<<<< HEAD
         self.img_in_dim_bk = self.visualExtrct.feature_dim
         self.text_in_dim = self.visualExtrct.feature_dim
+=======
+        self.img_in_dim_bk = self.visualExtrctBK.feature_dim
+        self.text_in_dim = self.nlangExtrct.feature_dim
+>>>>>>> a75c18e77fd67aa9dd337311f7e769aaf4e3d925
 
         # Define the latent adaptation for visual backbones
         self.domian_vis_fc = nn.Linear(self.img_in_dim, embed_dim)
