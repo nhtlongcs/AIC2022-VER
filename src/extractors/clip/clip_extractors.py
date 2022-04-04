@@ -13,11 +13,11 @@ from .. import EXTRCT_REGISTRY
 class ClipExtractorBase(nn.Module):
     def __init__(
         self, 
-        clip_path: str = 'ViT-B-32.pt',
+        model_name: str = 'ViT-B/32',
         **kwargs) -> None:
         super().__init__()
-    
-        clip_state_dict = CLIP.get_config(clip_path=clip_path)
+
+        clip_state_dict = CLIP.get_config(model_name=model_name)
         self.clip, clip_embed_dim = self.load_config(clip_state_dict)
         self.feature_dim = clip_embed_dim
         self.dtype = self.clip.dtype
@@ -53,8 +53,8 @@ class ClipExtractorBase(nn.Module):
 @EXTRCT_REGISTRY.register()
 class ClipVideoExtractor(ClipExtractorBase):
     
-    def __init__(self, clip_path: str = 'ViT-B-32.pt', **kwargs) -> None:
-        super().__init__(clip_path=clip_path)
+    def __init__(self, model_name: str = 'ViT-B/32', **kwargs) -> None:
+        super().__init__(model_name=model_name)
         self.model = self.clip.visual
         self.clip = None
 
@@ -99,8 +99,8 @@ class ClipVideoExtractor(ClipExtractorBase):
 @EXTRCT_REGISTRY.register()
 class ClipImageExtractor(ClipExtractorBase):
     
-    def __init__(self, clip_path: str = 'ViT-B-32.pt', **kwargs) -> None:
-        super().__init__(clip_path=clip_path)
+    def __init__(self, model_name: str = 'ViT-B/32', **kwargs) -> None:
+        super().__init__(model_name=model_name)
         self.model = self.clip.visual
         self.clip = None
         
@@ -117,8 +117,8 @@ class ClipImageExtractor(ClipExtractorBase):
 @EXTRCT_REGISTRY.register()
 class ClipTextExtractor(ClipExtractorBase):
     
-    def __init__(self, clip_path: str = 'ViT-B-32.pt', **kwargs) -> None:
-        super().__init__(clip_path=clip_path)
+    def __init__(self, model_name: str = 'ViT-B/32', **kwargs) -> None:
+        super().__init__(model_name=model_name)
         self.model = self.clip.visual
         self.token_embedding = self.clip.token_embedding
         self.positional_embedding = self.clip.positional_embedding

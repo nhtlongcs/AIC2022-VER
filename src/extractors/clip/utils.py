@@ -6,9 +6,11 @@
 
 from collections import OrderedDict
 import os
+from src.utils.download import download_url
 
 import torch
 from torch import nn
+
 
 # if the pretrained model doesn't exist, please download the model from the link of openai
 # in this project, we adopt ViT-B/32 for pre-training
@@ -228,10 +230,10 @@ class CLIP(nn.Module):
             nn.init.normal_(self.text_projection, std=self.transformer.width ** -0.5)
 
     @staticmethod
-    def get_config(clip_path='/data/ceph_11015/ssd/howiefang/videoCLIP/CLIP2Clip/ViT-B-32.pt'):
+    def get_config(model_name='ViT-B/32'):
 
-        if os.path.exists(clip_path):
-            pass
+        if model_name in _MODELS.keys():
+            clip_path = download_url(_MODELS[model_name], root='pretrained')
         else:
             raise RuntimeError(f"Model ViT-B/32 not found; available models = {available_models()}")
 
