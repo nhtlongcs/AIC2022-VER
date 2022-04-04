@@ -86,8 +86,8 @@ class UTS(AICBase):
             )
 
     def encode_nlang_feats(self, batch):
-        # assert "tokens" in batch.keys(), "Input dict must contain tokens"
-        lang_embeds = self.nlangExtrct(batch)
+        assert "tokens" in batch.keys(), "Input dict must contain tokens"
+        lang_embeds = self.nlangExtrct(batch['tokens'])
         lang_embeds = self.domian_lang_fc(lang_embeds)
         return lang_embeds
 
