@@ -29,10 +29,12 @@ class UTS(AICBase):
         )(**self.cfg.extractors["img_encoder"]["args"])
 
         self.img_in_dim = self.visualExtrct.feature_dim
+        self.img_in_dim_bk = self.visualExtrct.feature_dim
+        self.text_in_dim = self.visualExtrct.feature_dim
 
         # Define the latent adaptation for visual backbones
         self.domian_vis_fc = nn.Linear(self.img_in_dim, embed_dim)
-        self.domian_vis_fc_bk = nn.Linear(self.img_in_dim, embed_dim)
+        self.domian_vis_fc_bk = nn.Linear(self.img_in_dim_bk, embed_dim)
 
         # Something something
         self.domian_vis_fc_merge = nn.Sequential(
@@ -55,8 +57,8 @@ class UTS(AICBase):
         )
 
         self.domian_lang_fc = nn.Sequential(
-            nn.LayerNorm(embed_dim),
-            nn.Linear(embed_dim, embed_dim),
+            nn.LayerNorm(self.text_in_dim),
+            nn.Linear(self.text_in_dim, embed_dim),
             nn.ReLU(),
             nn.Linear(embed_dim, embed_dim),
         )
@@ -84,8 +86,8 @@ class UTS(AICBase):
             )
 
     def encode_nlang_feats(self, batch):
-        assert "tokens" in batch.keys(), "Input dict must contain tokens"
-        lang_embeds = self.nlangExtrct(batch["tokens"])
+        # assert "tokens" in batch.keys(), "Input dict must contain tokens"
+        lang_embeds = self.nlangExtrct(batch)
         lang_embeds = self.domian_lang_fc(lang_embeds)
         return lang_embeds
 
