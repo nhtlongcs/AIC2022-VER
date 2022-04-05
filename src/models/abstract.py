@@ -4,7 +4,7 @@ from typing import Any
 import pytorch_lightning as pl
 import torch
 import torchvision
-from src.datasets import DATASET_REGISTRY
+from src.dataset import DATASET_REGISTRY
 from src.metrics import METRIC_REGISTRY
 from src.metrics.metric_wrapper import RetrievalMetric
 from src.utils.device import detach
