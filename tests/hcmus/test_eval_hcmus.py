@@ -11,9 +11,9 @@ import torchvision
 from src.metrics.metric_wrapper import RetrievalMetric
 
 
-@pytest.mark.parametrize("model_name", ["UTS"])
+@pytest.mark.parametrize("model_name", ["HCMUS"])
 def test_evaluate(tmp_path, model_name):
-    cfg_path = "tests/configs/default.yml"
+    cfg_path = "tests/configs/hcmus.yml"
     assert Path(cfg_path).exists(), "config file not found"
     cfg = Opts(cfg=cfg_path).parse_args([])
 
