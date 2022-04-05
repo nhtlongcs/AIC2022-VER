@@ -61,7 +61,7 @@ def create_ohe_vector(list_vehicles, use_fraction=False):
     return y
 
 
-def get_list_boxes(data_track, query_id, labels, save_dir=None):
+def get_list_boxes(data_track, query_id, labels, save_dir=None, save_labels=True):
     list_boxes = data_track[query_id][BOX_FIELD]
     n = len(list_boxes)
     ids2use = [0, n // 3, 2 * n // 3, n - 1]
@@ -79,13 +79,13 @@ def get_list_boxes(data_track, query_id, labels, save_dir=None):
         if save_dir is not None:
             box_save_path = osp.join(save_dir, f"{query_id}_{i}.png")
             res["paths"].append(box_save_path)
-
-            box_label_save_dir = save_dir + "_label"
-            os.makedirs(box_label_save_dir, exist_ok=True)
-            box_label_save_path = osp.join(box_label_save_dir, f"{query_id}_{i}.txt")
-            if not osp.isfile(box_label_save_path):
-                with open(box_label_save_path, "w") as f:
-                    f.write(' '.join(labels))
+            if save_labels:
+                box_label_save_dir = save_dir + "_label"
+                os.makedirs(box_label_save_dir, exist_ok=True)
+                box_label_save_path = osp.join(box_label_save_dir, f"{query_id}_{i}.txt")
+                if not osp.isfile(box_label_save_path):
+                    with open(box_label_save_path, "w") as f:
+                        f.write(' '.join(labels))
             if not osp.isfile(box_save_path):
                 cv2.imwrite(box_save_path, cv_box)
 
@@ -143,6 +143,10 @@ def parse_to_csv(data_srl, data_track, mode="train", use_fraction=True, is_csv=T
 
     fail_query_ids = []
     box_id = 0
+
+    train_vis_dir = osp.join(save_dir, "veh_imgs")
+    os.makedirs(train_vis_dir, exist_ok=True)
+
     for query_id in tqdm(data_srl.keys()):
         query_content = data_srl[query_id]
         query = Query(query_content, query_id)
@@ -159,8 +163,7 @@ def parse_to_csv(data_srl, data_track, mode="train", use_fraction=True, is_csv=T
             print(f"after: {col_after}")
             fail_query_ids.append(query_id)
             continue
-        train_vis_dir = save_dir
-        res = get_list_boxes(data_track, query_id, query.colors, train_vis_dir)
+        res = get_list_boxes(data_track, query_id, query.colors, train_vis_dir, save_labels=False)
         for i in range(len(res["width"])):
             box_id += 1
             df_dict["query_id"].append(query_id)
@@ -205,9 +208,9 @@ def main():
     EXTRCTED_FRMS_DIR = sys.argv[3]
     out_dir =  sys.argv[4]
     print("RUN TRAIN")
-    prepare_color_metadata(osp.join(track_dir,'train_tracks.json'),osp.join(srl_data_dir,'srl_train_tracks.json'),osp.join(out_dir,'train'),mode="train",parse_func=parse_to_csv)
+    prepare_color_metadata(osp.join(track_dir,'train_tracks.json'),osp.join(srl_data_dir,'srl_train_tracks.json'),out_dir,mode="train",parse_func=parse_to_csv)
     print("RUN TEST")
-    prepare_color_metadata(osp.join(track_dir,'test_queries.json'),osp.join(srl_data_dir,'srl_test_queries.json'),osp.join(out_dir,'test'),mode="test",parse_func=parse_to_csv_test)
+    prepare_color_metadata(osp.join(track_dir,'test_queries.json'),osp.join(srl_data_dir,'srl_test_queries.json'),out_dir,mode="test",parse_func=parse_to_csv_test)
 if __name__ == "__main__":
     NUM_CLS, VEH_MAP = init()
     main()
