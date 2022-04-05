@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 
 from transformers import (
@@ -48,5 +49,6 @@ class LangExtractor(ExtractorNetwork):
             input_ids=input_ids, attention_mask=attention_mask
         )
         feature = transformer_out.last_hidden_state
+        feature = torch.mean(feature, dim=1)
 
         return feature
