@@ -6,13 +6,21 @@ from src.extractors import EXTRCT_REGISTRY
 from . import MODEL_REGISTRY
 from .abstract import AICBase
 from src.utils.losses import FocalLoss
+
+
 @MODEL_REGISTRY.register()
 class HCMUS(AICBase):
     def __init__(self, config):
         super().__init__(config)
-        assert 'task' in self.cfg.model.keys(), 'task must be specified'
-        self.task = self.cfg.model['task']
-        assert self.task in ['local_clf','retrival'], 'task must be specified in [local_clf,retrival], but got {}'.format(self.task)
+        assert "task" in self.cfg.model.keys(), "task must be specified"
+        self.task = self.cfg.model["task"]
+        assert self.task in [
+            "local_clf",
+            "retrival",
+        ], "task must be specified in [local_clf,retrival], but got {}".format(
+            self.task
+        )
+
     def init_model(self):
 
         self.logit_scale = nn.Parameter(torch.ones(()), requires_grad=True)  # ?
@@ -87,14 +95,14 @@ class HCMUS(AICBase):
                 nn.Linear(embed_dim, self.cfg.model["args"]["NUM_CLASS"]),
             )
 
-        if self.cfg.model['args']['color_loss']:
+        if self.cfg.model["args"]["color_loss"]:
             self.color_head = nn.Sequential(
                 nn.Linear(embed_dim, embed_dim),
                 nn.BatchNorm1d(embed_dim),
                 nn.ReLU(),
                 nn.Linear(embed_dim, NUM_COLORS),
             )
-        if self.cfg.model['args']['veh_type_loss']:
+        if self.cfg.model["args"]["veh_type_loss"]:
             self.vehtype_head = nn.Sequential(
                 nn.Linear(embed_dim, embed_dim),
                 nn.BatchNorm1d(embed_dim),
@@ -104,8 +112,7 @@ class HCMUS(AICBase):
 
     def encode_nlang_feats(self, batch):
         assert "tokens" in batch.keys(), "Input dict must contain tokens"
-        nlang_embeddings = self.nlangExtrct(batch["tokens"])
-        lang_embeds = torch.mean(nlang_embeddings, dim=1)
+        lang_embeds = self.nlangExtrct(batch["tokens"])
         lang_embeds = self.domian_lang_fc(lang_embeds)
         return lang_embeds
 
@@ -124,10 +131,11 @@ class HCMUS(AICBase):
         return visual_embeds, motion_embeds
 
     def normalize_head(
-        self, embeddings_ls,
+        self,
+        embeddings_ls,
     ):
         return map(lambda t: F.normalize(t, p=2, dim=-1), (embeddings_ls))
-        
+
     def forward(self, batch):
         # 1. Extract features from the batch
         # 1.1 Extract natural language features
@@ -158,9 +166,9 @@ class HCMUS(AICBase):
             merge_cls_v = self.id_cls3(visual_merge_embeds)
             instance_logits.append(merge_cls_t)
             instance_logits.append(merge_cls_v)
-        if self.cfg.model['args']['color_loss']:
+        if self.cfg.model["args"]["color_loss"]:
             color_logits = self.color_head(visual_embeds)
-        if self.cfg.model['args']['veh_type_loss']:
+        if self.cfg.model["args"]["veh_type_loss"]:
             vehtype_logits = self.vehtype_head(visual_embeds)
 
         pairs = [
@@ -178,10 +186,19 @@ class HCMUS(AICBase):
             "veh_type_logits": vehtype_logits,
         }
 
-    def compute_loss(self, all_pairs, logit_scale, instance_logits, color_logits, veh_type_logits, batch, **kwargs):
+    def compute_loss(
+        self,
+        all_pairs,
+        logit_scale,
+        instance_logits,
+        color_logits,
+        veh_type_logits,
+        batch,
+        **kwargs
+    ):
         logit_scale = logit_scale.mean().exp()
         loss = 0
-        if self.task == 'retrieval':
+        if self.task == "retrieval":
             for (visual_embeds, lang_embeds) in all_pairs:
                 sim_i_2_t = torch.matmul(
                     torch.mul(logit_scale, visual_embeds), torch.t(lang_embeds)
@@ -194,13 +211,14 @@ class HCMUS(AICBase):
                     sim_i_2_t, torch.arange(batch["images"].size(0), device=self.device)
                 )
                 loss += (loss_t_2_i + loss_i_2_t) / 2
-            
+
             for instance_logits in instance_logits:
                 loss += 0.5 * F.cross_entropy(instance_logits, batch["car_ids"].long())
         # task == 'local_clf'
         loss += 0.5 * self.color_loss(color_logits, batch["color_lbls"].long())
         loss += 0.5 * self.vehtype_loss(veh_type_logits, batch["vehtype_lbls"].long())
         return loss
+
     def color_branch(self, batch):
         (
             visual_embeds,
@@ -276,4 +294,3 @@ class HCMUS(AICBase):
             return visual_embeds
         else:
             raise NotImplementedError
-

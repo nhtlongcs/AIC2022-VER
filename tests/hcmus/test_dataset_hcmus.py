@@ -38,6 +38,5 @@ def test_dataset(tmp_path, dataset_name):
         print(batch["tokens"]["input_ids"].shape)
         print(batch["texts"])
         print(batch["car_ids"])
-        print(batch['color_lbls'])
-        print(batch['vehtype_lbls'])
-
+        print(batch["color_lbls"])
+        print(batch["vehtype_lbls"])
