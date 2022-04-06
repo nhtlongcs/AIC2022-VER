@@ -9,15 +9,14 @@ EXTRACTED_FRAMES_DIR = f"{AIC22_META_ROOT}/extracted_frames"
 TEST_TRACKS_JSON = f"{AIC22_META_ROOT}/test_tracks.json"
 TRAIN_TRACKS_JSON = f"{AIC22_META_ROOT}/train_tracks.json"
 
-TEST_AUX_TRACKS_JSON = f"{AIC22_META_ROOT}/relation/json/test_neighbors.json"
-TRAIN_AUX_TRACKS_JSON = f"{AIC22_META_ROOT}/relation/json/train_neighbors.json"
+TEST_AUX_TRACKS_JSON = f"{AIC22_META_ROOT}/relation/test_neighbors.json"
+TRAIN_AUX_TRACKS_JSON = f"{AIC22_META_ROOT}/relation/train_neighbors.json"
 
-TEST_AUX_TRACKS_MAPPING_JSON = f"{AIC22_META_ROOT}/relation/json/test_neighbors_mapping.json"
-TRAIN_AUX_TRACKS_MAPPING_JSON = f"{AIC22_META_ROOT}/relation/json/train_neighbors_mapping.json"
+TEST_AUX_TRACKS_MAPPING_JSON = f"{AIC22_META_ROOT}/relation/test_neighbors_mapping.json"
+TRAIN_AUX_TRACKS_MAPPING_JSON = f"{AIC22_META_ROOT}/relation/train_neighbors_mapping.json"
 
-TEST_RELATION_JSON = f"{AIC22_META_ROOT}/relation/json/test_relation.json"
-TRAIN_RELATION_JSON = f"{AIC22_META_ROOT}/relation/json/train_relation.json"
-
+TEST_RELATION_JSON = f"{AIC22_META_ROOT}/relation/test_relation.json"
+TRAIN_RELATION_JSON = f"{AIC22_META_ROOT}/relation/train_relation.json"
 
 ## Visualization
 TEST_TRACK_VIDEOS = f"{AIC22_META_ROOT}/track_visualization/original/test-convert"

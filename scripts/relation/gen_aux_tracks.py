@@ -6,7 +6,7 @@ Read in tracking results and convert into same format as AIC22 tracks
 import json
 import pandas as pd
 from tqdm import tqdm
-from utils.constants import (
+from scripts.relation.constants import (
     AIC22_ORI_ROOT,
     TEST_CAM_IDS, TEST_TRACKS_JSON,
     TRAIN_CAM_IDS, TRAIN_TRACKS_JSON,
@@ -14,7 +14,7 @@ from utils.constants import (
     TRAIN_AUX_TRACKS_JSON
 )
 
-SPLIT = 'test' # or test
+SPLIT = 'train' # or test
 NUM_FRAMES_THRESHOLD = 5 # filter out tracks which appear less than threshold
 
 if SPLIT == 'train':

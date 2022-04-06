@@ -54,9 +54,10 @@ class Predictor(object):
         print(f"Saved {filename} to {self.savedir}")
 
     def setup(self):
+        image_size = self.cfg['data']['track']['image_size']
         transform = torchvision.transforms.Compose(
             [
-                torchvision.transforms.Resize((288, 288)),
+                torchvision.transforms.Resize((image_size, image_size)),
                 torchvision.transforms.ToTensor(),
                 torchvision.transforms.Normalize(
                     mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]

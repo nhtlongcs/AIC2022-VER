@@ -6,9 +6,9 @@ Read in the auxiliary tracks and the main tracks and decide which is the neighbo
 import json
 import pandas as pd
 from tqdm import tqdm
-from utils.frame_utils import get_frame_ids_by_names, get_camera_id_by_name
+from external.relation.frame_utils import get_frame_ids_by_names, get_camera_id_by_name
 
-from utils.constants import (
+from scripts.relation.constants import (
     AIC22_ORI_ROOT,
     TEST_CAM_IDS, TEST_TRACKS_JSON,
     TRAIN_CAM_IDS, TRAIN_TRACKS_JSON,
@@ -16,7 +16,7 @@ from utils.constants import (
     TRAIN_AUX_TRACKS_MAPPING_JSON
 )
 
-SPLIT = 'test' # or test
+SPLIT = 'train' # or test
 NUM_FRAMES_THRESHOLD = 5 # filter out tracks which appear less than threshold
 
 if SPLIT == 'train':

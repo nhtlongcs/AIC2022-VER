@@ -10,6 +10,7 @@ data:
     motion_path: null
     meta_json: null
     crop_area: 1.0
+    image_size: 288
 
 extractors:
   img_encoder:

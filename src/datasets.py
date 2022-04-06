@@ -396,7 +396,7 @@ class AIC22TextJsonDataset(Dataset):
         if self.use_other_views:
             query_texts += query_data['nl_other_views']
 
-        query_texts = np.random.choice(query_texts)
+        query_texts = np.random.choice(query_texts, size=min(len(query_texts), self.num_texts_used), replace=False)
         query_text = '. '.join(query_texts)
 
         return {
