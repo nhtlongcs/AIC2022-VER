@@ -18,6 +18,7 @@ extractors:
       version: 0
       from_pretrained: True
       freeze: True
+      image_size: 288
   lang_encoder:
     name: LangExtractor
     args:
