@@ -28,7 +28,9 @@ def draw_one_box(img, box, key=None, color=None, line_thickness=None):
     return img
 
 def visualize_one_frame(img, df):
-    # track_id	frame_id	box	color	label	direction	fpoint	lpoint	fframe	lframe
+    """
+    Draw boxes for 1 frame
+    """    
     anns = [
         i for i in zip(
             df.track_id, 

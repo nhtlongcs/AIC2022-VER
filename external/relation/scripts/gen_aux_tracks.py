@@ -54,7 +54,7 @@ def generate_unique_neighbor_tracks(camera_id):
         for _, row in track_df.iterrows():
             frame_id, _, x, y, w, h = row[:6]
             neighbor_dict[unique_track_id]['frames'].append(
-                f"./train/{camera_id}/img1/{str(frame_id).zfill(6)}.jpg"
+                f"./{FOLDER_NAME}/{camera_id}/img1/{str(frame_id).zfill(6)}.jpg"
             )
 
             neighbor_dict[unique_track_id]['boxes'].append([x, y, w, h])

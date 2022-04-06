@@ -6,6 +6,7 @@ Read in the auxiliary tracks and the main tracks and decide which is the neighbo
 import json
 import pandas as pd
 from tqdm import tqdm
+from utils.frame_utils import get_frame_ids_by_names, get_camera_id_by_name
 
 from utils.constants import (
     AIC22_ORI_ROOT,
@@ -50,16 +51,18 @@ def generate_neighbor_tracks_mapping(camera_id):
     neighbor_mapping = {}
     for main_track_id in main_track_ids:
 
-        neighbor_mapping[main_track_id] = []
         frame_names = data[main_track_id]['frames']
         main_boxes = data[main_track_id]['boxes']
 
-        # All the frames that main track appears
-        frame_ids = [
-            int(i.split('/')[-1][:-4])
-            for i in frame_names
-        ]
+        # The camera id of the track
+        current_camera_id = get_camera_id_by_name(frame_names[0])
+        if current_camera_id != camera_id:
+            continue
 
+        # All the frames that main track appears
+        frame_ids = get_frame_ids_by_names(frame_names)
+
+        neighbor_mapping[main_track_id] = []
         # tracks that appear at same  frame with main track
         aux_appearances = {}
         for (frame_id, main_box) in zip(frame_ids, main_boxes):

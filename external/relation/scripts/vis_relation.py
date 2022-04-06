@@ -60,16 +60,20 @@ def visualize_neighbors():
         tmp_path = osp.join(EXTRACTED_FRAMES_DIR, main_frame_names[0][2:])
         img = cv2.imread(tmp_path)
         height, width = img.shape[:-1]
+
+        if len(main_frame_names) > 10:
+            fps = 10
+        else:
+            fps = len(main_frame_names)//2
+
         writer = cv2.VideoWriter(
             osp.join(OUTDIR, main_track_id+'.mp4'),   
-            cv2.VideoWriter_fourcc(*'MP4V'), 
-            10, 
+            cv2.VideoWriter_fourcc(*'mp4v'), 
+            fps, 
             (width, height))
 
         main_frame_ids = get_frame_ids_by_names(main_frame_names)
         main_frame_ids.sort()
-        main_start_id = main_frame_ids[0]
-        main_end_id = main_frame_ids[-1]
 
         # Neighbor infos        
         neighbors = neighbor_mapping[main_track_id]
@@ -112,13 +116,35 @@ def visualize_neighbors():
                 for neighbor_box, neighbor_frame_id in intersected:
                     track_lists.append({
                         'frame_id': neighbor_frame_id,
-                        'track_id': neighbor_track_id, 
+                        'track_id': neighbor_track_id + '- followed by', 
                         'x1': neighbor_box[0], 'y1': neighbor_box[1], 
                         'x2':  neighbor_box[2], 'y2':  neighbor_box[3],
                         'color': [0, 255, 255]
                     })
 
-        # follow_neighbors = [aux_data[id] for id in follow_ids]
+        if len(follow_ids) > 0:
+            # Visualize following
+            follow_neighbors = [(id, aux_data[id]) for id in follow_ids]
+
+            for neighbor_track_id, neighbor in follow_neighbors:
+                neighbor_boxes = xywh_to_xyxy_lst(neighbor['boxes'])
+                neighbor_frames = neighbor['frames']
+                neighbor_frames_ids = get_frame_ids_by_names(neighbor_frames)
+                neighbor_frames_ids.sort()
+                intersected = [
+                    (box, id) for id, box in zip(neighbor_frames_ids, neighbor_boxes)
+                    if id in main_frame_ids
+                ]
+
+                for neighbor_box, neighbor_frame_id in intersected:
+                    track_lists.append({
+                        'frame_id': neighbor_frame_id,
+                        'track_id': neighbor_track_id + '- following', 
+                        'x1': neighbor_box[0], 'y1': neighbor_box[1], 
+                        'x2':  neighbor_box[2], 'y2':  neighbor_box[3],
+                        'color': [0, 0, 255]
+                    })
+
 
         # Write to video
         track_df = pd.DataFrame(track_lists)
@@ -132,11 +158,7 @@ def visualize_neighbors():
             frame_df = track_df[track_df.frame_id==frame_id]
             img = visualize_one_frame(img, frame_df)
 
-            cv2.imwrite(f'test{frame_id}.jpg', img)
             writer.write(img)
-        print(main_track_id)
-        asd
-
 
 if __name__ == '__main__':
     visualize_neighbors()

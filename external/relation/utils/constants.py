@@ -1,5 +1,5 @@
 ## Roots
-AIC22_ROOT = "/home/kaylode/Github/AIC2022-VER/data"
+AIC22_ROOT = "K:/Github/AIC2022-VER/data"
 AIC22_ORI_ROOT = f"{AIC22_ROOT}/AIC22_Track2_NL_Retrieval"
 AIC22_META_ROOT = f"{AIC22_ROOT}/meta"
 
@@ -22,6 +22,9 @@ TRAIN_RELATION_JSON = f"{AIC22_META_ROOT}/relation/json/train_relation.json"
 ## Visualization
 TEST_TRACK_VIDEOS = f"{AIC22_META_ROOT}/track_visualization/original/test-convert"
 TRAIN_TRACK_VIDEOS = f"{AIC22_META_ROOT}/track_visualization/original/train-convert"
+
+TEST_TRACK_AUX_VIDEOS = f"{AIC22_META_ROOT}/track_visualization/auxiliary/test"
+TRAIN_TRACK_AUX_VIDEOS = f"{AIC22_META_ROOT}/track_visualization/auxiliary/train"
 
 TEST_TRACK_RELATION_VIDEOS = f"{AIC22_META_ROOT}/track_visualization/relation/test"
 TRAIN_TRACK_RELATION_VIDEOS = f"{AIC22_META_ROOT}/track_visualization/relation/train"

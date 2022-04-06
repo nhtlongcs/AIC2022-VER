@@ -40,6 +40,33 @@ MAX_TRAJ_THRES_LEVEL = [
     math.cos(math.pi/9),
     ]
 
+
+def minus_vector(vector_a, vector_b):
+    return [vector_b[0] - vector_a[0], vector_b[1] - vector_a[1]]
+
+def calculate_velocity_vector(coor: list, skip_frame=2, smooth_frame=2):
+    if skip_frame > len(coor):
+        skip_frame = 1
+    vel_list = [minus_vector(coor[i], coor[i+skip_frame]) for i in range(len(coor) - skip_frame)]
+    
+    return vel_list
+
+def calculate_distance_vector(coor_a, coor_b, skip_frame=2):
+    if skip_frame > len(coor_a):
+        skip_frame = 1
+    dis_list = [minus_vector(coor_a[i], coor_b[i]) for i in range(len(coor_a) - skip_frame)]
+    return dis_list
+
+def cosine_similarity(vect_a, vect_b):
+    if isinstance(vect_a, list):
+        vect_a = np.array(vect_a)
+    if isinstance(vect_b, list):
+        vect_b = np.array(vect_b)
+    return np.dot(vect_a, vect_b)/(np.linalg.norm(vect_a)*np.linalg.norm(vect_b)) #default: L2 norm
+
+def length_vector(vector):
+    return math.sqrt(vector[0]**2 + vector[1]**2)
+
 class FollowRelationCounter(object):
     def __init__(self):
         self.counter = {}
@@ -96,30 +123,3 @@ class FollowRelationCounter(object):
                 ans = FollowState.NO_RELATION
         
         return ans
-
-
-def minus_vector(vector_a, vector_b):
-    return [vector_b[0] - vector_a[0], vector_b[1] - vector_a[1]]
-
-def calculate_velocity_vector(coor: list, skip_frame=2, smooth_frame=2):
-    if skip_frame > len(coor):
-        skip_frame = 1
-    vel_list = [minus_vector(coor[i], coor[i+skip_frame]) for i in range(len(coor) - skip_frame)]
-    
-    return vel_list
-
-def calculate_distance_vector(coor_a, coor_b, skip_frame=2):
-    if skip_frame > len(coor_a):
-        skip_frame = 1
-    dis_list = [minus_vector(coor_a[i], coor_b[i]) for i in range(len(coor_a) - skip_frame)]
-    return dis_list
-
-def cosine_similarity(vect_a, vect_b):
-    if isinstance(vect_a, list):
-        vect_a = np.array(vect_a)
-    if isinstance(vect_b, list):
-        vect_b = np.array(vect_b)
-    return np.dot(vect_a, vect_b)/(np.linalg.norm(vect_a)*np.linalg.norm(vect_b)) #default: L2 norm
-
-def length_vector(vector):
-    return math.sqrt(vector[0]**2 + vector[1]**2)

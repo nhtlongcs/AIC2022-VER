@@ -62,7 +62,6 @@ def run():
         # Interpolate main track boxes
         main_frame_ids = get_frame_ids_by_names(main_frame_names)
         main_start_id = main_frame_ids[0]
-        main_end_id = main_frame_ids[-1]
 
         main_refined_boxes = refine_boxes(main_frame_ids, main_boxes)
         main_frame_ids = [i for i in range(main_start_id, main_start_id+len(main_refined_boxes))]
@@ -77,7 +76,6 @@ def run():
 
             aux_refined_boxes = refine_boxes(aux_frame_ids, aux_boxes)
             aux_start_id = aux_frame_ids[0]
-            aux_end_id = aux_frame_ids[-1]
             aux_frame_ids = [i for i in range(aux_start_id, aux_start_id+len(aux_refined_boxes))]
 
             # Only sampling aux frames and boxes within main track, meaning aux track and main track appear at the same frame
@@ -90,7 +88,7 @@ def run():
             if check_same_tracks(main_intersect_boxes, aux_intersect_boxes):
                 continue
 
-            # Check if both tracks are related (near to each other)
+            # Check if both tracks are related (near to each other), optional
             # if not check_is_neighbor_tracks(main_intersect_boxes, aux_intersect_boxes, dist_mean_threshold=300):
             #     continue
             
@@ -100,10 +98,6 @@ def run():
             # Store result
             if relation in relation_graph[main_track_id].keys():
                 relation_graph[main_track_id][relation].append(aux_track_id)
-
-        # if len(relation_graph[main_track_id]['follow']) > 0 or len(relation_graph[main_track_id]['followed_by']) > 0:
-        #     print(relation_graph)
-        #     asd
 
     with open(OUTPATH, 'w') as f:
         json.dump(relation_graph, f, indent=4)
