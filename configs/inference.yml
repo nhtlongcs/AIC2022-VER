@@ -10,6 +10,7 @@ data:
     motion_path: null
     meta_json: null
     crop_area: 1.0
+    image_size: 288
 
 extractors:
   img_encoder:
@@ -18,7 +19,6 @@ extractors:
       version: 0
       from_pretrained: True
       freeze: True
-      image_size: 288
   lang_encoder:
     name: LangExtractor
     args:
