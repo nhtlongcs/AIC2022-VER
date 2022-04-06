@@ -1,23 +1,33 @@
+## Roots
+AIC22_ROOT = "/home/kaylode/Github/AIC2022-VER/data"
+AIC22_ORI_ROOT = f"{AIC22_ROOT}/AIC22_Track2_NL_Retrieval"
+AIC22_META_ROOT = f"{AIC22_ROOT}/meta"
 
-AIC22_ROOT = "K:/Github/AIC2022-VER/data/AIC22_Track2_NL_Retrieval"
-AIC22_META_ROOT = "K:/Github/AIC2022-VER/data/meta"
+## Data
+EXTRACTED_FRAMES_DIR = f"{AIC22_META_ROOT}/extracted_frames"
 
-TEST_TRACKS_JSON = f"{AIC22_ROOT}/test_tracks.json"
-TRAIN_TRACKS_JSON = f"{AIC22_ROOT}/train_tracks.json"
+TEST_TRACKS_JSON = f"{AIC22_META_ROOT}/test_tracks.json"
+TRAIN_TRACKS_JSON = f"{AIC22_META_ROOT}/train_tracks.json"
 
-TEST_AUX_TRACKS_JSON = f"{AIC22_META_ROOT}/relation/neightbor_tracks/json/test_neighbors.json"
-TRAIN_AUX_TRACKS_JSON = f"{AIC22_META_ROOT}/relation/neightbor_tracks/json/train_neighbors.json"
+TEST_AUX_TRACKS_JSON = f"{AIC22_META_ROOT}/relation/json/test_neighbors.json"
+TRAIN_AUX_TRACKS_JSON = f"{AIC22_META_ROOT}/relation/json/train_neighbors.json"
 
-TEST_AUX_TRACKS_MAPPING_JSON = f"{AIC22_META_ROOT}/relation/neightbor_tracks/json/test_neighbors_mapping.json"
-TRAIN_AUX_TRACKS_MAPPING_JSON = f"{AIC22_META_ROOT}/relation/neightbor_tracks/json/train_neighbors_mapping.json"
+TEST_AUX_TRACKS_MAPPING_JSON = f"{AIC22_META_ROOT}/relation/json/test_neighbors_mapping.json"
+TRAIN_AUX_TRACKS_MAPPING_JSON = f"{AIC22_META_ROOT}/relation/json/train_neighbors_mapping.json"
 
-TEST_AUX_TRACKS_MAPPING_REFINE_JSON = f"{AIC22_META_ROOT}/relation/neightbor_tracks/json/test_neighbors_mapping_refine.json"
-TRAIN_AUX_TRACKS_MAPPING_REFINE_JSON = f"{AIC22_META_ROOT}/relation/neightbor_tracks/json/train_neighbors_mapping_refine.json"
-
-TEST_RELATION_JSON = f"{AIC22_META_ROOT}/relation/neightbor_tracks/json/test_relation.json"
-TRAIN_RELATION_JSON = f"{AIC22_META_ROOT}/relation/neightbor_tracks/json/train_relation.json"
+TEST_RELATION_JSON = f"{AIC22_META_ROOT}/relation/json/test_relation.json"
+TRAIN_RELATION_JSON = f"{AIC22_META_ROOT}/relation/json/train_relation.json"
 
 
+## Visualization
+TEST_TRACK_VIDEOS = f"{AIC22_META_ROOT}/track_visualization/original/test-convert"
+TRAIN_TRACK_VIDEOS = f"{AIC22_META_ROOT}/track_visualization/original/train-convert"
+
+TEST_TRACK_RELATION_VIDEOS = f"{AIC22_META_ROOT}/track_visualization/relation/test"
+TRAIN_TRACK_RELATION_VIDEOS = f"{AIC22_META_ROOT}/track_visualization/relation/train"
+
+
+## Camera ids
 TEST_CAM_IDS = [
         'S01/c001', 'S01/c002', 'S01/c003', 'S01/c004', 'S01/c005', 
         'S03/c010', 'S03/c011', 'S03/c012', 'S03/c013', 'S03/c014', 'S03/c015', 

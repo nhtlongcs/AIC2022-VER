@@ -55,7 +55,7 @@ def get_relation_between_tracks(track_boxes1, track_boxes2):
     num_boxes = len(track_boxes1)
 
     if num_boxes <= 2:
-        return FollowState.NO_RELATION
+        return FollowState.NO_RELATION, None, None
 
     if num_boxes <= 9:
         skip_frame = VELOCITY_SKIP_FRAME // 2

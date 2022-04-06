@@ -3,6 +3,7 @@ Script for refining all neighbor tracks based on raw neighbor mapping json gener
 Read in the neighbor tracks and the main tracks and refine the relationshop
 """
 
+import os
 import json
 import numpy as np
 from tqdm import tqdm
@@ -13,9 +14,8 @@ from utils.track_utils import (
 )
 
 from utils.constants import (
-    AIC22_ROOT, AIC22_META_ROOT,
-    TEST_CAM_IDS, TEST_TRACKS_JSON, TEST_AUX_TRACKS_MAPPING_JSON, TEST_AUX_TRACKS_JSON, TEST_AUX_TRACKS_MAPPING_REFINE_JSON,
-    TRAIN_CAM_IDS, TRAIN_TRACKS_JSON, TRAIN_AUX_TRACKS_MAPPING_JSON, TRAIN_AUX_TRACKS_JSON, TRAIN_AUX_TRACKS_MAPPING_REFINE_JSON,
+    TEST_CAM_IDS, TEST_TRACKS_JSON, TEST_AUX_TRACKS_MAPPING_JSON, TEST_AUX_TRACKS_JSON,
+    TRAIN_CAM_IDS, TRAIN_TRACKS_JSON, TRAIN_AUX_TRACKS_MAPPING_JSON, TRAIN_AUX_TRACKS_JSON,
     TEST_RELATION_JSON, TRAIN_RELATION_JSON
 )
 
@@ -33,8 +33,6 @@ else:
     OUTPATH = TEST_RELATION_JSON
     AUX_TRACKS_MAPPING = TEST_AUX_TRACKS_MAPPING_JSON
     AUX_TRACKS = TEST_AUX_TRACKS_JSON
-
-ANNO = "{AIC22_ROOT}/{FOLDER_NAME}/{CAMERA}/gt/gt.txt"
 
 def run():
     with open(TRACKS_JSON, 'r') as f:
@@ -67,13 +65,8 @@ def run():
         main_end_id = main_frame_ids[-1]
 
         main_refined_boxes = refine_boxes(main_frame_ids, main_boxes)
-        main_frame_ids = [i for i in range(main_start_id, main_end_id+1)]
+        main_frame_ids = [i for i in range(main_start_id, main_start_id+len(main_refined_boxes))]
         
-        if len(main_frame_ids) != len(main_refined_boxes):
-            print(len(main_frame_ids))
-            print(len(main_refined_boxes))
-            asd
-
         # Interpolate aux track boxes
         for aux_track_id in aux_track_ids:
             aux_boxes = aux_tracks[aux_track_id]['boxes']
@@ -85,7 +78,7 @@ def run():
             aux_refined_boxes = refine_boxes(aux_frame_ids, aux_boxes)
             aux_start_id = aux_frame_ids[0]
             aux_end_id = aux_frame_ids[-1]
-            aux_frame_ids = [i for i in range(aux_start_id, aux_end_id+1)]
+            aux_frame_ids = [i for i in range(aux_start_id, aux_start_id+len(aux_refined_boxes))]
 
             # Only sampling aux frames and boxes within main track, meaning aux track and main track appear at the same frame
             intersect_frame_ids = list(set(main_frame_ids).intersection(set(aux_frame_ids)))
@@ -95,38 +88,25 @@ def run():
 
             # Check if both tracks are the same, both tracks have been aligned
             if check_same_tracks(main_intersect_boxes, aux_intersect_boxes):
-                print('iou')
                 continue
 
             # Check if both tracks are related (near to each other)
-            if not check_is_neighbor_tracks(main_intersect_boxes, aux_intersect_boxes, dist_mean_threshold=300):
-                continue
+            # if not check_is_neighbor_tracks(main_intersect_boxes, aux_intersect_boxes, dist_mean_threshold=300):
+            #     continue
             
-            try:
-                # Finally, two determine relation between two neighbor tracks
-                relation, avg_distance, avg_cos = get_relation_between_tracks(main_intersect_boxes, aux_intersect_boxes)
-            except IndexError as e:
-                print('b4 aux_frame_ids ', len(get_frame_ids_by_names(aux_frame_names)))
-                print('aux_start_id ', aux_start_id)
-                print('aux_end_id ', aux_end_id)
-                print('main_frame_ids ', len(np.unique(main_frame_ids)))
-                print('intersect_frame_ids ', len(intersect_frame_ids))
-                print('aux_frame_ids ', len(np.unique(aux_frame_ids)))
-                print('main_refined_boxes, ', len(main_refined_boxes))
-                print('aux_refined_boxes ', len(aux_refined_boxes))
-                print('main_intersect_boxes ', len(main_intersect_boxes))
-                print('aux_intersect_boxes ', len(aux_intersect_boxes))
-                asd
+            # Finally, two determine relation between two neighbor tracks
+            relation, avg_distance, avg_cos = get_relation_between_tracks(main_intersect_boxes, aux_intersect_boxes)
+     
             # Store result
             if relation in relation_graph[main_track_id].keys():
                 relation_graph[main_track_id][relation].append(aux_track_id)
 
-        if len(relation_graph[main_track_id]['follow']) > 0 or len(relation_graph[main_track_id]['followed_by']) > 0:
-            print(relation_graph)
-            asd
+        # if len(relation_graph[main_track_id]['follow']) > 0 or len(relation_graph[main_track_id]['followed_by']) > 0:
+        #     print(relation_graph)
+        #     asd
 
     with open(OUTPATH, 'w') as f:
-        json.dump(relation_graph, f)
+        json.dump(relation_graph, f, indent=4)
 
 if __name__ == '__main__':
     run()

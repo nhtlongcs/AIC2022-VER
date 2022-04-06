@@ -8,14 +8,14 @@ import pandas as pd
 from tqdm import tqdm
 
 from utils.constants import (
-    AIC22_ROOT,
+    AIC22_ORI_ROOT,
     TEST_CAM_IDS, TEST_TRACKS_JSON,
     TRAIN_CAM_IDS, TRAIN_TRACKS_JSON,
     TEST_AUX_TRACKS_MAPPING_JSON,
     TRAIN_AUX_TRACKS_MAPPING_JSON
 )
 
-SPLIT = 'train' # or test
+SPLIT = 'test' # or test
 NUM_FRAMES_THRESHOLD = 5 # filter out tracks which appear less than threshold
 
 if SPLIT == 'train':
@@ -29,12 +29,12 @@ else:
     CAM_IDS = TEST_CAM_IDS
     TRACKS_JSON = TEST_TRACKS_JSON
 
-ANNO = "{AIC22_ROOT}/{FOLDER_NAME}/{CAMERA}/gt/gt.txt"
+ANNO = "{AIC22_ORI_ROOT}/{FOLDER_NAME}/{CAMERA}/gt/gt.txt"
 
 
 def generate_neighbor_tracks_mapping(camera_id):
 
-    df = pd.read_csv(ANNO.format(CAMERA=camera_id, FOLDER_NAME=FOLDER_NAME, AIC22_ROOT=AIC22_ROOT))
+    df = pd.read_csv(ANNO.format(CAMERA=camera_id, FOLDER_NAME=FOLDER_NAME, AIC22_ORI_ROOT=AIC22_ORI_ROOT))
     df.columns = [
         'frame_id', 
         'track_id', 
@@ -48,7 +48,7 @@ def generate_neighbor_tracks_mapping(camera_id):
     main_track_ids = list(data.keys())
 
     neighbor_mapping = {}
-    for main_track_id in tqdm(main_track_ids):
+    for main_track_id in main_track_ids:
 
         neighbor_mapping[main_track_id] = []
         frame_names = data[main_track_id]['frames']
@@ -89,7 +89,7 @@ def generate_neighbor_tracks_mapping(camera_id):
 def run():
 
     final_dict = {}
-    for camera_id in CAM_IDS:
+    for camera_id in tqdm(CAM_IDS):
         camera_neighbor_dict = generate_neighbor_tracks_mapping(camera_id)
         final_dict.update(camera_neighbor_dict)
 
