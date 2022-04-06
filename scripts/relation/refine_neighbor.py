@@ -7,19 +7,19 @@ import os
 import json
 import numpy as np
 from tqdm import tqdm
-from utils.bb_utils import refine_boxes, xywh_to_xyxy_lst
-from utils.frame_utils import get_frame_ids_by_names
-from utils.track_utils import (
+from external.relation.bb_utils import refine_boxes, xywh_to_xyxy_lst
+from external.relation.frame_utils import get_frame_ids_by_names
+from external.relation.track_utils import (
     check_is_neighbor_tracks, check_same_tracks, get_relation_between_tracks
 )
 
-from utils.constants import (
+from scripts.relation.constants import (
     TEST_CAM_IDS, TEST_TRACKS_JSON, TEST_AUX_TRACKS_MAPPING_JSON, TEST_AUX_TRACKS_JSON,
     TRAIN_CAM_IDS, TRAIN_TRACKS_JSON, TRAIN_AUX_TRACKS_MAPPING_JSON, TRAIN_AUX_TRACKS_JSON,
     TEST_RELATION_JSON, TRAIN_RELATION_JSON
 )
 
-SPLIT = 'test' # or test
+SPLIT = 'train' # or test
 
 if SPLIT == 'train':
     CAM_IDS = TRAIN_CAM_IDS

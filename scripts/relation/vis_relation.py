@@ -8,11 +8,11 @@ import os.path as osp
 import cv2
 from tqdm import tqdm
 import pandas as pd
-from utils.drawing import visualize_one_frame
-from utils.bb_utils import xywh_to_xyxy_lst
-from utils.frame_utils import get_frame_ids_by_names
+from external.relation.drawing import visualize_one_frame
+from external.relation.bb_utils import xywh_to_xyxy_lst
+from external.relation.frame_utils import get_frame_ids_by_names
 
-from utils.constants import (
+from scripts.relation.constants import (
     TEST_CAM_IDS, TEST_TRACKS_JSON, TEST_RELATION_JSON, TEST_AUX_TRACKS_JSON,
     TRAIN_CAM_IDS, TRAIN_TRACKS_JSON, TRAIN_RELATION_JSON, TRAIN_AUX_TRACKS_JSON,
     TRAIN_TRACK_RELATION_VIDEOS, TEST_TRACK_RELATION_VIDEOS,

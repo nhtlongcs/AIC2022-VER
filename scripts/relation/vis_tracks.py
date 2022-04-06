@@ -8,10 +8,10 @@ import os.path as osp
 import cv2
 import pandas as pd
 from tqdm import tqdm
-from utils.drawing import draw_one_box
-from utils.bb_utils import xywh_to_xyxy_lst
+from external.relation.drawing import draw_one_box
+from external.relation.bb_utils import xywh_to_xyxy_lst
 
-from utils.constants import (
+from scripts.relation.constants import (
     TEST_CAM_IDS, TEST_TRACKS_JSON, TEST_AUX_TRACKS_JSON, TEST_TRACK_VIDEOS, TEST_TRACK_AUX_VIDEOS,
     TRAIN_CAM_IDS, TRAIN_TRACKS_JSON, TRAIN_AUX_TRACKS_JSON, TRAIN_TRACK_VIDEOS, TRAIN_TRACK_AUX_VIDEOS,
     EXTRACTED_FRAMES_DIR
