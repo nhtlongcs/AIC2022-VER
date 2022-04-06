@@ -1,0 +1,59 @@
+global:
+  username: nhtlong
+  name: "color"
+  save_dir: ./runs
+  use_fp16: true
+  debug: false
+  verbose: true
+  SEED: 1337
+  pretrained: null
+  resume: null
+data:
+  name: CropVehDataset
+  args:
+    CITYFLOW_PATH: "data_sample/meta/extracted_frames"
+    SIZE: 288
+    CROP_AREA: 1.0 ## new_= CROP_AREA * old_w
+    train:
+      color_csv: "data_sample/meta/srl/color/col_train.csv"
+      vehtype_csv: "data_sample/meta/srl/veh/train_fraction.csv"
+      json_path: "data_sample/meta/split/train.json"
+      loader:
+        batch_size: 2
+        num_workers: 2
+        shuffle: True
+        drop_last: True
+    val:
+      color_csv: "data_sample/meta/srl/color/col_train.csv"
+      vehtype_csv: "data_sample/meta/srl/veh/train_fraction.csv"
+      json_path: "data_sample/meta/split/val.json"
+      loader:
+        batch_size: 2
+        num_workers: 2
+        shuffle: False
+        drop_last: False
+extractors:
+  img_encoder:
+    name: EfficientNetExtractor
+    args:
+      version: 0
+      from_pretrained: True
+      freeze: True
+model:
+  name: VehColorClassifer
+  args:
+    NUM_CLASS: 8 # Num of unique colors
+    EMBED_DIM: 768
+metric:
+  - name: F1score
+    args:
+      label_key: "color_lbls"
+      num_classes: 8
+
+trainer:
+  lr: 0.001
+  num_epochs: 10000
+  clip_grad: 10.0
+  evaluate_interval: 1
+  print_interval: 20
+  save_interval: 1000
