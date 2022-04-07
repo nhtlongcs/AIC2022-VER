@@ -2,21 +2,18 @@ from typing import List
 import torch
 from torch import nn
 from . import METRIC_REGISTRY
-from sklearn.metrics import f1_score
 import numpy as np
 
 
 @METRIC_REGISTRY.register()
-class F1score:
+class Accuracy:
     """
-    F1 Score
+    Acc Score
     """
 
-    def __init__(self, num_classes, average="weighted", label_key="labels", **kwargs):
+    def __init__(self,label_key="labels", **kwargs):
         super().__init__(**kwargs)
-        self.average = average
         self.label_key = label_key
-        self.num_classes = num_classes
         self.threshold = kwargs.get("threshold", 0.5)
         self.reset()
 
@@ -41,6 +38,6 @@ class F1score:
     def value(self):
         self.targets = np.concatenate(self.targets)
         self.preds = np.concatenate(self.preds)
-        score = f1_score(self.targets, self.preds, average=self.average)
-        return {f"f1": score}
+        score = np.mean(self.targets == self.preds)
+        return {f"Accuracy": score}
 
