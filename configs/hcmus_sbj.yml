@@ -1,0 +1,103 @@
+global:
+  username: hcmus-aic22-ver
+  project_name: aic
+  name: "template"
+  save_dir: ./runs
+  use_fp16: true
+  debug: false
+  verbose: true
+  SEED: 1337
+  pretrained: null
+  resume: null
+data:
+  name: CityFlowNLDatasetSubject
+  args:
+    CITYFLOW_PATH: "data/meta/extracted_frames"
+    SIZE: 288
+    CROP_AREA: 1.0 ## new_= CROP_AREA * old_w
+    TEST_TRACKS_JSON_PATH: "data/meta/test-tracks.json"
+    USE_MOTION: True
+    MOTION_PATH: "data/meta/motion_map"
+    train:
+      mo_cache: False
+      flip_aug: false
+      num_texts_used: 1
+      use_other_views: false
+      json_path: "data/meta/train_nlpaug_v2.json"
+      flip_aug: false
+      loader:
+        batch_size: 32
+        num_workers: 2
+        shuffle: True
+        drop_last: True
+    val:
+      mo_cache: False
+      flip_aug: false
+      num_texts_used: 1
+      use_other_views: false
+      json_path: "data/meta/val_nlpaug_v2.json"
+      flip_aug: false
+      loader:
+        batch_size: 32
+        num_workers: 2
+        shuffle: False
+        drop_last: False
+extractors:
+  img_encoder:
+    name: EfficientNetExtractor
+    args:
+      version: 0
+      from_pretrained: True
+      freeze: True
+  lang_encoder:
+    name: LangExtractor
+    args:
+      pretrained: "bert-base-uncased"
+      freeze: True
+model:
+  name: HCMUSSubject
+  args:
+    NUM_CLASS: 2498 # total tracks
+    EMBED_DIM: 768
+    car_idloss: True
+    mo_idloss: True
+    share_idloss: True
+metric:
+- name: TopKRecall
+  args: 
+    top_k: [5, 10, 25]
+- name: MeanReciprocalRank
+  args:
+metric_configs:
+  dimension: 768
+  max_k: 30
+trainer:
+  lr: 0.001
+  num_epochs: 10000
+  clip_grad: 10.0
+  evaluate_interval: 1
+  print_interval: 20
+  save_interval: 1000
+callbacks:
+- name: ModelCheckpoint
+  args:
+    filename: "UTS-{epoch}-{mrr/val:.4f}"
+    monitor: "val/mrr"
+    verbose: True
+    save_top_k: 3
+    mode: max
+- name: EarlyStopping
+  args:
+    monitor: "val/mrr"
+    min_delta: 0.0001
+    patience: 15
+    verbose: False
+    mode: max
+- name: VisualizerCallback
+  args:
+    motion_path: "data/meta/motion_map",
+    gt_json_path: "data/meta/val.json",
+    query_results_json: "temps/query_results.json",
+- name: LearningRateMonitor
+  args:
+    logging_interval: step

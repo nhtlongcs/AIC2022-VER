@@ -19,7 +19,7 @@ os.environ[
 
 
 @DATASET_REGISTRY.register()
-class CityFlowNLDatasetV2(Dataset):
+class CityFlowNLDatasetSubject(Dataset):
     def __init__(
         self,
         data_cfg,
@@ -183,7 +183,7 @@ class CityFlowNLDatasetV2(Dataset):
         return batch_dict
 
 
-class AIC22TextJsonDatasetV2(Dataset):
+class AIC22TextJsonDatasetSubject(Dataset):
     """
     """
     def __init__(

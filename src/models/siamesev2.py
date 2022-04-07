@@ -8,7 +8,7 @@ from .abstract import AICBase
 
 
 @MODEL_REGISTRY.register()
-class UTSV2(AICBase):
+class HCMUSSubject(AICBase):
     def __init__(self, config):
         super().__init__(config)
 
