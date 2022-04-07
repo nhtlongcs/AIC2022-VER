@@ -4,7 +4,8 @@ import random
 import pandas as pd
 import torch
 from torch.utils.data import Dataset
-
+from PIL import Image
+import os.path as osp
 from . import DATASET_REGISTRY, default_loader
 
 
@@ -91,3 +92,79 @@ class CropVehDataset(Dataset):
             "vehtype_lbls": torch.stack([x["vehtype_lbl"] for x in batch]),
         }
         return batch_dict
+
+@DATASET_REGISTRY.register()
+class AIC22TrackVehJsonDataset(Dataset):
+    """
+    """
+    def __init__(
+        self, 
+        image_dir: str,
+        json_path: str, 
+        crop_area: float = 1.0, 
+        transform=None, 
+        **kwargs
+    ):        
+        super().__init__()
+        self.json_path = json_path
+        self.transform = transform
+        self.image_dir = image_dir
+        self.crop_area = crop_area
+        self._load_data()
+
+    def _load_data(self):
+        with open(self.json_path, 'r') as f:
+            self.track_data = json.load(f)
+        self.track_ids = list(self.track_data.keys())
+
+    def __len__(self):
+        return len(self.track_ids)
+
+    def _load_meta(self):
+        pass
+
+    def __getitem__(self, index: int):
+        track_id = self.track_ids[index]
+        frame_names = self.track_data[track_id]['frames']
+        boxes = self.track_data[track_id]['boxes']
+
+        # Cropped instance image
+        frame_idx = 0
+        frame_path = osp.join(
+            self.image_dir, frame_names[frame_idx]
+        )
+        frame = Image.open(frame_path).convert('RGB')
+        box = boxes[frame_idx]
+        if self.crop_area == 1.6666667:
+            box = (
+                int(box[0] - box[2] / 3.0),
+                int(box[1] - box[3] / 3.0),
+                int(box[0] + 4 * box[2] / 3.0),
+                int(box[1] + 4 * box[3] / 3.0),
+            )
+        else:
+            box = (
+                int(box[0] - (self.crop_area - 1) * box[2] / 2.0),
+                int(box[1] - (self.crop_area - 1) * box[3] / 2),
+                int(box[0] + (self.crop_area + 1) * box[2] / 2.0),
+                int(box[1] + (self.crop_area + 1) * box[3] / 2.0),
+            )
+
+        crop = frame.crop(box)
+        if self.transform is not None:
+            crop = self.transform(crop)
+
+        return_dict = {
+            'id': track_id,
+            'crop': crop,
+        }
+        return return_dict
+
+    def collate_fn(self, batch):
+        crops = torch.stack([s['crop'] for s in batch])
+        track_ids = [s['id'] for s in batch]
+
+        return {
+            'ids': track_ids,
+            'images': crops,
+        }
