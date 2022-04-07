@@ -16,7 +16,7 @@ def train(config):
     pretrained_path = config["global"]["pretrained"]
 
     if pretrained_path:
-        model = model.load_from_checkpoint(pretrained_path)
+        model = model.load_from_checkpoint(pretrained_path, config=config)
 
     cp_path, train_id = prepare_checkpoint_path(
         config["global"]["save_dir"], config["global"]["name"]
