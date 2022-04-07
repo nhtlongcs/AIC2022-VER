@@ -8,7 +8,7 @@ from .abstract import AICBase
 
 
 @MODEL_REGISTRY.register()
-class UTS(AICBase):
+class UTSV2(AICBase):
     def __init__(self, config):
         super().__init__(config)
 
@@ -68,6 +68,10 @@ class UTS(AICBase):
             nn.Linear(self.text_in_dim, embed_dim),
             nn.ReLU(),
             nn.Linear(embed_dim, embed_dim),
+        )
+        
+        self.lang_merge_fc = nn.Sequential(
+            nn.LayerNorm(embed_dim*2), nn.ReLU(), nn.Linear(embed_dim*2, embed_dim)
         )
 
         # Define specific loss for each features
@@ -148,7 +152,7 @@ class UTS(AICBase):
             cls_logits2 = self.id_cls2(motion_embeds)
             cls_logits_results.append(cls_logits2)
         if self.cfg.model["args"]["share_idloss"]:
-            merge_cls_t = self.id_cls3(lang_embeds)
+            merge_cls_t = self.id_cls3(lang_merge_embeds)
             merge_cls_v = self.id_cls3(visual_merge_embeds)
             cls_logits_results.append(merge_cls_t)
             cls_logits_results.append(merge_cls_v)
@@ -189,10 +193,13 @@ class UTS(AICBase):
 
     def query_embedding_head(self, batch, inference=False):
         lang_embeds, lang_sub_embeds = self.encode_nlang_feats(batch)
+        lang_merge_embeds = torch.cat([lang_embeds, lang_sub_embeds], dim=-1)
+        lang_merge_embeds = self.lang_merge_fc(lang_merge_embeds)
+
         lang_car_embeds = self.lang_car_fc(lang_sub_embeds) # change here
         lang_mo_embeds = self.lang_motion_fc(lang_embeds)
         (lang_merge_embeds, lang_car_embeds, lang_mo_embeds) = self.normalize_head(
-            [lang_embeds, lang_car_embeds, lang_mo_embeds]
+            [lang_merge_embeds, lang_car_embeds, lang_mo_embeds]
         )
         if inference:
             return {"ids": batch["ids"], "features": lang_merge_embeds}

@@ -164,20 +164,14 @@ class AICBase(pl.LightningModule):
     def configure_optimizers(self):
         optimizer = torch.optim.AdamW(self.parameters(), self.cfg.trainer["lr"])
 
-        train_set_len = len(self.train_dataset)
-        train_bs = self.cfg["data"]["args"]["train"]["loader"]["batch_size"]
-
-        scheduler = torch.optim.lr_scheduler.OneCycleLR(
-            optimizer,
-            max_lr=self.cfg.trainer["lr"],
-            steps_per_epoch=int(train_set_len // train_bs),
-            epochs=self.cfg.trainer["num_epochs"],
-            anneal_strategy="linear",
-        )
+        scheduler = torch.optim.lr_scheduler.MultiStepLR(
+          optimizer, 
+          milestones=[120, 250, 300], 
+        gamma=0.5)
 
         return {
             "optimizer": optimizer,
-            "lr_scheduler": {"scheduler": scheduler, "interval": "step"},
+            "lr_scheduler": {"scheduler": scheduler, "interval": "epoch"},
         }
 
 
