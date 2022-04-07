@@ -1,6 +1,6 @@
 import json
-from stop_detector import StopDetector
-from turn_detector import TurnDetector, TurnState
+from external.detect_stop_turn.stop_detector import StopDetector
+from external.detect_stop_turn.turn_detector import TurnDetector, TurnState
 from tqdm import tqdm
 import argparse
 
@@ -10,17 +10,27 @@ parser.add_argument('-g', '--test_track_json', type=str,
 parser.add_argument('-o', '--output_json', type=str,
                     help="Path to save result")
 
+
+STOP_CONFIG = {
+    'k': 5,
+    'delta': 10, # as paper
+    'alpha': 0.15 # increase means more retrieved
+}
+
+TURN_CONFIG = {
+    'eps' : 0.035,
+    'skip_frame' : 5,
+    'is_normalize': 0 
+}
+
+
 def run(args):
     stop_det = StopDetector(
-        k = 5,
-        delta = 10, # as paper
-        alpha=0.15 # increase means more retrieved
+        **STOP_CONFIG
     )
 
     turn_det = TurnDetector(
-        eps = 0.035,
-        skip_frame = 5,
-        is_normalize=0 
+        **TURN_CONFIG
     )
 
     with open(args.test_track_json, 'r') as f:
