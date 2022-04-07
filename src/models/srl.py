@@ -61,8 +61,9 @@ class MultiLabelClassifer(ClsBase):
 
     def predict_step(self, batch, batch_idx):
         assert "images" in batch.keys(), "Batch must contain images"
-        return self.forward(batch)
-
+        preds = self.forward(batch)
+        preds.update({'ids': batch['ids']})
+        return preds
 
 @MODEL_REGISTRY.register()
 class VehColorClassifer(MultiLabelClassifer):
