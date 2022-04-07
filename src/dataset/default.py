@@ -13,15 +13,13 @@ import numpy as np
 import os.path as osp
 from src.extractors.clip.tokenization_clip import ClipTokenizer
 
+from . import DATASET_REGISTRY, default_loader
+
 os.environ[
     "TOKENIZERS_PARALLELISM"
 ] = "true"  # https://github.com/huggingface/transformers/issues/5486
 
-DATASET_REGISTRY = Registry("DATASET")
 
-
-def default_loader(path):
-    return Image.open(path).convert("RGB")
 
 
 @DATASET_REGISTRY.register()

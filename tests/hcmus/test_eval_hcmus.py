@@ -11,9 +11,9 @@ import torchvision
 from src.metrics.metric_wrapper import RetrievalMetric
 
 
-@pytest.mark.parametrize("model_name", ["UTS"])
+@pytest.mark.parametrize("model_name", ["HCMUS"])
 def test_evaluate(tmp_path, model_name):
-    cfg_path = "tests/configs/default.yml"
+    cfg_path = "tests/configs/hcmus.yml"
     assert Path(cfg_path).exists(), "config file not found"
     cfg = Opts(cfg=cfg_path).parse_args([])
 
@@ -26,14 +26,16 @@ def test_evaluate(tmp_path, model_name):
             ),
         ]
     )
-    ds = DATASET_REGISTRY.get("CityFlowNLDataset")(
+    ds = DATASET_REGISTRY.get("CityFlowSRLDataset")(
         **cfg.data["args"]["train"],
         data_cfg=cfg.data["args"],
         tok_model_name=cfg.extractors["lang_encoder"]["args"]["pretrained"],
         transform=image_transform,
     )
     dataloader = torch.utils.data.DataLoader(
-        **cfg.data["args"]["train"]["loader"], dataset=ds, collate_fn=ds.collate_fn,
+        **cfg.data["args"]["train"]["loader"],
+        dataset=ds,
+        collate_fn=ds.collate_fn,
     )
     model = MODEL_REGISTRY.get(model_name)(cfg)
     metric = RetrievalMetric(
@@ -62,4 +64,3 @@ def test_evaluate(tmp_path, model_name):
             # 4. Reset metric
             metric.reset()
             break
-

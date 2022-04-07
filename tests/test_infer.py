@@ -7,7 +7,7 @@ def run_predict(cfg, model, mode, bs, savedir):
     infer = Predictor(cfg=cfg, model=model, mode=mode, batch_size=bs, savedir=savedir)
     infer.predict()
 
-
+@pytest.mark.skip(reason="This test will be activate when predictor is ready")
 @pytest.mark.order("last")
 @pytest.mark.parametrize("mode", ["simple", "complex"])
 @pytest.mark.parametrize("bs", [1, 2])

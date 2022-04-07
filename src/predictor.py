@@ -10,7 +10,7 @@ from src.models.abstract import AICBase
 from src.utils.device import move_to
 from src.utils.faiss_retrieval import FaissRetrieval
 
-from src.datasets import AIC22TextJsonDataset, AIC22TrackJsonWithMotionDataset
+from src.dataset.default import AIC22TextJsonDataset, AIC22TrackJsonWithMotionDataset
 import torchvision
 import pytorch_lightning as pl
 from opt import Opts

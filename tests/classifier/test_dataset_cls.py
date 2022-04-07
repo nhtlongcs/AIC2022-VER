@@ -6,9 +6,9 @@ from torch.utils.data import DataLoader
 from pathlib import Path
 
 
-@pytest.mark.parametrize("dataset_name", ["CityFlowNLDataset"])
+@pytest.mark.parametrize("dataset_name", ["CropVehDataset"])
 def test_dataset(tmp_path, dataset_name):
-    cfg_path = "tests/configs/default.yml"
+    cfg_path = "tests/configs/srl/color.yml"
     assert Path(cfg_path).exists(), "config file not found"
     cfg = Opts(cfg=cfg_path).parse_args([])
     image_transform = torchvision.transforms.Compose(
@@ -23,8 +23,7 @@ def test_dataset(tmp_path, dataset_name):
     ds = DATASET_REGISTRY.get(dataset_name)(
         **cfg.data["args"]["train"],
         data_cfg=cfg.data["args"],
-        tok_model_name=cfg.extractors["lang_encoder"]["args"]["pretrained"],
-        transform=image_transform,
+        transform=image_transform
     )
     dataloader = DataLoader(
         ds,
@@ -35,8 +34,7 @@ def test_dataset(tmp_path, dataset_name):
     )
     for i, batch in enumerate(dataloader):
         print(batch["images"].shape)
-        print(batch["tokens"]["input_ids"].shape)
-        print(batch["texts"])
-        print(batch["car_ids"])
-        break
+        print(batch["color_lbls"].shape)
+        print(batch["vehtype_lbls"].shape)
+
 

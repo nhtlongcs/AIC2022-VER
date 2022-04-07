@@ -17,7 +17,7 @@ def train(model_name, cfg_path, resume_ckpt=None):
     model = MODEL_REGISTRY.get(model_name)(cfg)
     checkpoint_callback = ModelCheckpoint(verbose=True, save_last=True,)
     trainer = pl.Trainer(
-        default_root_dir="./uts_runs",
+        default_root_dir="./hcmus_runs",
         log_every_n_steps=1,
         max_steps=10,
         max_epochs=2,
@@ -37,16 +37,16 @@ def train(model_name, cfg_path, resume_ckpt=None):
     del checkpoint_callback
 
 
-@pytest.mark.parametrize("model_name", ["UTS"])
+@pytest.mark.parametrize("model_name", ["HCMUS"])
 def test_trainer(tmp_path, model_name):
-    cfg_path = "tests/configs/default.yml"
+    cfg_path = "tests/configs/hcmus.yml"
     assert Path(cfg_path).exists(), "config file not found"
     print(cfg_path)
     train(model_name, cfg_path)
     train(
         model_name,
         cfg_path,
-        resume_ckpt="./uts_runs/lightning_logs/version_0/checkpoints/last.ckpt",
+        resume_ckpt="./hcmus_runs/lightning_logs/version_0/checkpoints/last.ckpt",
     )
 
 

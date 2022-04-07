@@ -6,9 +6,9 @@ from torch.utils.data import DataLoader
 from pathlib import Path
 
 
-@pytest.mark.parametrize("dataset_name", ["CityFlowNLDataset"])
+@pytest.mark.parametrize("dataset_name", ["CityFlowSRLDataset"])
 def test_dataset(tmp_path, dataset_name):
-    cfg_path = "tests/configs/default.yml"
+    cfg_path = "tests/configs/hcmus.yml"
     assert Path(cfg_path).exists(), "config file not found"
     cfg = Opts(cfg=cfg_path).parse_args([])
     image_transform = torchvision.transforms.Compose(
@@ -38,5 +38,5 @@ def test_dataset(tmp_path, dataset_name):
         print(batch["tokens"]["input_ids"].shape)
         print(batch["texts"])
         print(batch["car_ids"])
-        break
-
+        print(batch["color_lbls"])
+        print(batch["vehtype_lbls"])

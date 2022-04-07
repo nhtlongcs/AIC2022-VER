@@ -14,6 +14,7 @@ class DataHelper(object):
         data = {}
         for key in json_data:
             data[key] = json_data[key]["nl"]
+            data[key] += json_data[key]['nl_other_views']
         return data
 
     def load_file(self, path):
