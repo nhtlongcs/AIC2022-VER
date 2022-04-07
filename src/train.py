@@ -28,7 +28,7 @@ def train(config):
     ]
 
     Wlogger = WandbLogger(
-        project="aic",
+        project=config["global"]["project_name"],
         name=train_id,
         save_dir=config["global"]["save_dir"],
         log_model="all",
