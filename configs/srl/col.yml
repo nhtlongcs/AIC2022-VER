@@ -49,7 +49,6 @@ metric:
     args:
       label_key: "color_lbls"
       num_classes: 8
-
 trainer:
   lr: 0.001
   num_epochs: 10000
@@ -57,3 +56,27 @@ trainer:
   evaluate_interval: 1
   print_interval: 20
   save_interval: 1000
+callbacks:
+  - name: ModelCheckpoint
+    args:
+      filename: "Color-{epoch}-{val/f1:.4f}"
+      monitor: "val/f1"
+      verbose: True
+      save_top_k: 3
+      mode: max
+  - name: EarlyStopping
+    args:
+      monitor: "val/f1"
+      min_delta: 0.0001
+      patience: 15
+      verbose: False
+      mode: max
+  - name: VisualizerCallback
+    args:
+      motion_path: "data/meta/motion_map",
+      gt_json_path: "data/meta/val.json",
+      query_results_json: "temps/query_results.json",
+      mapping_json: "temps/track_id_mapping.json"
+  - name: LearningRateMonitor
+    args:
+      logging_interval: step

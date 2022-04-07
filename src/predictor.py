@@ -11,6 +11,9 @@ from src.utils.device import move_to
 from src.utils.faiss_retrieval import FaissRetrieval
 
 from src.dataset.default import AIC22TextJsonDataset, AIC22TrackJsonWithMotionDataset
+from src.dataset.srl import AIC22TrackVehJsonDataset
+from src.models.abstract import ClsBase
+
 import torchvision
 import pytorch_lightning as pl
 from opt import Opts
@@ -145,3 +148,55 @@ class Predictor(object):
                 results[id] = feat_batch.tolist()
         return results
 
+
+class ClsPredictor(object):
+    def __init__(
+        self,
+        model: ClsBase,
+        cfg: Opts,
+        batch_size: int = 1,
+    ):
+        self.cfg = cfg
+        self.model = model
+        self.threshold = 0.5
+        self.batch_size = batch_size
+        self.setup()
+
+    def save(self, filepath: str, data: dict):
+        with open(filepath, "w") as f:
+            json.dump(data, f)
+        print(f"Saved file to {filepath}")
+
+    def setup(self):
+        image_size = self.cfg['data']['image_size']
+        transform = torchvision.transforms.Compose(
+            [
+                torchvision.transforms.Resize((image_size, image_size)),
+                torchvision.transforms.ToTensor(),
+                torchvision.transforms.Normalize(
+                    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+                ),
+            ]
+        )
+        self.ds = AIC22TrackVehJsonDataset(**self.cfg.data, transform=transform)
+
+    def predict(self):
+        trainer = pl.Trainer(
+            gpus=-1 if torch.cuda.device_count() else None,  # Use all gpus available
+            accelerator="ddp" if torch.cuda.device_count() > 1 else None,
+            sync_batchnorm=True if torch.cuda.device_count() > 1 else False,
+            enable_checkpointing=False,
+        )
+
+        dm = WrapperDataModule(self.ds, batch_size=self.batch_size)
+        prds = trainer.predict(self.model, dm)
+        return prds
+    def predict_json(self):
+        prds = self.predict()
+        result = {}
+        for _, prd in enumerate(prds):
+            track_ids = prd['ids']
+            logits = (prd['logits'] > 0) * 1
+            for i, track_id in enumerate(track_ids):
+                result[track_id] = logits[i].tolist()
+        return result

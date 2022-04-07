@@ -9,7 +9,11 @@ pip install -e .
 
 Extract data notebook: [colab](https://colab.research.google.com/drive/18Jmz-e4AvH1QAG_WVZqjlT3XgnPcWOMY)
 
-Training notebook: [colab](https://colab.research.google.com/drive/1o5g9fUndIFmHr-DYKczXq9q_-aiLQh-P)
+Training Retrieval Model notebook: [colab](https://colab.research.google.com/drive/1o5g9fUndIFmHr-DYKczXq9q_-aiLQh-P)
+
+Training Color Classification Model notebook: [colab](https://colab.research.google.com/drive/1KyywJ-nWrT-S8uRFfupinbpfltH0F7aA)
+
+Training Vehicle Classification Model notebook: [colab](https://colab.research.google.com/drive/13eBvCeHoHKwTcoC9pXRQv9m_zmX0PFP5)
 
 ## Prepare data
 
