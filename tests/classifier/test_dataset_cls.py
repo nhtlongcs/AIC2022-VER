@@ -38,4 +38,3 @@ def test_dataset(tmp_path, dataset_name):
         print(batch["vehtype_lbls"].shape)
 
 
-test_dataset("", dataset_name="CropVehDataset")
