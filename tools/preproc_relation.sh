@@ -1,0 +1,27 @@
+DATAPATH=$1
+TRACK_JSON=$2
+
+REL_PATH=$DATAPATH/relation
+mkdir $REL_PATH
+
+AUX_JSON_PATH=$REL_PATH/neighbor_tracks.json
+AUX_MAPPING_JSON_PATH=$REL_PATH/neighbor_mapping.json
+
+
+SUBSTRING=$(echo $TRACK_JSON| cut -d'/' -f -1)
+ECHO $SUBSTRING
+
+REL_JSON_PATH=$REL_PATH/${SUBSTRING}_relation.json
+
+echo Extracting auxiliary tracks ...
+python scripts/relation/gen_aux_tracks.py -o $AUX_JSON_PATH && echo DONE || echo Run FAILED, please check
+
+echo Generate neighbor mapping ...
+python scripts/relation/gen_neighbor_mapping.py -o $AUX_MAPPING_JSON_PATH && echo DONE || echo Run FAILED, please check
+
+echo Refine neighbor ...
+python scripts/relation/refine_neighbor.py \
+    --tracks_json $TRACK_JSON \
+    --aux_tracks_json $AUX_JSON_PATH \
+    --aux_tracks_mapping_json $AUX_MAPPING_JSON_PATH \
+    -o $REL_JSON_PATH && echo DONE || echo Run FAILED, please check
