@@ -33,6 +33,7 @@ Ensure your data folder structure as same as our `data_sample`
 $ ./tools/extract_vdo2frms_AIC.sh ./data/AIC22_Track2_NL_Retrieval/ ./data/meta/extracted_frames/
 $ cp ./data/AIC22_Track2_NL_Retrieval/*.json ./data/meta/
 $ ./tools/preproc.sh ./data/meta
+$ sh ./tools/preproc_relation.sh ./data ./data/meta/test_tracks.json
 
 ```
 

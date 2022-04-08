@@ -1,7 +1,7 @@
 DATAPATH=$1
 TRACK_JSON=$2
 
-REL_PATH=$DATAPATH/relation
+REL_PATH=$DATAPATH/meta/relation
 mkdir $REL_PATH
 
 AUX_JSON_PATH=$REL_PATH/neighbor_tracks.json
