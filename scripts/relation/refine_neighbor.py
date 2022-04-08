@@ -22,7 +22,7 @@ parser.add_argument("--aux_tracks_json", type=str, help='Auxiliary json file')
 parser.add_argument("--aux_tracks_mapping_json", type=str, help='Auxiliary mapping json file')
 args = parser.parse_args()
 
-TRACKS_JSON = args.track_json
+TRACKS_JSON = args.tracks_json
 OUTPATH = args.output_json
 AUX_TRACKS_MAPPING = args.aux_tracks_mapping_json
 AUX_TRACKS = args.aux_tracks_json
@@ -50,6 +50,10 @@ def run():
         main_boxes = main_tracks[main_track_id]['boxes']
         main_boxes = xywh_to_xyxy_lst(main_boxes)
         main_frame_names = main_tracks[main_track_id]['frames']
+
+        if main_track_id not in aux_tracks_mapping.keys():
+            continue
+            
         aux_track_ids = aux_tracks_mapping[main_track_id]
 
         # Interpolate main track boxes

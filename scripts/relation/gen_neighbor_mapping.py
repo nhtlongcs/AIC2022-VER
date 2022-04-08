@@ -13,26 +13,22 @@ import argparse
 
 parser = argparse.ArgumentParser('Generate neighbor mapping')
 parser.add_argument("-i", "--data_path", type=str, help='Path to root')
-parser.add_argument("-o", "--output", type=str, help='Output file')
+parser.add_argument("-o", "--output_json", type=str, help='Output file')
 args = parser.parse_args()
 
 CONSTANT = Constants(args.data_path)
 NUM_FRAMES_THRESHOLD = 5 # filter out tracks which appear less than threshold
-OUTPATH = args.output
+OUTPATH = args.output_json
 
-FOLDER_NAME = ['train', 'validation', 'train', 'validation'] #because AIC22 structure folder this way
+FOLDER_NAME = ['train', 'validation'] #because AIC22 structure folder this way
 CAM_IDS = [
     CONSTANT.TEST_CAM_IDS, 
     CONSTANT.TRAIN_CAM_IDS, 
-    CONSTANT.TEST_CAM_IDS, 
-    CONSTANT.TRAIN_CAM_IDS
 ] 
 
 TRACKS_JSON = [
     CONSTANT.TEST_TRACKS_JSON, 
     CONSTANT.TRAIN_TRACKS_JSON, 
-    CONSTANT.PSEUDO_TEST_TRACKS_JSON, 
-    CONSTANT.PSEUDO_TEST_TRACKS_JSON
 ]
 
 ANNO = "{AIC22_ORI_ROOT}/{FOLDER_NAME}/{CAMERA}/gt/gt.txt"
@@ -41,7 +37,7 @@ def generate_neighbor_tracks_mapping(camera_id, folder_name, track_json):
 
     csv_path = ANNO.format(CAMERA=camera_id, FOLDER_NAME=folder_name, AIC22_ORI_ROOT=CONSTANT.AIC22_ORI_ROOT)
     if not osp.isfile(csv_path):
-        return 
+        return {}
     df = pd.read_csv(csv_path)
 
     df.columns = [

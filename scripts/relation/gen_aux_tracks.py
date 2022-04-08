@@ -19,7 +19,7 @@ args = parser.parse_args()
 
 CONSTANT = Constants(args.data_path)
 
-OUTPATH = args.output
+OUTPATH = args.output_json
 CAM_IDS = [CONSTANT.TEST_CAM_IDS, CONSTANT.TRAIN_CAM_IDS] 
 FOLDER_NAME = ['train', 'validation'] #because AIC22 structure folder this way
 ANNO = "{AIC22_ORI_ROOT}/{FOLDER_NAME}/{CAMERA}/gt/gt.txt"
@@ -27,7 +27,7 @@ ANNO = "{AIC22_ORI_ROOT}/{FOLDER_NAME}/{CAMERA}/gt/gt.txt"
 def generate_unique_neighbor_tracks(camera_id, folder_name):
     csv_path = ANNO.format(CAMERA=camera_id, FOLDER_NAME=folder_name, AIC22_ORI_ROOT=CONSTANT.AIC22_ORI_ROOT)
     if not osp.isfile(csv_path):
-        return 
+        return {}
     df = pd.read_csv(csv_path)
     df.columns = [
         'frame_id', 
