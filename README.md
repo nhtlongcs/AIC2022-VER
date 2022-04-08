@@ -33,8 +33,14 @@ Ensure your data folder structure as same as our `data_sample`
 $ ./tools/extract_vdo2frms_AIC.sh ./data/AIC22_Track2_NL_Retrieval/ ./data/meta/extracted_frames/
 $ cp ./data/AIC22_Track2_NL_Retrieval/*.json ./data/meta/
 $ ./tools/preproc.sh ./data/meta
+$ ./tools/preproc_relation.sh ./data ./data/meta/test_tracks.json
 
+$ ./tools/predict_srl.sh configs/srl/col_infer.yml artifacts/color/model.ckpt configs/srl/veh_infer.yml artifacts/vehicle/model.ckpt ./data/meta/relation/neighbor_tracks.json data/meta/extracted_frames ./out_test_neighbors/
+
+$ ./tools/predict_srl.sh configs/srl/col_infer.yml artifacts/color/model.ckpt configs/srl/veh_infer.yml artifacts/vehicle/model.ckpt ./data/meta/test_tracks.json data/meta/extracted_frames ./out_test_tracks_colors/
 ```
+
+With artifacts/ is the directory where you store the trained classification model.
 
 For testing purpose, you can use the command `./tools/preproc.sh ./data_sample/meta`
 

@@ -13,35 +13,24 @@ from external.relation.bb_utils import xywh_to_xyxy_lst
 from external.relation.frame_utils import get_frame_ids_by_names
 
 from scripts.relation.constants import (
-    TEST_CAM_IDS, TEST_TRACKS_JSON, TEST_RELATION_JSON, TEST_AUX_TRACKS_JSON,
-    TRAIN_CAM_IDS, TRAIN_TRACKS_JSON, TRAIN_RELATION_JSON, TRAIN_AUX_TRACKS_JSON,
-    TRAIN_TRACK_RELATION_VIDEOS, TEST_TRACK_RELATION_VIDEOS,
+    TEST_TRACKS_JSON, PSEUDO_TEST_TRACKS_JSON,
     EXTRACTED_FRAMES_DIR
 )
 
-SPLIT = 'test' # or test
-
-if SPLIT == 'train':
-    CAM_IDS = TRAIN_CAM_IDS
-    TRACKS_JSON = TRAIN_TRACKS_JSON
-    RELATION_TRACKS_JSON = TRAIN_RELATION_JSON
-    AUX_TRACKS_JSON = TRAIN_AUX_TRACKS_JSON
-    OUTDIR = TRAIN_TRACK_RELATION_VIDEOS
-else:
-    CAM_IDS = TEST_CAM_IDS
-    TRACKS_JSON = TEST_TRACKS_JSON
-    RELATION_TRACKS_JSON = TEST_RELATION_JSON
-    AUX_TRACKS_JSON = TEST_AUX_TRACKS_JSON
-    OUTDIR = TEST_TRACK_RELATION_VIDEOS
+TRACKS_JSON = TEST_TRACKS_JSON
+OUTDIR = "/home/kaylode/Github/AIC2022-VER/data/meta/new/track_visualization/relation/pseudo-test"
+TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/originals/pseudo_test_tracks.json"
+RELATION_TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/pseudo_test_relation.json"
+AUX_TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/neighbor_tracks.json"
 
 os.makedirs(OUTDIR, exist_ok=True)
 
 def visualize_neighbors():
 
-    with open(TEST_TRACKS_JSON, 'r') as f:
+    with open(TRACKS_JSON, 'r') as f:
         main_data = json.load(f)
 
-    with open(TEST_RELATION_JSON, 'r') as f:
+    with open(RELATION_TRACKS_JSON, 'r') as f:
         neighbor_mapping = json.load(f)
 
     with open(AUX_TRACKS_JSON, 'r') as f:
@@ -64,7 +53,7 @@ def visualize_neighbors():
         if len(main_frame_names) > 10:
             fps = 10
         else:
-            fps = len(main_frame_names)//2
+            fps = max(len(main_frame_names)//2, 1)
 
         writer = cv2.VideoWriter(
             osp.join(OUTDIR, main_track_id+'.mp4'),   
@@ -79,9 +68,6 @@ def visualize_neighbors():
         neighbors = neighbor_mapping[main_track_id]
         followed_byed_ids = neighbors['followed_by']
         follow_ids = neighbors['follow']
-
-        if len(followed_byed_ids) == 0 and len(follow_ids) == 0:
-            continue
 
         # FOR EASIEST WAY, WE USE DATAFRAME TO STORE ALL TRACKS, THEN VISUALIZE THIS DATAFRAME #
         

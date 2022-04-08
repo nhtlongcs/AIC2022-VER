@@ -12,30 +12,15 @@ from external.relation.drawing import draw_one_box
 from external.relation.bb_utils import xywh_to_xyxy_lst
 
 from scripts.relation.constants import (
-    TEST_CAM_IDS, TEST_TRACKS_JSON, TEST_AUX_TRACKS_JSON, TEST_TRACK_VIDEOS, TEST_TRACK_AUX_VIDEOS,
-    TRAIN_CAM_IDS, TRAIN_TRACKS_JSON, TRAIN_AUX_TRACKS_JSON, TRAIN_TRACK_VIDEOS, TRAIN_TRACK_AUX_VIDEOS,
+    TEST_TRACKS_JSON, PSEUDO_TEST_TRACKS_JSON,
+    TRAIN_TRACKS_JSON, 
     EXTRACTED_FRAMES_DIR
 )
 
-SPLIT = 'test' # or test
-NEIGHBOR = True
 
-if SPLIT == 'train':
-    CAM_IDS = TRAIN_CAM_IDS
-    if NEIGHBOR:
-        TRACKS_JSON = TRAIN_AUX_TRACKS_JSON
-        OUTDIR = TRAIN_TRACK_AUX_VIDEOS
-    else:
-        TRACKS_JSON = TRAIN_TRACKS_JSON
-        OUTDIR = TRAIN_TRACK_VIDEOS
-else:
-    CAM_IDS = TEST_CAM_IDS
-    if NEIGHBOR:
-        TRACKS_JSON = TEST_AUX_TRACKS_JSON
-        OUTDIR = TEST_TRACK_AUX_VIDEOS
-    else:
-        TRACKS_JSON = TEST_TRACKS_JSON
-        OUTDIR = TEST_TRACK_VIDEOS
+TRACKS_JSON = PSEUDO_TEST_TRACKS_JSON
+OUTDIR = "/home/kaylode/Github/AIC2022-VER/data/meta/new/track_visualization/original/pseudo-test"
+
 
 os.makedirs(OUTDIR, exist_ok=True)
 

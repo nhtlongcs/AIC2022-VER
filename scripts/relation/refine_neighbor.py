@@ -13,26 +13,19 @@ from external.relation.track_utils import (
     check_is_neighbor_tracks, check_same_tracks, get_relation_between_tracks
 )
 
-from scripts.relation.constants import (
-    TEST_CAM_IDS, TEST_TRACKS_JSON, TEST_AUX_TRACKS_MAPPING_JSON, TEST_AUX_TRACKS_JSON,
-    TRAIN_CAM_IDS, TRAIN_TRACKS_JSON, TRAIN_AUX_TRACKS_MAPPING_JSON, TRAIN_AUX_TRACKS_JSON,
-    TEST_RELATION_JSON, TRAIN_RELATION_JSON
-)
+import argparse
+parser = argparse.ArgumentParser('Generate auxiliary tracks')
 
-SPLIT = 'train' # or test
+parser.add_argument("-i", "--tracks_json", type=str, help='Track json file')
+parser.add_argument("-o", "--output_json", type=str, help='Output file')
+parser.add_argument("--aux_tracks_json", type=str, help='Auxiliary json file')
+parser.add_argument("--aux_tracks_mapping_json", type=str, help='Auxiliary mapping json file')
+args = parser.parse_args()
 
-if SPLIT == 'train':
-    CAM_IDS = TRAIN_CAM_IDS
-    TRACKS_JSON = TRAIN_TRACKS_JSON
-    OUTPATH = TRAIN_RELATION_JSON
-    AUX_TRACKS_MAPPING = TRAIN_AUX_TRACKS_MAPPING_JSON
-    AUX_TRACKS = TRAIN_AUX_TRACKS_JSON
-else:
-    CAM_IDS = TEST_CAM_IDS
-    TRACKS_JSON = TEST_TRACKS_JSON
-    OUTPATH = TEST_RELATION_JSON
-    AUX_TRACKS_MAPPING = TEST_AUX_TRACKS_MAPPING_JSON
-    AUX_TRACKS = TEST_AUX_TRACKS_JSON
+TRACKS_JSON = args.tracks_json
+OUTPATH = args.output_json
+AUX_TRACKS_MAPPING = args.aux_tracks_mapping_json
+AUX_TRACKS = args.aux_tracks_json
 
 def run():
     with open(TRACKS_JSON, 'r') as f:
@@ -57,6 +50,10 @@ def run():
         main_boxes = main_tracks[main_track_id]['boxes']
         main_boxes = xywh_to_xyxy_lst(main_boxes)
         main_frame_names = main_tracks[main_track_id]['frames']
+
+        if main_track_id not in aux_tracks_mapping.keys():
+            continue
+            
         aux_track_ids = aux_tracks_mapping[main_track_id]
 
         # Interpolate main track boxes
