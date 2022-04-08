@@ -3,32 +3,47 @@ Script for generating all neighbor tracks based on annotation from AIC22 dataset
 Read in the auxiliary tracks and the main tracks and decide which is the neighbor to which
 """
 
+import os.path as osp
 import json
 import pandas as pd
 from tqdm import tqdm
 from external.relation.frame_utils import get_frame_ids_by_names, get_camera_id_by_name
-from scripts.relation.constants import (
-    AIC22_ORI_ROOT,
-    TEST_CAM_IDS, TEST_TRACKS_JSON, PSEUDO_TEST_TRACKS_JSON,
-    TRAIN_CAM_IDS, TRAIN_TRACKS_JSON,
-)
+from scripts.relation.constants import Constants
 import argparse
 
 parser = argparse.ArgumentParser('Generate neighbor mapping')
+parser.add_argument("-i", "--data_path", type=str, help='Path to root')
 parser.add_argument("-o", "--output", type=str, help='Output file')
 args = parser.parse_args()
 
+CONSTANT = Constants(args.data_path)
 NUM_FRAMES_THRESHOLD = 5 # filter out tracks which appear less than threshold
 OUTPATH = args.output
 
 FOLDER_NAME = ['train', 'validation', 'train', 'validation'] #because AIC22 structure folder this way
-CAM_IDS = [TEST_CAM_IDS, TRAIN_CAM_IDS, TEST_CAM_IDS, TRAIN_CAM_IDS] 
-TRACKS_JSON = [TEST_TRACKS_JSON, TRAIN_TRACKS_JSON, PSEUDO_TEST_TRACKS_JSON, PSEUDO_TEST_TRACKS_JSON]
+CAM_IDS = [
+    CONSTANT.TEST_CAM_IDS, 
+    CONSTANT.TRAIN_CAM_IDS, 
+    CONSTANT.TEST_CAM_IDS, 
+    CONSTANT.TRAIN_CAM_IDS
+] 
+
+TRACKS_JSON = [
+    CONSTANT.TEST_TRACKS_JSON, 
+    CONSTANT.TRAIN_TRACKS_JSON, 
+    CONSTANT.PSEUDO_TEST_TRACKS_JSON, 
+    CONSTANT.PSEUDO_TEST_TRACKS_JSON
+]
+
 ANNO = "{AIC22_ORI_ROOT}/{FOLDER_NAME}/{CAMERA}/gt/gt.txt"
 
 def generate_neighbor_tracks_mapping(camera_id, folder_name, track_json):
 
-    df = pd.read_csv(ANNO.format(CAMERA=camera_id, FOLDER_NAME=folder_name, AIC22_ORI_ROOT=AIC22_ORI_ROOT))
+    csv_path = ANNO.format(CAMERA=camera_id, FOLDER_NAME=folder_name, AIC22_ORI_ROOT=CONSTANT.AIC22_ORI_ROOT)
+    if not osp.isfile(csv_path):
+        return 
+    df = pd.read_csv(csv_path)
+
     df.columns = [
         'frame_id', 
         'track_id', 

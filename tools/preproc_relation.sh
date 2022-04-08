@@ -14,10 +14,14 @@ ECHO $SUBSTRING
 REL_JSON_PATH=$REL_PATH/${SUBSTRING}_relation.json
 
 echo Extracting auxiliary tracks ...
-python scripts/relation/gen_aux_tracks.py -o $AUX_JSON_PATH && echo DONE || echo Run FAILED, please check
+python scripts/relation/gen_aux_tracks.py \
+    -i $DATAPATH \
+    -o $AUX_JSON_PATH && echo DONE || echo Run FAILED, please check
 
 echo Generate neighbor mapping ...
-python scripts/relation/gen_neighbor_mapping.py -o $AUX_MAPPING_JSON_PATH && echo DONE || echo Run FAILED, please check
+python scripts/relation/gen_neighbor_mapping.py 
+    -i $DATAPATH \
+    -o $AUX_MAPPING_JSON_PATH && echo DONE || echo Run FAILED, please check
 
 echo Refine neighbor ...
 python scripts/relation/refine_neighbor.py \

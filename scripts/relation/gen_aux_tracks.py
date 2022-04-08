@@ -3,30 +3,32 @@ Script for generating all neighbor tracks based on annotation from AIC22 dataset
 Read in tracking results and convert into same format as AIC22 tracks
 """
 
+import os.path as osp
 import json
 import pandas as pd
 from tqdm import tqdm
-from scripts.relation.constants import (
-    AIC22_ORI_ROOT,
-    TEST_CAM_IDS,
-    TRAIN_CAM_IDS, 
-)
+from scripts.relation.constants import Constants
 
 import argparse
 parser = argparse.ArgumentParser('Generate auxiliary tracks')
 
+parser.add_argument("-i", "--data_path", type=str, help='Path to root')
 parser.add_argument("-o", "--output_json", type=str, help='Output file')
 args = parser.parse_args()
 
-NUM_FRAMES_THRESHOLD = 5 # filter out tracks which appear less than threshold
-OUTPATH = args.output
 
-CAM_IDS = [TEST_CAM_IDS, TRAIN_CAM_IDS] 
+CONSTANT = Constants(args.data_path)
+
+OUTPATH = args.output
+CAM_IDS = [CONSTANT.TEST_CAM_IDS, CONSTANT.TRAIN_CAM_IDS] 
 FOLDER_NAME = ['train', 'validation'] #because AIC22 structure folder this way
 ANNO = "{AIC22_ORI_ROOT}/{FOLDER_NAME}/{CAMERA}/gt/gt.txt"
 
 def generate_unique_neighbor_tracks(camera_id, folder_name):
-    df = pd.read_csv(ANNO.format(CAMERA=camera_id, FOLDER_NAME=folder_name, AIC22_ORI_ROOT=AIC22_ORI_ROOT))
+    csv_path = ANNO.format(CAMERA=camera_id, FOLDER_NAME=folder_name, AIC22_ORI_ROOT=CONSTANT.AIC22_ORI_ROOT)
+    if not osp.isfile(csv_path):
+        return 
+    df = pd.read_csv(csv_path)
     df.columns = [
         'frame_id', 
         'track_id', 
