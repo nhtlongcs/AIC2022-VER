@@ -7,17 +7,19 @@ import json
 import pandas as pd
 from tqdm import tqdm
 from external.relation.frame_utils import get_frame_ids_by_names, get_camera_id_by_name
-
 from scripts.relation.constants import (
     AIC22_ORI_ROOT,
     TEST_CAM_IDS, TEST_TRACKS_JSON, PSEUDO_TEST_TRACKS_JSON,
     TRAIN_CAM_IDS, TRAIN_TRACKS_JSON,
 )
+import argparse
+
+parser = argparse.ArgumentParser('Generate neighbor mapping')
+parser.add_argument("-o", "--output", type=str, help='Output file')
+args = parser.parse_args()
 
 NUM_FRAMES_THRESHOLD = 5 # filter out tracks which appear less than threshold
-OUTPATH = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/neighbor_mapping.json"
-
-
+OUTPATH = args.output
 
 FOLDER_NAME = ['train', 'validation', 'train', 'validation'] #because AIC22 structure folder this way
 CAM_IDS = [TEST_CAM_IDS, TRAIN_CAM_IDS, TEST_CAM_IDS, TRAIN_CAM_IDS] 

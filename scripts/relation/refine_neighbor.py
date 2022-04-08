@@ -13,10 +13,19 @@ from external.relation.track_utils import (
     check_is_neighbor_tracks, check_same_tracks, get_relation_between_tracks
 )
 
-TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/originals/train_tracks.json"
-OUTPATH = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/train_relation.json"
-AUX_TRACKS_MAPPING = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/neighbor_mapping.json"
-AUX_TRACKS = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/neighbor_tracks.json"
+import argparse
+parser = argparse.ArgumentParser('Generate auxiliary tracks')
+
+parser.add_argument("-i", "--tracks_json", type=str, help='Track json file')
+parser.add_argument("-o", "--output_json", type=str, help='Output file')
+parser.add_argument("--aux_tracks_json", type=str, help='Auxiliary json file')
+parser.add_argument("--aux_tracks_mapping_json", type=str, help='Auxiliary mapping json file')
+args = parser.parse_args()
+
+TRACKS_JSON = args.track_json
+OUTPATH = args.output_json
+AUX_TRACKS_MAPPING = args.aux_tracks_mapping_json
+AUX_TRACKS = args.aux_tracks_json
 
 def run():
     with open(TRACKS_JSON, 'r') as f:
