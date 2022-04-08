@@ -10,32 +10,23 @@ from external.relation.frame_utils import get_frame_ids_by_names, get_camera_id_
 
 from scripts.relation.constants import (
     AIC22_ORI_ROOT,
-    TEST_CAM_IDS, TEST_TRACKS_JSON,
+    TEST_CAM_IDS, TEST_TRACKS_JSON, PSEUDO_TEST_TRACKS_JSON,
     TRAIN_CAM_IDS, TRAIN_TRACKS_JSON,
-    TEST_AUX_TRACKS_MAPPING_JSON,
-    TRAIN_AUX_TRACKS_MAPPING_JSON
 )
 
-SPLIT = 'train' # or test
 NUM_FRAMES_THRESHOLD = 5 # filter out tracks which appear less than threshold
+OUTPATH = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/neighbor_mapping.json"
 
-if SPLIT == 'train':
-    FOLDER_NAME = 'validation' #because AIC22 structure folder this way
-    OUTPATH = TRAIN_AUX_TRACKS_MAPPING_JSON
-    CAM_IDS = TRAIN_CAM_IDS
-    TRACKS_JSON = TRAIN_TRACKS_JSON
-else:
-    FOLDER_NAME = 'train' #because AIC22 structure folder this way
-    OUTPATH = TEST_AUX_TRACKS_MAPPING_JSON
-    CAM_IDS = TEST_CAM_IDS
-    TRACKS_JSON = TEST_TRACKS_JSON
 
+
+FOLDER_NAME = ['train', 'validation', 'train', 'validation'] #because AIC22 structure folder this way
+CAM_IDS = [TEST_CAM_IDS, TRAIN_CAM_IDS, TEST_CAM_IDS, TRAIN_CAM_IDS] 
+TRACKS_JSON = [TEST_TRACKS_JSON, TRAIN_TRACKS_JSON, PSEUDO_TEST_TRACKS_JSON, PSEUDO_TEST_TRACKS_JSON]
 ANNO = "{AIC22_ORI_ROOT}/{FOLDER_NAME}/{CAMERA}/gt/gt.txt"
 
+def generate_neighbor_tracks_mapping(camera_id, folder_name, track_json):
 
-def generate_neighbor_tracks_mapping(camera_id):
-
-    df = pd.read_csv(ANNO.format(CAMERA=camera_id, FOLDER_NAME=FOLDER_NAME, AIC22_ORI_ROOT=AIC22_ORI_ROOT))
+    df = pd.read_csv(ANNO.format(CAMERA=camera_id, FOLDER_NAME=folder_name, AIC22_ORI_ROOT=AIC22_ORI_ROOT))
     df.columns = [
         'frame_id', 
         'track_id', 
@@ -43,7 +34,7 @@ def generate_neighbor_tracks_mapping(camera_id):
         'conf', 'unk1', 'unk2', 'unk3'
     ]
 
-    with open(TRACKS_JSON, 'r') as f:
+    with open(track_json, 'r') as f:
         data = json.load(f)
 
     main_track_ids = list(data.keys())
@@ -92,9 +83,11 @@ def generate_neighbor_tracks_mapping(camera_id):
 def run():
 
     final_dict = {}
-    for camera_id in tqdm(CAM_IDS):
-        camera_neighbor_dict = generate_neighbor_tracks_mapping(camera_id)
-        final_dict.update(camera_neighbor_dict)
+
+    for cam_split, folder_name, track_json in zip(CAM_IDS, FOLDER_NAME, TRACKS_JSON):
+        for camera_id in tqdm(cam_split):
+            camera_neighbor_dict = generate_neighbor_tracks_mapping(camera_id, folder_name, track_json)
+            final_dict.update(camera_neighbor_dict)
 
     with open(OUTPATH, 'w') as f:
         json.dump(final_dict, f, indent=4)

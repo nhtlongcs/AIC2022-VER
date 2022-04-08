@@ -13,26 +13,10 @@ from external.relation.track_utils import (
     check_is_neighbor_tracks, check_same_tracks, get_relation_between_tracks
 )
 
-from scripts.relation.constants import (
-    TEST_CAM_IDS, TEST_TRACKS_JSON, TEST_AUX_TRACKS_MAPPING_JSON, TEST_AUX_TRACKS_JSON,
-    TRAIN_CAM_IDS, TRAIN_TRACKS_JSON, TRAIN_AUX_TRACKS_MAPPING_JSON, TRAIN_AUX_TRACKS_JSON,
-    TEST_RELATION_JSON, TRAIN_RELATION_JSON
-)
-
-SPLIT = 'train' # or test
-
-if SPLIT == 'train':
-    CAM_IDS = TRAIN_CAM_IDS
-    TRACKS_JSON = TRAIN_TRACKS_JSON
-    OUTPATH = TRAIN_RELATION_JSON
-    AUX_TRACKS_MAPPING = TRAIN_AUX_TRACKS_MAPPING_JSON
-    AUX_TRACKS = TRAIN_AUX_TRACKS_JSON
-else:
-    CAM_IDS = TEST_CAM_IDS
-    TRACKS_JSON = TEST_TRACKS_JSON
-    OUTPATH = TEST_RELATION_JSON
-    AUX_TRACKS_MAPPING = TEST_AUX_TRACKS_MAPPING_JSON
-    AUX_TRACKS = TEST_AUX_TRACKS_JSON
+TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/originals/train_tracks.json"
+OUTPATH = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/train_relation.json"
+AUX_TRACKS_MAPPING = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/neighbor_mapping.json"
+AUX_TRACKS = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/neighbor_tracks.json"
 
 def run():
     with open(TRACKS_JSON, 'r') as f:
