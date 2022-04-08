@@ -1,5 +1,3 @@
-from dataclasses import asdict
-import glob
 import json
 import multiprocessing
 from pathlib import Path
@@ -9,71 +7,42 @@ import numpy as np
 from tqdm import tqdm
 import os.path as osp
 
+def load_and_merge_json(json_list):
+    result = {}
+    for json_file in json_list:
+        with open(json_file) as f:
+            data = json.load(f)
+            result.update(data)
+    return result
+
 n_worker = multiprocessing.cpu_count() // 2
 meta_data_path = sys.argv[1]
 root = Path(meta_data_path) / 'extracted_frames'
 save_bk_dir = Path(meta_data_path) / 'bk_map'
 save_rel_mo_dir = Path(meta_data_path) / 'rel_motion_map'
+save_rel_mo_dir.mkdir(exist_ok=True)
 
-test_track_path = osp.join(meta_data_path,"test_tracks.json")
-train_track_path = osp.join(meta_data_path,"train_tracks.json")
-train_relation_track_path = osp.join(meta_data_path, "relation", "train_relation.json")
-test_relation_track_path = osp.join(meta_data_path, "relation", "test_relation.json")
-
-test_neighbor_track_path = osp.join(meta_data_path, "relation", "test_neighbors.json")
-train_neighbor_track_path = osp.join(meta_data_path, "relation", "train_neighbors.json")
-
-assert test_track_path and train_track_path, "Paths to test and train tracks are not provided"
-
-with open(test_track_path) as f:
-    tracks_test = json.load(f)
-with open(train_track_path) as f:
-    tracks_train = json.load(f)
-
-all_tracks = tracks_test
-for track in tracks_train.keys():
-    all_tracks[track] = tracks_train[track]
-
+# All tracks
+all_tracks = load_and_merge_json([
+    osp.join(meta_data_path,'originals', "test_tracks.json"),
+    osp.join(meta_data_path,'originals', "pseudo_test_tracks.json"),
+    osp.join(meta_data_path,'originals', "train_tracks.json")
+])
 
 # Append neighbors to all tracks
 ## All neighbors mapping
-
-with open(train_relation_track_path) as f:
-    rel_train = json.load(f)
-with open(test_relation_track_path) as f:
-    rel_test = json.load(f)
-
-all_rel_mapping = rel_test
-all_rel_mapping.update(rel_train)
+all_rel_mapping = load_and_merge_json([
+    osp.join(meta_data_path, "relation", "test_neighbors.json"),
+    osp.join(meta_data_path, "relation", "pseudo_test_neighbors.json"),
+    osp.join(meta_data_path, "relation", "train_neighbors.json")
+])
 
 ## Read in all neighbor tracks info
-with open(train_neighbor_track_path) as f:
-    rel_tracks_train = json.load(f)
-with open(test_neighbor_track_path) as f:
-    rel_tracks_test = json.load(f)
-
-all_rel_tracks = rel_tracks_test
-all_rel_tracks.update(rel_tracks_train)
-
-save_rel_mo_dir.mkdir(exist_ok=True)
-
-def get_bk_map(info):
-    # weighted bk map?
-    path, save_name = info
-    img = glob.glob(path + "/img1/*.jpg")
-    img.sort()
-    interval = min(5, max(1, int(len(img) / 200)))
-    img = img[::interval][:10]
-    # img = img[::interval][:1000]
-    imgs = []
-    outpath = save_bk_dir / f"{save_name}.jpg"
-    if outpath.exists():
-        return
-    for name in img:
-        imgs.append(cv2.imread(name))
-    avg_img = np.mean(np.stack(imgs), 0)
-    avg_img = avg_img.astype(np.int64)
-    cv2.imwrite(str(outpath), avg_img)
+all_rel_tracks = load_and_merge_json([
+    osp.join(meta_data_path, "relation", "train_relation.json"),
+    osp.join(meta_data_path, "relation", "test_relation.json"),
+    osp.join(meta_data_path, "relation", "pseudo_test_relation.json")
+])
 
 
 def get_rel_motion_map(info):
@@ -209,16 +178,6 @@ def parallel_task(task, files):
         for imgs in tqdm(pool.imap_unordered(task, files)):
             pass
 
-
-def extract_bk_map():
-    paths = root.glob("*/*/*")
-    files = []
-    for path in paths:
-        files.append((str(path), path.parent.name + "_" + path.name))
-
-    parallel_task(get_bk_map, files)
-
-
 def extract_mo_map():
     files = []
     for track_id in all_tracks.keys():
@@ -235,10 +194,5 @@ def extract_mo_map():
         })
     parallel_task(get_rel_motion_map, files)
 
-    # for file in tqdm(files):
-        # get_rel_motion_map(file)
-
-
 if __name__ == "__main__":
-    # extract_bk_map()
     extract_mo_map()
