@@ -13,7 +13,7 @@ install [Streamlit](https://docs.streamlit.io/en/stable/)
 
 - To visualize data ground truth
 ```
-streamlit run app_sub.py -- -i ./data
+streamlit run app_gt.py -- -i ./data
 ```
 
 - To visualize prediction before submission 
