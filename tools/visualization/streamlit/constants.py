@@ -9,12 +9,11 @@ class Constants:
         ## Track data
         self.EXTRACTED_FRAMES_DIR = f"{self.AIC22_META_ROOT}/extracted_frames"
         self.VIDEO_DIR = {
-            'test': f"{self.AIC22_META_ROOT}/track_visualization/original/test-convert.json",
-            'train': f"{self.AIC22_META_ROOT}/track_visualization/originaltrain-val-convert.json",
-            'pseudo-test': f"{self.AIC22_META_ROOT}/track_visualization/original/pseudo.json"
+            'test': f"{self.AIC22_META_ROOT}/track_visualization/original/test-convert",
+            'train': f"{self.AIC22_META_ROOT}/track_visualization/original/train-val-convert",
+            'pseudo-test': f"{self.AIC22_META_ROOT}/track_visualization/relation/pseudo-test-convert"
         }
         
-        f"{self.AIC22_META_ROOT}/track_visualization"
         self.TRACKS_JSON = {
             'test': f"{self.AIC22_META_ROOT}/test_tracks.json",
             'train': f"{self.AIC22_META_ROOT}/train_tracks.json",
@@ -24,18 +23,19 @@ class Constants:
         # Queries data
         self.QUERY_JSON = {
             'test': f"{self.AIC22_META_ROOT}/test_queries.json",
+            'pseudo-test': self.TRACKS_JSON['pseudo-test'],
         }
 
         # Metadata
-        self.SRL_CSV = {
+        self.SRL_JSON = {
             'train': f'{self.AIC22_META_ROOT}/srl/train_srl.csv',
             'test': f'{self.AIC22_META_ROOT}/srl/test_srl.csv',
-            'pseudo-test': f'{self.AIC22_META_ROOT}/srl/pseudo-test_srl.csv',
+            'pseudo-test': f'{self.AIC22_META_ROOT}/srl/srl_pseudo.json',
         }
         self.RELATION_JSON = {
-            'train': f'{self.AIC22_META_ROOT}/relation/train_relation.json',
-            'test': f'{self.AIC22_META_ROOT}/relation/test_relation.json',
-            'pseudo-test': f'{self.AIC22_META_ROOT}/relation/pseudo_test_relation.json',
+            'train': f'{self.AIC22_META_ROOT}/relation/train_tracks_relation.json',
+            'test': f'{self.AIC22_META_ROOT}/relation/test_tracks_relation.json',
+            'pseudo-test': f'{self.AIC22_META_ROOT}/relation/pseudo_test_tracks_relation.json',
         }
 
         self.STOP_TURN_JSON = {
@@ -46,16 +46,16 @@ class Constants:
 
         ### For test tracks only (because these dont have query text)
         self.VEHICLE_JSON = {
-            'test': f'{self.AIC22_META_ROOT}/meta/vehicle_out.json',
-            'pseudo-test': None
+            'test': None,
+            'pseudo-test': f'{self.AIC22_META_ROOT}/srl/srl_test_out/tracks_srl_out/vehicle_prediction_name.json',
         }
         self.COLOR_JSON = {
-            'test': f'{self.AIC22_META_ROOT}/meta/color_out.json',
-            'pseudo-test': None
+            'test': None,
+            'pseudo-test': f'{self.AIC22_META_ROOT}/srl/srl_test_out/tracks_srl_out/color_prediction_name.json'
         }
         self.ACTION_JSON = {
-            'test': f'{self.AIC22_META_ROOT}/meta/action_out.json',
-            'pseudo-test': None
+            'test': None,
+            'pseudo-test': f'{self.AIC22_META_ROOT}/srl/srl_test_out/tracks_srl_out/vehicle_prediction.json',
         }
 
         ## Camera ids

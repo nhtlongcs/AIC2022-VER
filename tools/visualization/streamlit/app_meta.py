@@ -7,7 +7,7 @@ import os.path as osp
 from typing import Dict, List 
 import numpy as np
 import streamlit as st
-from .constants import Constants
+from tools.visualization.streamlit.constants import Constants
 
 parser = argparse.ArgumentParser(description='Streamlit visualization')
 parser.add_argument('-i', '--root_dir', type=str,
@@ -26,21 +26,21 @@ color_dict = None
 vehicle_dict = None
 
 
-if osp.isfile(CONSTANTS.STOP_TURN_JSON):
-    action_dict = json.load(open(CONSTANTS.STOP_TURN_JSON, 'r'))
+if osp.isfile(CONSTANTS.STOP_TURN_JSON[args.split]):
+    action_dict = json.load(open(CONSTANTS.STOP_TURN_JSON[args.split], 'r'))
 
-if osp.isfile(CONSTANTS.RELATION_JSON):
-    relation_dict = json.load(open(CONSTANTS.RELATION_JSON, 'r'))
+if osp.isfile(CONSTANTS.RELATION_JSON[args.split]):
+    relation_dict = json.load(open(CONSTANTS.RELATION_JSON[args.split], 'r'))
 
-if osp.isfile(CONSTANTS.COLOR_JSON):
-    color_dict = json.load(open(CONSTANTS.COLOR_JSON, 'r'))
+if osp.isfile(CONSTANTS.COLOR_JSON[args.split]):
+    color_dict = json.load(open(CONSTANTS.COLOR_JSON[args.split], 'r'))
     available_colors = [] 
     for colors in color_dict.values():
         available_colors.extend(colors)
     available_colors = list(set(available_colors))
     
-if osp.isfile(CONSTANTS.VEHICLE_JSON):
-    vehicle_dict = json.load(open(CONSTANTS.VEHICLE_JSON, 'r'))
+if osp.isfile(CONSTANTS.VEHICLE_JSON[args.split]):
+    vehicle_dict = json.load(open(CONSTANTS.VEHICLE_JSON[args.split], 'r'))
     available_vehicles = [] 
     for vehicles in vehicle_dict.values():
         available_vehicles.extend(vehicles)
@@ -123,8 +123,13 @@ def main(args):
         st.warning("No video is found")
 
     COLUMNS = 3
-    ROWS = min(len(list_vid_ids), top_to_show) // COLUMNS
+    ROWS = max(min(len(list_vid_ids), top_to_show) // COLUMNS, 1)
 
+    captions_list = []
+    if args.split == 'pseudo-test':
+        # load query texts
+        track_json = json.load(open(CONSTANTS.TRACKS_JSON[args.split], 'r'))
+        captions_list = [track_json[i]["nl"] for i in list_vid_ids]
 
     # Show retrieved video results
     st.markdown("### Videos")
@@ -136,11 +141,15 @@ def main(args):
                 if vid_order >= len(list_vid_ids):
                     break
                 video_name = f'{list_vid_ids[vid_order]}.mp4'
+                captions = '\n'.join(captions_list[vid_order])
                 video_path = osp.join(CONSTANTS.VIDEO_DIR[args.split], video_name)
                 video_file = open(video_path, 'rb')
                 video_bytes = video_file.read()
                 cols[c].video(video_bytes)
                 cols[c].text(f'{vid_order+1}. {video_name}')
+                cols[c].text(captions)
+
+                
 
 if __name__ == '__main__':
     main(args)

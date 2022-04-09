@@ -3,7 +3,7 @@ import json
 import argparse
 import os.path as osp
 import streamlit as st
-from .constants import Constants
+from tools.visualization.streamlit.constants import Constants
 
 parser = argparse.ArgumentParser(description='Streamlit visualization')
 parser.add_argument('-i', '--root_dir', type=str,
@@ -19,7 +19,7 @@ def main():
     # Choose file
     st.sidebar.subheader("Choose file")
     list_versions = list(CONSTANTS.TRACKS_JSON.keys())
-    filename = st.sidebar.radio(label="", options=list_versions)
+    filename = st.sidebar.radio(label="", options=list_versions, default='pseudo-test')
     all_track_dict = json.load(open(CONSTANTS.TRACKS_JSON[filename], 'r'))
 
     # Choose top k to retrieve
