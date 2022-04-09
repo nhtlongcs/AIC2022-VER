@@ -1,17 +1,17 @@
 data:
   text:
-    name: AIC22TextJsonDataset
+    name: AIC22TextJsonDatasetSubject
     args:
-      json_path: null
+      json_path: /content/AIC2022-VER/data/test_queries.json
       tok_model_name: bert-base-uncased
-      num_texts_used: 3
-      use_other_views: False
+      num_texts_used: 5
+      use_other_views: True
   track:
-    name: AIC22TrackJsonWithMotionDataset
+    name:  AIC22TrackJsonWithMotionDataset
     args:
-      image_dir: null
-      json_path: null
-      motion_path: null
+      image_dir: /content/AIC2022-VER/data/extracted_frames
+      json_path: /content/AIC2022-VER/data/test_tracks.json
+      motion_path: /content/AIC2022-VER/data/motion_map
       meta_json: null
       crop_area: 1.0
       image_size: 288
@@ -29,10 +29,9 @@ extractors:
       pretrained: "bert-base-uncased"
       freeze: True
 model:
-  name: UTS
+  name: HCMUSSubject
   args:
     NUM_CLASS: 2155 # total tracks
-    # EMBED_DIM: 1024
     EMBED_DIM: 768
     car_idloss: True
     mo_idloss: True
