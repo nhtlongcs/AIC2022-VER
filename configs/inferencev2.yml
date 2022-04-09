@@ -2,19 +2,21 @@ data:
   text:
     name: AIC22TextJsonDataset
     args:
-      json_path: null
-      tok_model_name: bert-base-uncased
-      num_texts_used: 3
-      use_other_views: False
+      text:
+        json_path: null
+        tok_model_name: bert-base-uncased
+        num_texts_used: 3
+        use_other_views: False
   track:
-    name: AIC22TrackJsonWithMotionDataset
+    name: AIC22TextJsonDatasetSubject
     args:
-      image_dir: null
-      json_path: null
-      motion_path: null
-      meta_json: null
-      crop_area: 1.0
-      image_size: 288
+      track:
+        image_dir: null
+        json_path: null
+        motion_path: null
+        meta_json: null
+        crop_area: 1.0
+        image_size: 288
 
 extractors:
   img_encoder:
