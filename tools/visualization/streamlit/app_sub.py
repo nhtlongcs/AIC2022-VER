@@ -7,27 +7,14 @@ import streamlit as st
 parser = argparse.ArgumentParser(description='Streamlit visualization')
 parser.add_argument('--result_folder', type=str,
                     help="Path to folder contains json result files")
-parser.add_argument('--query_json', type=str,
-                    help="Path to json query file")
-parser.add_argument('--video_dir', type=str,
-                    help="Path to folder contains all gallery track videos  ")
-
-def json_load(json_path: str):
-    data = None
-    with open(json_path, 'r') as f:
-        data = json.load(f)
-    return data
-
-def setup(args):
-    json_files = os.listdir(args.result_folder)
-    version_map = {
-        json_name: osp.join(args.result_folder, json_name) for json_name in json_files
-    }
-    return version_map
-
+parser.add_argument('-i', '--root_dir', type=str,
+                    help="Path to root dir")
 args = parser.parse_args()
-queries_dict = json_load(args.query_json)
-version_map = setup(args)
+
+queries_dict = json.load(open(args.query_json, 'r'))
+version_map = {
+        json_name: osp.join(args.result_folder, json_name) for json_name in os.listdir(args.result_folder)
+    }
 
 def main(args):
     st.set_page_config(layout="wide")
@@ -38,7 +25,7 @@ def main(args):
     # Choose result version
     st.sidebar.subheader("Choose version")
     version = st.sidebar.radio(label="", options=list_versions)
-    result_dict = json_load(version_map[version])
+    result_dict = json.load(open(version_map[version], 'r'))
 
     # Choose top k to retrieve
     top_to_show = st.sidebar.slider(
@@ -52,12 +39,17 @@ def main(args):
 
     choose_qid = st.selectbox(f"Choose query", options=display)
     query_dict = queries_dict[choose_qid]
-    list_caps =  query_dict['nl'] + query_dict['nl_other_views']
-    list_vid_ids = result_dict[choose_qid]['pred_ids']
+    list_vid_ids = result_dict[choose_qid]
+    list_caps =  query_dict['nl'] 
+    list_other_caps = query_dict['nl_other_views']
 
     # Write out query captions
     st.markdown("### Query captions")
+    st.markdown("#### Main views")
     for cap in list_caps:
+        st.write(cap)
+    st.markdown("#### Other views")
+    for cap in list_other_caps:
         st.write(cap)
 
     COLUMNS = 3
