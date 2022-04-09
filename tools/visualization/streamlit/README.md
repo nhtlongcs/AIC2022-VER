@@ -8,9 +8,18 @@ install [Streamlit](https://docs.streamlit.io/en/stable/)
 
 - To run streamlit with arguments, use `--` before flags
 
+
+- To visualize data ground truth
+```
+streamlit run app_sub.py -- \
+  --result_folder ./results \
+  --query_json ./test-queries.json \
+  --video_dir ./track_videos
+```
+
 - To visualize prediction before submission 
 ```
-streamlit run app.py -- \
+streamlit run app_sub.py -- \
   --result_folder ./results \
   --query_json ./test-queries.json \
   --video_dir ./track_videos
@@ -19,9 +28,11 @@ streamlit run app.py -- \
 - To visualize metadata (vehicle action and relation)
 ```
 streamlit run app_meta.py -- \
-  --video_dir relation/test-convert \
-  --relation_json ./test_relation.json \
-  --action_json ./test_stop_turn.json
+    --video_dir data/meta/track_visualization/relation/test-convert \
+    --relation_json data/meta/relation/test_relation.json \
+    --action_json data/meta/action/test_stop_turn.json \
+    --color_json tools/visualization/streamlit/results/color_out.json \
+    --vehicle_json tools/visualization/streamlit/results/vehicle_out.json
 ```
 
 ## File formats

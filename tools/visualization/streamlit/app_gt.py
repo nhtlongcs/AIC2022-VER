@@ -3,77 +3,57 @@ import json
 import argparse
 import os.path as osp
 import streamlit as st
+from .constants import Constants
 
 parser = argparse.ArgumentParser(description='Streamlit visualization')
-parser.add_argument('--track_json', type=str,
-                    help="Path to json query file")
-parser.add_argument('--video_dir', type=str,
-                    help="Path to folder contains all gallery track videos  ")
-
-def json_load(json_path: str):
-    data = None
-    with open(json_path, 'r') as f:
-        data = json.load(f)
-    return data
-
-def setup(args):
-    json_files = os.listdir(args.result_folder)
-    version_map = {
-        json_name: osp.join(args.result_folder, json_name) for json_name in json_files
-    }
-    return version_map
-
+parser.add_argument('-i', '--root_dir', type=str,
+                    help="Path to root dir")
 args = parser.parse_args()
-queries_dict = json_load(args.query_json)
-version_map = setup(args)
+           
+CONSTANTS = Constants(args.root_dir)
 
-def main(args):
+def main():
     st.set_page_config(layout="wide")
-    st.title('Traffic Video Event Retrieval via Text Query')
+    st.title('AIC2022: Ground truth')
 
-    list_versions = sorted(list(version_map.keys()))
-
-    # Choose result version
-    st.sidebar.subheader("Choose version")
-    version = st.sidebar.radio(label="", options=list_versions)
-    result_dict = json_load(version_map[version])
+    # Choose file
+    st.sidebar.subheader("Choose file")
+    list_versions = list(CONSTANTS.TRACKS_JSON.keys())
+    filename = st.sidebar.radio(label="", options=list_versions)
+    all_track_dict = json.load(open(CONSTANTS.TRACKS_JSON[filename], 'r'))
 
     # Choose top k to retrieve
     top_to_show = st.sidebar.slider(
         'Show top-? results', 3, 30, 15)
 
-    # Choose query id
-    list_qids = list(result_dict.keys())
+    # Choose track id
+    list_tids = list(all_track_dict.keys())
     display = [] 
-    for qid in list_qids:
+    for qid in list_tids:
         display.append(f'{qid}')
 
-    choose_qid = st.selectbox(f"Choose query", options=display)
-    query_dict = queries_dict[choose_qid]
-    list_caps =  query_dict['nl'] #+ query_dict['nl_other_views']
-    list_vid_ids = result_dict[choose_qid] #['pred_ids']
+    choose_qid = st.selectbox(f"Choose track", options=display)
+    track_dict = all_track_dict[choose_qid]
+    list_caps =  track_dict['nl'] 
+    list_other_caps = track_dict['nl_other_views']
 
     # Write out query captions
     st.markdown("### Query captions")
+    st.markdown("#### Main views")
     for cap in list_caps:
         st.write(cap)
-
-    COLUMNS = 3
-    ROWS = top_to_show // COLUMNS
+    st.markdown("#### Other views")
+    for cap in list_other_caps:
+        st.write(cap)
 
     # Show retrieved video results
     st.markdown("### Video results")
     if st.button('Search'):
-        for r in range(ROWS):
-            cols = st.columns(COLUMNS)
-            for c in range(COLUMNS):
-                vid_order = 3*r + c
-                video_name = f'{list_vid_ids[vid_order]}.mp4'
-                video_path = osp.join(args.video_dir, video_name)
-                video_file = open(video_path, 'rb')
-                video_bytes = video_file.read()
-                cols[c].video(video_bytes)
-                cols[c].text(f'{vid_order+1}. {video_name}')
+        video_path = osp.join(CONSTANTS.TEST_VIDEO_DIR, f"{choose_qid}.mp4")
+        video_file = open(video_path, 'rb')
+        video_bytes = video_file.read()
+        st.video(video_bytes)
+        st.text(f'{choose_qid}')
 
 if __name__ == '__main__':
-    main(args)
+    main()
