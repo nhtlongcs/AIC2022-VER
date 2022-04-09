@@ -14,7 +14,6 @@ class Constants:
             'pseudo-test': f"{self.AIC22_META_ROOT}/track_visualization/original/pseudo.json"
         }
         
-        f"{self.AIC22_META_ROOT}/track_visualization"
         self.TRACKS_JSON = {
             'test': f"{self.AIC22_META_ROOT}/test_tracks.json",
             'train': f"{self.AIC22_META_ROOT}/train_tracks.json",

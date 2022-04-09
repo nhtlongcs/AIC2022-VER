@@ -7,7 +7,7 @@ import os.path as osp
 from typing import Dict, List 
 import numpy as np
 import streamlit as st
-from .constants import Constants
+from tools.visualization.streamlit.constants import Constants
 
 parser = argparse.ArgumentParser(description='Streamlit visualization')
 parser.add_argument('-i', '--root_dir', type=str,
