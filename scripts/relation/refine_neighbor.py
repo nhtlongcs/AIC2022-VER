@@ -20,7 +20,9 @@ parser.add_argument("-i", "--tracks_json", type=str, help='Track json file')
 parser.add_argument("-o", "--output_json", type=str, help='Output file')
 parser.add_argument("--aux_tracks_json", type=str, help='Auxiliary json file')
 parser.add_argument("--aux_tracks_mapping_json", type=str, help='Auxiliary mapping json file')
+parser.add_argument("--top_k_neighbors", type=int, default=2, help='Top k neighbors each relation')
 args = parser.parse_args()
+
 
 TRACKS_JSON = args.tracks_json
 OUTPATH = args.output_json
@@ -64,6 +66,7 @@ def run():
         main_frame_ids = [i for i in range(main_start_id, main_start_id+len(main_refined_boxes))]
         
         # Interpolate aux track boxes
+        neighbor_candidates = []
         for aux_track_id in aux_track_ids:
             aux_boxes = aux_tracks[aux_track_id]['boxes']
             aux_boxes = xywh_to_xyxy_lst(aux_boxes)
@@ -90,11 +93,15 @@ def run():
             #     continue
             
             # Finally, two determine relation between two neighbor tracks
-            relation, avg_distance, avg_cos = get_relation_between_tracks(main_intersect_boxes, aux_intersect_boxes)
-     
-            # Store result
-            if relation in relation_graph[main_track_id].keys():
-                relation_graph[main_track_id][relation].append(aux_track_id)
+            relation, priority_level = get_relation_between_tracks(main_intersect_boxes, aux_intersect_boxes)
+            if relation in ['follow', 'followed_by']:
+                neighbor_candidates.append((aux_track_id, relation, priority_level))
+        
+        # Store result
+        neighbor_candidates.sort(key=lambda tup: tup[-1]) # ranking by priority level, smaller means more qualified
+        for candidate_id, relation, _ in neighbor_candidates:
+            if len(relation_graph[main_track_id][relation]) < args.top_k_neighbors:
+                relation_graph[main_track_id][relation].append(candidate_id)
 
     with open(OUTPATH, 'w') as f:
         json.dump(relation_graph, f, indent=4)

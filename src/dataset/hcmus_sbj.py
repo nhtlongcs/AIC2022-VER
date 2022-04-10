@@ -183,6 +183,7 @@ class CityFlowNLDatasetSubject(Dataset):
         return batch_dict
 
 
+@DATASET_REGISTRY.register()
 class AIC22TextJsonDatasetSubject(Dataset):
     """
     """
@@ -222,22 +223,36 @@ class AIC22TextJsonDatasetSubject(Dataset):
         query_texts = np.random.choice(query_texts, size=min(len(query_texts), self.num_texts_used), replace=False)
         query_text = '. '.join(query_texts)
 
+        # Subject texts, different idea from v1
+        sub_text = '. '.join(query_data['subjects'] )
+
         return {
             'id': query_id,
-            'text': query_text
+            'text': query_text,
+            'sub_text': sub_text
         }
 
     def collate_fn(self, batch: List):
         text_ids = [s['id'] for s in batch]
         texts =[s['text'] for s in batch]
+        sub_texts = [s['sub_text'] for s in batch]
 
         token_dict = self.tokenizer.batch_encode_plus(
             texts, padding="longest", return_tensors="pt"
         )
+
+
+        sub_token_dict = self.tokenizer.batch_encode_plus(
+            sub_texts, padding="longest", return_tensors="pt"
+        )
+        
         batch_dict = {
             'ids': text_ids,
-            'tokens': token_dict
+            'tokens': token_dict,
+            'sub_tokens': sub_token_dict
         }
+
+
         return batch_dict
         # ```
         # token_dict.update({

@@ -6,34 +6,31 @@ install [Streamlit](https://docs.streamlit.io/en/stable/)
 
 ## Run
 
-- To run streamlit with arguments, use `--` before flags
+- Download video files using this [link](https://drive.google.com/file/d/1LSFgViybP_hjggoAwuFiJ-emzAlfy-b5/view?usp=sharing)
+- Firstly, change path in `constants.py`. 
 
+- To run streamlit with arguments, use `--` before flags
 
 - To visualize data ground truth
 ```
-streamlit run app_sub.py -- \
-  --result_folder ./results \
-  --query_json ./test-queries.json \
-  --video_dir ./track_videos
+streamlit run app_gt.py -- -i ./data
 ```
 
 - To visualize prediction before submission 
 ```
 streamlit run app_sub.py -- \
-  --result_folder ./results \
-  --query_json ./test-queries.json \
-  --video_dir ./track_videos
+   -i ./data \
+   --result_folder <path to submission folder>
 ```
 
-- To visualize metadata (vehicle action and relation)
+- To visualize metadata (vehicle action, relation, color)
 ```
 streamlit run app_meta.py -- \
-    --video_dir data/meta/track_visualization/relation/test-convert \
-    --relation_json data/meta/relation/test_relation.json \
-    --action_json data/meta/action/test_stop_turn.json \
-    --color_json tools/visualization/streamlit/results/color_out.json \
-    --vehicle_json tools/visualization/streamlit/results/vehicle_out.json
+  -i ./data \
+  -s pseudo-text
 ```
+
+
 
 ## File formats
 
