@@ -4,10 +4,12 @@ Read in the neighbor tracks and the main tracks and refine the relationshop
 """
 
 import os
+import os.path as osp
+import cv2
 import json
 import numpy as np
 from tqdm import tqdm
-from external.relation.bb_utils import refine_boxes, xywh_to_xyxy_lst
+from external.relation.bb_utils import refine_boxes, xywh_to_xyxy_lst, get_attention_mask, check_attention_mask
 from external.relation.frame_utils import get_frame_ids_by_names
 from external.relation.track_utils import (
     check_is_neighbor_tracks, check_same_tracks, get_relation_between_tracks
@@ -17,6 +19,7 @@ import argparse
 parser = argparse.ArgumentParser('Generate auxiliary tracks')
 
 parser.add_argument("-i", "--tracks_json", type=str, help='Track json file')
+parser.add_argument("-d", "--image_dir", type=str, help='Path to extracted frames')
 parser.add_argument("-o", "--output_json", type=str, help='Output file')
 parser.add_argument("--aux_tracks_json", type=str, help='Auxiliary json file')
 parser.add_argument("--aux_tracks_mapping_json", type=str, help='Auxiliary mapping json file')
@@ -28,6 +31,7 @@ TRACKS_JSON = args.tracks_json
 OUTPATH = args.output_json
 AUX_TRACKS_MAPPING = args.aux_tracks_mapping_json
 AUX_TRACKS = args.aux_tracks_json
+FRAME_DIR = args.image_dir
 
 def run():
     with open(TRACKS_JSON, 'r') as f:
@@ -65,6 +69,11 @@ def run():
         main_refined_boxes = refine_boxes(main_frame_ids, main_boxes)
         main_frame_ids = [i for i in range(main_start_id, main_start_id+len(main_refined_boxes))]
         
+        # Generate attention mask
+        tmp_frame = cv2.imread(osp.join(FRAME_DIR, main_frame_names[0]))
+        frame_h, frame_w, _ = tmp_frame.shape
+        attention_mask = get_attention_mask(main_refined_boxes, frame_w, frame_h, expand_ratio=0)
+
         # Interpolate aux track boxes
         neighbor_candidates = []
         for aux_track_id in aux_track_ids:
@@ -85,7 +94,16 @@ def run():
             aux_intersect_boxes = [box for (box, id) in zip(aux_refined_boxes, aux_frame_ids) if id in intersect_frame_ids]
 
             # Check if both tracks are the same, both tracks have been aligned
-            if check_same_tracks(main_intersect_boxes, aux_intersect_boxes):
+            if check_same_tracks(main_intersect_boxes, aux_intersect_boxes, iou_mean_threshold=0.3):
+                continue
+            
+            # Check if neighbors track is inside attention mask
+            if not check_attention_mask(
+                attention_mask, 
+                aux_intersect_boxes,
+                attention_thresh=0.3,
+                min_rate=0.2 
+            ):
                 continue
 
             # Check if both tracks are related (near to each other), optional

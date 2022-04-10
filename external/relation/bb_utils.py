@@ -1,3 +1,4 @@
+from typing import List
 import numpy as np
 
 def bb_intersection_over_union(boxA, boxB):
@@ -92,3 +93,95 @@ def xywh_to_xyxy_lst(boxes):
     for box in boxes:
         new_boxes.append(xywh_to_xyxy(box))
     return new_boxes
+
+
+### Attention mask
+
+
+def expand_boxes(list_xyxy_boxes: list, n: int=4, skip_frame: int=1):
+    # xyxy
+
+    list_boxes = []
+    for box in list_xyxy_boxes:
+        list_boxes.append(
+            [box[0], box[1], box[2]-box[0], box[3] - box[1]]
+        )
+
+
+    first_box, last_box = list_boxes[0], list_boxes[-1]
+    list_center = [get_box_center(box) for box in list_boxes]
+    first_velocity = get_velocity(list_center[skip_frame], list_center[0])
+    last_velocity = get_velocity(list_center[-1 - skip_frame], list_center[-1])
+
+    # Expand head
+    new_head_boxes = []
+    cur_box = first_box
+    cur_center = list_center[0]
+    for _ in range(n):
+        w, h = cur_box[-2:]
+        cur_center = (cur_center[0] + first_velocity[0], cur_center[1] + first_velocity[1])
+        new_head_boxes.append([cur_center[0], cur_center[1], w, h])
+
+    # Expand trail
+    new_trail_boxes = []
+    cur_box = last_box
+    cur_center = list_center[-1]
+    for _ in range(n):
+        w, h = cur_box[-2:]
+        cur_center = (cur_center[0] + last_velocity[0], cur_center[1] + last_velocity[1])
+        new_trail_boxes.append([cur_center[0], cur_center[1], w, h])
+
+    res = new_head_boxes[::-1] + list_boxes + new_trail_boxes
+
+    res = xywh_to_xyxy_lst(res)
+    return res
+
+def check_attention_mask(attn_mask: np.ndarray, boxes: np.array, attention_thresh: float =0.3, min_rate: float = 0.2):
+    # min rate: percentage of frames length in which the track is in attention mask
+    chosen_ids = [] # list of boxes that inside mask
+    for i, box in enumerate(boxes):
+        x, y, x2, y2 = box
+        x, y, x2, y2 = int(x),  int(y),  int(x2),  int(y2)
+        w = x2 - x
+        h = y2 - y
+
+        area = w*h 
+        mask_area = attn_mask[y: y+h+1, x: x+w+1]
+        mask_area[np.where(mask_area <= attention_thresh)] = 0
+        overlap_ratio = np.sum(mask_area)/area
+        
+        if overlap_ratio > attention_thresh:
+            chosen_ids.append(i)
+    return len(chosen_ids) > min_rate * len(boxes)
+
+def get_attention_mask(list_boxes: List, frame_w, frame_h, expand_ratio=0.35, n_expand=2, skip_frame=3):
+    # boxes xywh
+    mask = np.zeros((frame_h, frame_w))
+    if len(list_boxes) >= skip_frame:
+        exp_boxes = expand_boxes(list_boxes, n_expand)
+    else:
+        exp_boxes = list_boxes
+    for box in exp_boxes:
+        x1, y1, x2, y2 = get_mask_area(box, frame_w, frame_h, expand_ratio)
+        mask[y1:y2, x1:x2] = 1.0
+    return mask
+
+def get_valid_coor(x, delta, xmax, xmin=0):
+    x_new = x+delta
+    x_new = min(xmax, max(xmin, x_new))
+    return x_new
+
+def get_mask_area(box, W, H, ratio=0.5):
+    # xyxy
+    x, y, x2, y2 = box
+    w = x2 - x
+    h = y2 - y 
+    exp_w = w*ratio
+    exp_h = h*ratio
+
+    new_x1 = int(get_valid_coor(x, -exp_w, W-1, 0))
+    new_x2 = int(get_valid_coor(x, w+exp_w, W-1, 0))
+    new_y1 = int(get_valid_coor(y, -exp_h, H-1, 0))
+    new_y2 = int(get_valid_coor(y, h+exp_h, H-1, 0))
+
+    return new_x1, new_y1, new_x2, new_y2

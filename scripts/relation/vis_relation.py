@@ -15,10 +15,10 @@ from scripts.relation.constants import Constants
 
 CONSTANT = Constants("/home/kaylode/Github/AIC2022-VER/data")
 
-OUTDIR = "/home/kaylode/Github/AIC2022-VER/data/meta/new/track_visualization/relation/test"
-TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/new/originals/test_tracks.json"
-RELATION_TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/test_tracks_relation.json"
-AUX_TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/neighbor_tracks.json"
+OUTDIR = "/home/kaylode/Github/AIC2022-VER/data/meta/track_visualization/relation/attn_test"
+TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/test_tracks.json"
+RELATION_TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/playground/relation/attn_test_relation.json"
+AUX_TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/relation/neighbor_tracks.json"
 
 os.makedirs(OUTDIR, exist_ok=True)
 
