@@ -55,7 +55,7 @@ def get_relation_between_tracks(track_boxes1, track_boxes2):
     num_boxes = len(track_boxes1)
 
     if num_boxes <= 2:
-        return FollowState.NO_RELATION, None, None
+        return FollowState.NO_RELATION, -1
 
     if num_boxes <= 9:
         skip_frame = VELOCITY_SKIP_FRAME // 2
@@ -79,6 +79,8 @@ def get_relation_between_tracks(track_boxes1, track_boxes2):
     avg_cos = np.mean(cosine_va_ab)
     
     isFollow = FollowState.NO_RELATION
+
+    priority_level = 0 #used to ranking the "nearest" neighbor
     # Loop through threshold
     for traj_thres in MAX_TRAJ_THRES_LEVEL:
         for v_thres in THRES_LEVEL:
@@ -136,10 +138,8 @@ def get_relation_between_tracks(track_boxes1, track_boxes2):
                 FollowState.A_FOLLOW_B,
                 FollowState.B_FOLLOW_A
             ):
+                return FollowState.RELATION_NAME[isFollow], priority_level
+            else:
+                priority_level += 1
 
-                return FollowState.RELATION_NAME[isFollow], avg_distance, avg_cos
-
-    return FollowState.RELATION_NAME[isFollow], avg_distance, avg_cos
-    
-                
-    
+    return FollowState.RELATION_NAME[isFollow], priority_level

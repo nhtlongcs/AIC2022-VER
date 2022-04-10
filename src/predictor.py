@@ -13,6 +13,7 @@ from src.utils.faiss_retrieval import FaissRetrieval
 from src.dataset.default import AIC22TextJsonDataset, AIC22TrackJsonWithMotionDataset
 from src.dataset.srl import AIC22TrackVehJsonDataset
 from src.models.abstract import ClsBase
+from src.dataset import DATASET_REGISTRY
 
 import torchvision
 import pytorch_lightning as pl
@@ -57,7 +58,7 @@ class Predictor(object):
         print(f"Saved {filename} to {self.savedir}")
 
     def setup(self):
-        image_size = self.cfg['data']['track']['image_size']
+        image_size = self.cfg['data']['track']['args']['image_size']
         transform = torchvision.transforms.Compose(
             [
                 torchvision.transforms.Resize((image_size, image_size)),
@@ -67,10 +68,15 @@ class Predictor(object):
                 ),
             ]
         )
-        self.query_ds = AIC22TextJsonDataset(**self.cfg.data["text"])
-        self.track_ds = AIC22TrackJsonWithMotionDataset(
-            **self.cfg.data["track"], transform=transform
+
+        self.track_ds = DATASET_REGISTRY.get(self.cfg.data["track"]["name"])(
+            **self.cfg.data["track"]['args'],
+            transform=transform,
         )
+        self.query_ds = DATASET_REGISTRY.get(self.cfg.data["text"]["name"])(
+            **self.cfg.data["text"]['args']
+        )
+
 
     def predict(self):
         self.model.eval()
