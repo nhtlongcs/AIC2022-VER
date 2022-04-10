@@ -8,6 +8,9 @@ import math
 import numpy as np
 import copy
 
+def cmp(a, b):
+    return (a > b) - (a < b)
+
 class TurnState:
     NO_TURN = 0
     LEFT = 1
