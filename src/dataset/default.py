@@ -392,10 +392,8 @@ class AIC22TextJsonDataset(Dataset):
         query_data = self.queries_data[query_id]
 
         query_texts = query_data['nl']
-        if self.use_other_views:
-            query_texts += query_data['nl_other_views']
+        query_texts += query_data['nl_other_views']
 
-        query_texts = np.random.choice(query_texts, size=min(len(query_texts), self.num_texts_used), replace=False)
         query_text = '. '.join(query_texts)
 
         return {
@@ -467,7 +465,7 @@ class AIC22TrackJsonWithMotionDataset(Dataset):
         boxes = self.track_data[track_id]['boxes']
 
         # Cropped instance image
-        frame_idx = 0
+        frame_idx = len(frame_names) // 2
         frame_path = osp.join(
             self.image_dir, frame_names[frame_idx]
         )
