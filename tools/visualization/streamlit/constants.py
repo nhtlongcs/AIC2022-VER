@@ -5,11 +5,12 @@ class Constants:
         self.AIC22_ROOT = root_path
         self.AIC22_ORI_ROOT = f"{self.AIC22_ROOT}/AIC22_Track2_NL_Retrieval"
         self.AIC22_META_ROOT = f"{self.AIC22_ROOT}/meta"
+        self.SUBMISSION_DIR = f"{self.AIC22_ROOT}/results/10Apr"
 
         ## Track data
         self.EXTRACTED_FRAMES_DIR = f"{self.AIC22_META_ROOT}/extracted_frames"
         self.VIDEO_DIR = {
-            'test': f"{self.AIC22_META_ROOT}/track_visualization/original/test-convert",
+            'test': f"{self.AIC22_META_ROOT}/track_visualization/relation/test-convert",
             'train': f"{self.AIC22_META_ROOT}/track_visualization/original/train-val-convert",
             'pseudo-test': f"{self.AIC22_META_ROOT}/track_visualization/relation/pseudo-test-convert"
         }
@@ -26,10 +27,10 @@ class Constants:
             'pseudo-test': self.TRACKS_JSON['pseudo-test'],
         }
 
-        # Metadata
+        # METADATA PREDICTIONS
         self.SRL_JSON = {
             'train': f'{self.AIC22_META_ROOT}/srl/train_srl.csv',
-            'test': f'{self.AIC22_META_ROOT}/srl/test_srl.csv',
+            'test': f'{self.SUBMISSION_DIR}/srl_test_queries.json',
             'pseudo-test': f'{self.AIC22_META_ROOT}/srl/srl_pseudo.json',
         }
         self.RELATION_JSON = {
@@ -37,26 +38,23 @@ class Constants:
             'test': f'{self.AIC22_META_ROOT}/relation/test_tracks_relation.json',
             'pseudo-test': f'{self.AIC22_META_ROOT}/relation/pseudo_test_tracks_relation.json',
         }
-
         self.STOP_TURN_JSON = {
             'train': f'{self.AIC22_META_ROOT}/action/train_stop_turn.json',
-            'test': f'{self.AIC22_META_ROOT}/action/test_stop_turn.json',
+            'test': f'{self.SUBMISSION_DIR}/test_action_f1.json',
             'pseudo-test': f'{self.AIC22_META_ROOT}/action/pseudo_test_stop_turn.json',
         }
 
         ### For test tracks only (because these dont have query text)
         self.VEHICLE_JSON = {
-            'test': None,
-            'pseudo-test': f'{self.AIC22_META_ROOT}/srl/srl_test_out/tracks_srl_out/vehicle_prediction_name.json',
-        }
-        self.COLOR_JSON = {
-            'test': None,
-            'pseudo-test': f'{self.AIC22_META_ROOT}/srl/srl_test_out/tracks_srl_out/color_prediction_name.json'
-        }
-        self.ACTION_JSON = {
-            'test': None,
+            'test': f'{self.SUBMISSION_DIR}/vehicle_prediction.json',
             'pseudo-test': f'{self.AIC22_META_ROOT}/srl/srl_test_out/tracks_srl_out/vehicle_prediction.json',
         }
+        self.COLOR_JSON = {
+            'test': f'{self.SUBMISSION_DIR}/color_prediction.json',
+            'pseudo-test': f'{self.AIC22_META_ROOT}/srl/srl_test_out/tracks_srl_out/color_prediction.json'
+        }
+        self.COLOR_MAPPING = {0: 'silver', 1: 'orange', 2: 'red', 3: 'blue', 4: 'black', 5: 'purple', 6: 'green', 7: 'white'}
+        self.VEHICLE_MAPPING = {0: 'prius', 1: 'wagon', 2: 'van', 3: 'jeep', 4: 'pickup', 5: 'trailer'}
 
         ## Camera ids
         self.TEST_CAM_IDS = [
@@ -73,4 +71,3 @@ class Constants:
             'S05/c021', 'S05/c022',  'S05/c023', 'S05/c024', 'S05/c025',  'S05/c026', 
             'S05/c027', 'S05/c028',  'S05/c029', 'S05/c033', 'S05/c034',  'S05/c035', 'S05/c036'
         ]
-
