@@ -217,10 +217,8 @@ class AIC22TextJsonDatasetSubject(Dataset):
         query_data = self.queries_data[query_id]
 
         query_texts = query_data['nl']
-        if self.use_other_views:
-            query_texts += query_data['nl_other_views']
+        query_texts += query_data['nl_other_views']
 
-        query_texts = np.random.choice(query_texts, size=min(len(query_texts), self.num_texts_used), replace=False)
         query_text = '. '.join(query_texts)
 
         # Subject texts, different idea from v1
