@@ -11,16 +11,13 @@ import pandas as pd
 from external.relation.drawing import visualize_one_frame
 from external.relation.bb_utils import xywh_to_xyxy_lst
 from external.relation.frame_utils import get_frame_ids_by_names
+from scripts.relation.constants import Constants
 
-from scripts.relation.constants import (
-    TEST_TRACKS_JSON, PSEUDO_TEST_TRACKS_JSON,
-    EXTRACTED_FRAMES_DIR
-)
+CONSTANT = Constants("/home/kaylode/Github/AIC2022-VER/data")
 
-TRACKS_JSON = TEST_TRACKS_JSON
-OUTDIR = "/home/kaylode/Github/AIC2022-VER/data/meta/new/track_visualization/relation/pseudo-test"
-TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/originals/pseudo_test_tracks.json"
-RELATION_TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/pseudo_test_relation.json"
+OUTDIR = "/home/kaylode/Github/AIC2022-VER/data/meta/new/track_visualization/relation/test"
+TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/new/originals/test_tracks.json"
+RELATION_TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/test_tracks_relation.json"
 AUX_TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/neighbor_tracks.json"
 
 os.makedirs(OUTDIR, exist_ok=True)
@@ -46,7 +43,7 @@ def visualize_neighbors():
         main_frame_names = main_data[main_track_id]['frames']
 
         # Init video writer
-        tmp_path = osp.join(EXTRACTED_FRAMES_DIR, main_frame_names[0][2:])
+        tmp_path = osp.join(CONSTANT.EXTRACTED_FRAMES_DIR, main_frame_names[0][2:])
         img = cv2.imread(tmp_path)
         height, width = img.shape[:-1]
 
@@ -138,7 +135,7 @@ def visualize_neighbors():
         for frame_id, frame_name in zip(main_frame_ids, main_frame_names):
             # Frame image
             img = cv2.imread(
-                osp.join(EXTRACTED_FRAMES_DIR, frame_name[2:]))
+                osp.join(CONSTANT.EXTRACTED_FRAMES_DIR, frame_name[2:]))
 
             # All tracks in that frame
             frame_df = track_df[track_df.frame_id==frame_id]

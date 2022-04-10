@@ -358,6 +358,7 @@ class CityFlowNLClipDataset(Dataset):
         return batch_dict
 
 
+@DATASET_REGISTRY.register()
 class AIC22TextJsonDataset(Dataset):
     """
     """
@@ -426,6 +427,7 @@ class AIC22TextJsonDataset(Dataset):
         # Avoiding using move to device manually if it implemented themself
 
 
+@DATASET_REGISTRY.register()
 class AIC22TrackJsonWithMotionDataset(Dataset):
     """
     """

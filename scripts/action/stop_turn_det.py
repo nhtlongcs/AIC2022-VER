@@ -12,14 +12,14 @@ parser.add_argument('-o', '--output_json', type=str,
 
 
 STOP_CONFIG = {
-    'k': 5,
-    'delta': 10, # as paper
-    'alpha': 0.15 # increase means more retrieved
-}
+    'k': 6, # number of frame steps to calculate speed
+    'delta': 5, # as paper
+    'alpha': 0.25 # increase means more retrieved
+} # 6, 5, 0.25
 
 TURN_CONFIG = {
-    'eps' : 0.035,
-    'skip_frame' : 5,
+    'eps' : 0.02, # (0.01)
+    'skip_frame' : 2, # (2)
     'is_normalize': 0 
 }
 
@@ -83,6 +83,16 @@ def run(args):
 
     with open(args.output_json, 'w') as f:
         json.dump(result_dict, f, indent=4)
+
+    with open('/home/kaylode/Github/AIC2022-VER/playground/action/prediction/turn.txt', 'w') as f:
+        for id in result_dict['turn_left']+result_dict['turn_right']:
+            f.write(id)
+            f.write('\n')
+
+    with open('/home/kaylode/Github/AIC2022-VER/playground/action/prediction/stop.txt', 'w') as f:
+        for id in result_dict['stop']:
+            f.write(id)
+            f.write('\n')
     
 if __name__ == '__main__':
     args = parser.parse_args()
