@@ -192,7 +192,8 @@ class AIC22TextJsonDatasetSubject(Dataset):
         json_path: str, 
         tok_model_name: str = "bert-base-uncased", 
         num_texts_used: int = 3, 
-        use_other_views: bool = False,
+        use_other_views: bool = False, 
+        shuffle: bool = False,
         **kwargs):
 
         super().__init__()
@@ -201,6 +202,7 @@ class AIC22TextJsonDatasetSubject(Dataset):
         self.tok_model_name = tok_model_name
         self.num_texts_used = num_texts_used
         self.use_other_views = use_other_views
+        self.shuffle = shuffle
         self.tokenizer = AutoTokenizer.from_pretrained(tok_model_name)
         self._load_data()
 
@@ -219,6 +221,8 @@ class AIC22TextJsonDatasetSubject(Dataset):
         query_texts = query_data['nl']
         query_texts += query_data['nl_other_views']
 
+        if self.shuffle:
+            random.shuffle(query_texts)
         query_text = '. '.join(query_texts)
 
         # Subject texts, different idea from v1
