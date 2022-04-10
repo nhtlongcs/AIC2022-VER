@@ -6,6 +6,7 @@ data:
       tok_model_name: bert-base-uncased
       num_texts_used: 5
       use_other_views: True
+      shuffle: False
   track:
     name:  AIC22TrackJsonWithMotionDataset
     args:
