@@ -11,18 +11,45 @@ parser.add_argument('-o', '--output_json', type=str,
                     help="Path to save result")
 
 
-STOP_CONFIG = {
-    'k': 6, # number of frame steps to calculate speed
-    'delta': 5, # as paper
-    'alpha': 0.25 # increase means more retrieved
-} # 6, 5, 0.25
-
-TURN_CONFIG = {
-    'eps' : 0.02, # (0.01)
-    'skip_frame' : 2, # (2)
-    'is_normalize': 0 
+TURN_CONFIG_TUNE = {
+    'precision': {
+        'eps' : 0.045, 
+        'skip_frame' : 6, 
+        'is_normalize': 0 
+    },
+    'recall': {
+        'eps' : 0.01, 
+        'skip_frame' : 2, 
+        'is_normalize': 0 
+    },
+    'f1': {
+        'eps' : 0.025, 
+        'skip_frame' : 6, 
+        'is_normalize': 0 
+    },
 }
 
+STOP_CONFIG_TUNE = {
+    'precision': {
+        'k' : 8, 
+        'delta' : 14, 
+        'alpha': 0.05
+    },
+    'recall': {
+        'k' : 1, 
+        'delta' : 5, 
+        'alpha': 0.2 
+    },
+    'f1': {
+        'k' : 4, 
+        'delta' : 12, 
+        'alpha': 0.1 
+    },
+}
+
+
+TURN_CONFIG = TURN_CONFIG_TUNE['f1']
+STOP_CONFIG = STOP_CONFIG_TUNE['f1']
 
 def run(args):
     stop_det = StopDetector(
