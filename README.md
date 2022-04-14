@@ -1,4 +1,4 @@
-# AIC2022-VER
+# AIC2022-VER (WIP)
 
 Before using this repo, please install the following packages by running the following commands:
 
