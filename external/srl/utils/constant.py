@@ -4,9 +4,7 @@ import os.path as osp
 def dict_load(data_path: str):
     return json.load(open(data_path, 'r'))
 
-
-SAVE_DIR = '/content/srl_sample' #osp.join(RESULT_DIR, 'srl')
-SRL_DATA_DIR = '/external/extraction/configs' #osp.join(DATA_DIR, 'srl')
+SRL_DATA_DIR = 'external/extraction/configs' #osp.join(DATA_DIR, 'srl')
 REFINED_TEST_TRACK_JSON = ''
 
 
