@@ -4,12 +4,6 @@ echo Augmenting data ...
 python scripts/data/nlpaug_uts_v2.py $DATAPATH/train_tracks.json && echo DONE || echo Run FAILED, please check
 python scripts/data/nlpaug_uts_v2.py $DATAPATH/test_queries.json && echo DONE || echo Run FAILED, please check
 
-# Split data, train and test data into train and test data (Optional)
-# By running the following commands, you can split the data into train and test data in same folder.
-
-echo Spliting data ...
-python scripts/data/split.py $DATAPATH/train_tracks_nlpaug.json && echo DONE || echo Run FAILED, please check
-
 # Extract train and test's queries into separated parts following the English PropBank Semantic Role Labeling rules.
 # SRL PART
 # python scripts/srl/extraction.py <input_data_path> <output_metadata_srl_path>
