@@ -24,7 +24,5 @@ this repo
 
 - (**IMPORTANT**) Changes constants in `scripts/relation/constants.py`
 - Run `scripts/relation/gen_aux_tracks.py` to generate auxiliary tracks from tracking annotations.
-- (*Optional*) Run `scripts/relation/vis_tracks.py` to visualize the auxiliary tracks
 - Run `scripts/relation/gen_neighbor_mapping` to determine which auxiliary tracks related to the which in the main tracks
 - Run `scripts/relation/refine_neighbor.py` to determine the relation between the main tracks and all its neighbors.
-- (*Optional*) Run `scripts/relation/vis_relation.py` to visualize the relation between tracks
