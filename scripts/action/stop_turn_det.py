@@ -110,16 +110,6 @@ def run(args):
 
     with open(args.output_json, 'w') as f:
         json.dump(result_dict, f, indent=4)
-
-    with open('/home/kaylode/Github/AIC2022-VER/playground/action/prediction/turn.txt', 'w') as f:
-        for id in result_dict['turn_left']+result_dict['turn_right']:
-            f.write(id)
-            f.write('\n')
-
-    with open('/home/kaylode/Github/AIC2022-VER/playground/action/prediction/stop.txt', 'w') as f:
-        for id in result_dict['stop']:
-            f.write(id)
-            f.write('\n')
     
 if __name__ == '__main__':
     args = parser.parse_args()
