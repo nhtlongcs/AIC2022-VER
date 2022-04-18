@@ -2,9 +2,9 @@ import os
 import os.path as osp 
 import json 
 from tqdm import tqdm
+import sys
 
-
-def create_aic_format(rel_data: dict, neigh_data: dict, action_data: dict,save_dir: str = SAVE_DIR):
+def create_aic_format(rel_data: dict, neigh_data: dict, action_data: dict, save_dir: str):
     stop_list = action_data['stop']
     turn_list = action_data['turn_left'] + action_data['turn_right']
     
@@ -33,15 +33,14 @@ def create_aic_format(rel_data: dict, neigh_data: dict, action_data: dict,save_d
         
 
 def main():
-    
     # Input 
-    TEST_RELATION = 'data/result/test_relation.json'
-    TEST_NEIGHBOR = 'data/result/test_neighbors.json'
-    TEST_ACTION = 'data/result/test_action_tuned_10Apr_1225/test_action_f1.json'
+    TEST_RELATION = sys.argv[1] #'data/result/test_relation.json'
+    TEST_NEIGHBOR = sys.argv[2] #'data/result/test_neighbors.json'
+    TEST_ACTION = sys.argv[3] #'data/result/test_action_tuned_10Apr_1225/test_action_f1.json'
 
     # Output dir
-    SAVE_DIR = 'data/result/test_relation_action_f1'
-    os.makedirs(SAVE_DIR)
+    SAVE_DIR = sys.argv[4] #'data/result/test_relation_action_f1'
+    os.makedirs(SAVE_DIR, exist_ok=True)
 
     relation_json = TEST_RELATION
     neighbor_json = TEST_NEIGHBOR
@@ -51,8 +50,7 @@ def main():
     rel_data = json.load(open(relation_json, 'r'))
     neigh_data = json.load(open(neighbor_json, 'r'))
 
-    create_aic_format(rel_data, neigh_data, action_data)
-    pass 
+    create_aic_format(rel_data, neigh_data, action_data, SAVE_DIR)
 
 if __name__ == '__main__':
     main()

@@ -3,6 +3,7 @@ import os.path as osp
 import json 
 import pandas as pd
 from tqdm import tqdm
+import sys
 
 from external.refinement.srl_reader import SrlReader
 from external.refinement.refine_wo_cls import (
@@ -13,14 +14,15 @@ from external.refinement.refine_wo_cls import (
     sort_by_score, calculate_relation_score_no_class
 )
 
-def save_json(data, fpath):
-    with open(fpath, 'w') as f:
-        json.dump(data, f, indent=2)
-
 # Input
-TEST_CSV = 'data/result/srl_direct/aic22_test_notOther_10Apr.csv' #'data/result/srl/postproc-2/srl_test_postproc.csv'
-RAW_RESULT = 'data/result/refinement/sub_34_fix.json' # raw retrieval result (submission file from model)
-TRACK_DIR = 'data/result/test_relation_action_f1'
+# TEST_CSV = 'data/result/srl_direct/aic22_test_notOther_10Apr.csv' #'data/result/srl/postproc-2/srl_test_postproc.csv'
+# RAW_RESULT = 'data/result/refinement/sub_34_fix.json' # raw retrieval result (submission file from model)
+# TRACK_DIR = 'data/result/test_relation_action_f1'
+
+RAW_RESULT = sys.argv[1] # raw retrieval result (submission file from model)
+TEST_CSV = sys.argv[2]
+TRACK_DIR = sys.argv[3]
+SAVE_DIR = sys.argv[4]
 
 # Meatadata: Classification results 
 TEST_SUB_VEH_CLS = 'data/result/classification/test_srl_predict/out_test_tracks/vehicle_prediction.json' 
@@ -58,8 +60,6 @@ def main():
         # 1. Prioritize by action score
         query_actions = query_data['actions']
         calculate_action_score(raw_result, TRACK_DIR, query_actions, score_map)
-        # list_a, list_b, list_c = get_priority_list_by_action(raw_result, TRACK_DIR, query_actions)
-        # action_result[query_id] = list_a + list_b + list_c
         action_result[query_id] = sort_by_score(score_map, raw_result, 'action')
 
         # 2. Calculate att scores (vehcol + relation) in each list 
@@ -67,7 +67,6 @@ def main():
         ## 2.1 calculate subject veh + col score
         calculate_subject_score(query_sub_veh, query_sub_col, sub_veh_cls, sub_col_cls, score_map)
         vehcol_result[query_id] = sort_by_score(score_map, raw_result, 'subject')
-        # vehcol_result[query_id] = sort_by_score(score_map, list_a, 'subject') + sort_by_score(score_map, list_b, 'subject') + sort_by_score(score_map, list_c, 'subject')
 
         ## 2.2 calculate relation score
         if query_data['is_svo'] == True:
@@ -75,30 +74,21 @@ def main():
             calculate_relation_score(query_data, nei_veh_cls, nei_col_cls, TRACK_DIR, score_map)
             # calculate_relation_score_no_class(query_data, nei_veh_cls, nei_col_cls, TRACK_DIR, score_map)
 
-        # 3. Sort each list with computed scores
-        # list_a = sort_by_score(score_map, list_a)
-        # list_b = sort_by_score(score_map, list_b)
-        # list_c = sort_by_score(score_map, list_c)
-
-        # # 4. Concat all lists to obtain final result
-        # refine_result = list_a + list_b + list_c
-        # n_inter = len(set(refine_result).intersection(set(raw_result)))
-        # assert len(refine_result) == len(raw_result)
-        # assert n_inter == len(refine_result)
-
+        # 4. Sort on total_score to obtain final result
         final_result[query_id] = sort_by_score(score_map, raw_result, 'total_score')
     
     print(f'n svo: {count_svo}')
-    ### Uncomment these lines when finish debugging
+    ### comment these lines when finish debugging
     fname = RAW_RESULT.split('/')[-1]
     
-    save_path = f"data/result/refinement/{fname.replace('.json', '_full_Class.json')}"
+    
+    save_path = osp.join(SAVE_DIR, fname.replace('.json', '_full_Class.json'))
     save_json(final_result, save_path)
 
-    save_path = f"data/result/refinement/{fname.replace('.json', '_action.json')}"
+    save_path = osp.join(SAVE_DIR, fname.replace('.json', '_action.json'))
     save_json(action_result, save_path)
 
-    save_path = f"data/result/refinement/{fname.replace('.json', '_vehcol.json')}"
+    save_path = osp.join(SAVE_DIR, fname.replace('.json', '_vehcol.json'))
     save_json(vehcol_result, save_path)
 
 

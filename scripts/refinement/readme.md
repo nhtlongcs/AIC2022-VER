@@ -1,16 +1,4 @@
-# 1. Gather SRL result
-
-Input: srl_test_queries.json
-
-Output: srl_postproc.csv (example in data/result/srl/postproc-2/srl_test_postproc.csv)
-
-<!-- outdir at 'data/result/srl/postproc-2' -->
-
-```bash
-python external/srl/gather_result.py
-```
-
-# 2. Gather Video (Track) result
+# 1. Gather Video (Track) result
 
 Gather relation/classification/action (stop-turn) results from different modules for each track to a single file.
 
@@ -30,11 +18,11 @@ Gather relation/classification/action (stop-turn) results from different modules
 python external/refinement/parse_relation.py
 ```
 
-# 3. Refinement
+# 2. Refinement
 
 Input:
 
-- srl.csv (output from 1st step)
+- srl.csv (output from script/srl/extract_postproc.py)
 - test_track_dir : output of step 2
 - retrieval result: submission format
 
