@@ -6,7 +6,7 @@ class DataHelper(object):
     def __init__(self):
         pass
 
-    def convert_json_train(self, json_data):
+    def convert_json_train(self, json_data, use_other_view=False):
         # HARDCODE
         """
         Merge all the data into one list of tracklet
@@ -14,7 +14,8 @@ class DataHelper(object):
         data = {}
         for key in json_data:
             data[key] = json_data[key]["nl"]
-            data[key] += json_data[key]['nl_other_views']
+            if use_other_view:
+                data[key] += json_data[key]['nl_other_views']
         return data
 
     def load_file(self, path):

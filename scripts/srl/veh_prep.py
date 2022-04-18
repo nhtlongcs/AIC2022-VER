@@ -5,7 +5,7 @@ from tqdm import tqdm
 import numpy as np
 import sys
 
-from external.extraction.heuristic.query import Query
+from external.extraction.textual.query import Query
 from external.extraction.paths import VEHICLE_GROUP_JSON
 
 pd.set_option("display.max_columns", None)

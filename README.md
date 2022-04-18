@@ -3,7 +3,8 @@
 Before using this repo, please install the following packages by running the following commands:
 
 ```bash
-conda install
+conda env create -n hcmus -f environment.yml
+pip install -r requirements.txt
 pip install -e .
 ```
 
@@ -32,7 +33,8 @@ Ensure your data folder structure as same as our `data_sample`
 
 $ ./tools/extract_vdo2frms_AIC.sh ./data/AIC22_Track2_NL_Retrieval/ ./data/meta/extracted_frames/
 $ cp ./data/AIC22_Track2_NL_Retrieval/*.json ./data/meta/
-$ ./tools/preproc.sh ./data/meta
+$ ./tools/preproc_motion.sh ./data/meta
+$ ./tools/preproc_srl.sh ./data/meta
 $ ./tools/preproc_relation.sh ./data ./data/meta/test_tracks.json
 
 $ ./tools/predict_srl.sh configs/srl/col_infer.yml artifacts/color/model.ckpt configs/srl/veh_infer.yml artifacts/vehicle/model.ckpt ./data/meta/relation/neighbor_tracks.json data/meta/extracted_frames ./out_test_neighbors/

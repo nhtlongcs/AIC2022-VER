@@ -5,7 +5,7 @@ from tqdm import tqdm
 import numpy as np
 
 
-from external.extraction.heuristic.query import Query
+from external.extraction.textual.query import Query
 from external.extraction.paths import COLOR_GROUP_JSON
 
 pd.set_option("display.max_columns", None)
