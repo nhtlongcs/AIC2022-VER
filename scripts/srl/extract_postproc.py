@@ -3,13 +3,12 @@ import os.path as osp
 import pandas as pd
 from tqdm import tqdm
 
-# from external.extraction.heuristic.query import Query
-from external.srl.library.query import Query
-from external.srl.utils.gather_utils import (
+from external.extraction.textual.query import Query
+from external.extraction.textual.gather_utils import (
     get_label_info, get_label_vector, setup_info, 
     get_label_vector_with_split, get_rep_class
 )
-from external.srl.utils.constant import (
+from external.extraction.textual.constant import (
     COLOR_GROUP_JSON, VEHICLE_GROUP_JSON, ACTION_GROUP_JSON,
     COLOR_GROUP_REP_JSON, VEHICLE_GROUP_REP_JSON, ACTION_GROUP_REP_JSON,
 )

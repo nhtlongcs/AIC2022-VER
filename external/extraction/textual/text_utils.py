@@ -71,26 +71,3 @@ def get_args_from_srl_sample(srl_content: dict):
         return None
 
     return list_args
-
-# def get_color(spacy_out):
-#     """
-#     spacy_out: result after run model(cap)
-#     """
-#     res = []
-#     for i, word in enumerate(spacy_out):
-#         if isinstance(word, str):
-#             text = word.lower()
-#         else:
-#             text = word.text.lower()
-#         if is_color_like(text):
-#             # if is_color_like(text):
-#             color_prop = {'color': text}
-#             if i >= 1 and ((spacy_out[i-1].text + text) in webcolors.CSS3_NAMES_TO_HEX 
-#                             or check_color_adv(spacy_out[i-1].text)
-#             ):
-#                 color_prop['adv'] = spacy_out[i-1].text
-            
-
-#             res.append(color_prop)
-    
-#     return res

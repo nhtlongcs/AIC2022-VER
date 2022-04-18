@@ -24,9 +24,6 @@ COLOR_GROUP_REP_JSON = COLOR_GROUP_JSON.replace('.json', '_rep.json')
 ACTION_GROUP_JSON = osp.join(SRL_DATA_DIR, 'action_group_v1.json') 
 ACTION_GROUP_REP_JSON = ACTION_GROUP_JSON.replace('.json', '_rep.json')
 
-# Preprocess result
-TRAIN_SRL_JSON = osp.join(SAVE_DIR, 'result_train.json') 
-TEST_SRL_JSON = osp.join(SAVE_DIR, 'result_test.json') 
 
 VEHICLE_VOCAB = dict_load(VEHICLE_VOCAB_JSON)
 VEHICLE_VOCAB_OBJ = dict_load(VEHICLE_OBJ_VOCAB_JSON) 

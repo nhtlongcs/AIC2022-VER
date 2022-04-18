@@ -1,5 +1,5 @@
 from .caption import Caption
-from external.srl.utils.common import (
+from .gather_utils import (
     refine_list_colors, refine_list_subjects
 )
 import numpy as np

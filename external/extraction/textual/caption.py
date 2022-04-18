@@ -1,11 +1,10 @@
 import spacy
 import re
 
-from .vehicle import Vehicle
 from .text_utils import (
     get_color, get_args_from_srl_sample, extract_noun_phrase
 )
-from external.srl.utils.constant import (
+from .constant import (
     VEHICLE_VOCAB, ACTION_VOCAB, VEHICLE_VOCAB_OBJ,
     FOLLOW, FOLLOW_BY,
     OPPOSITE,
@@ -13,6 +12,25 @@ from external.srl.utils.constant import (
 )
 
 nlp_model = spacy.load('en_core_web_sm')
+
+class Vehicle(object):
+    def __init__(self, vehicle: str, colors: list, get_none=False):
+        self.vehicle = vehicle 
+        self.colors = []
+        self.combines = []    
+        for col_pair in colors:
+            color, adv = col_pair['color'], col_pair['adv']
+            self.colors.append(color)
+            if adv:
+                self.combines.append(f'{adv}_{color}')
+            else:
+                self.combines.append(color)
+        
+        if get_none and not self.combines:
+            self.combines.append(None)
+
+    def __str__(self):
+        return f'veh={self.vehicle}, col={self.combines}'
 
 class Caption(object):
     def __init__(self, cap_content: dict, cap_id: str):
