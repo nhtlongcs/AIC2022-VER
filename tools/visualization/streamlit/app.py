@@ -3,7 +3,7 @@ import json
 import argparse
 import os.path as osp
 import streamlit as st
-from tools.visualization.streamlit.constants import Constants
+from tools.visualization.constants import Constants
 
 parser = argparse.ArgumentParser(description='Streamlit visualization')
 parser.add_argument('--result_folder', type=str,
