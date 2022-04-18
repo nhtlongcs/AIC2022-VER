@@ -23,8 +23,7 @@ python scripts/srl/color_prep.py $DATAPATH $SRL_PATH $DATAPATH/extracted_frames 
 echo Extracting SRL data [vehicle] ...
 python scripts/srl/veh_prep.py $DATAPATH $SRL_PATH $DATAPATH/extracted_frames $SRL_PATH/veh && echo DONE || echo Run FAILED, please check
 
-# # Please check this part
-# mkdir $SRL_PATH/postproc
-# echo Extracting SRL data [postproc] ...
-# python scripts/data/convert_order.py $DATAPATH $SRL_PATH/postproc && echo DONE || echo Run FAILED, please check
-# python scripts/srl/extract_postproc.py $SRL_PATH $SRL_PATH/postproc $SRL_PATH/postproc && echo DONE || echo Run FAILED, please check
+# Please check this part
+mkdir $SRL_PATH/postproc
+echo Extracting SRL data [postproc] ...
+python scripts/srl/extract_postproc.py $SRL_PATH  $SRL_PATH/postproc && echo DONE || echo Run FAILED, please check

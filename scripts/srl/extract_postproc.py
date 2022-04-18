@@ -14,8 +14,7 @@ from external.extraction.paths import (
 )
 
 SRL_DIR = sys.argv[1]
-ORDER_DIR = sys.argv[2]
-SAVE_DIR = sys.argv[3]
+SAVE_DIR = sys.argv[2]
 
 TRAIN_SRL_JSON = osp.join(SRL_DIR, 'srl_train_tracks.json')
 TEST_SRL_JSON = osp.join(SRL_DIR, 'srl_test_queries.json')
