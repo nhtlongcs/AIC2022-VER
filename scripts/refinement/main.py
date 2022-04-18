@@ -23,12 +23,13 @@ RAW_RESULT = sys.argv[1] # raw retrieval result (submission file from model)
 TEST_CSV = sys.argv[2]
 TRACK_DIR = sys.argv[3]
 SAVE_DIR = sys.argv[4]
+CLS_DIR = sys.argv[5]
 
 # Meatadata: Classification results 
-TEST_SUB_VEH_CLS = 'data/result/classification/test_srl_predict/out_test_tracks/vehicle_prediction.json' 
-TEST_SUB_COL_CLS = 'data/result/classification/test_srl_predict/out_test_tracks/color_prediction.json'
-TEST_NEI_VEH_CLS = 'data/result/classification/test_srl_predict/out_test_neighbors/vehicle_prediction.json'
-TEST_NEI_COL_CLS = 'data/result/classification/test_srl_predict/out_test_neighbors/color_prediction.json'
+TEST_SUB_VEH_CLS = osp.join(CLS_DIR,'test_tracks/vehicle_prediction.json' )
+TEST_SUB_COL_CLS = osp.join(CLS_DIR,'test_tracks/color_prediction.json')
+TEST_NEI_VEH_CLS = osp.join(CLS_DIR,'neighbors/vehicle_prediction.json')
+TEST_NEI_COL_CLS = osp.join(CLS_DIR,'neighbors/color_prediction.json')
 
 def save_json(data, fpath):
     with open(fpath, 'w') as f:

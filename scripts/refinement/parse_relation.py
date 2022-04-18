@@ -5,11 +5,14 @@ from tqdm import tqdm
 import sys
 
 def create_aic_format(rel_data: dict, neigh_data: dict, action_data: dict, save_dir: str):
-    stop_list = action_data['stop']
-    turn_list = action_data['turn_left'] + action_data['turn_right']
+    stop_list = action_data.get('stop', [])
+    turn_list = action_data.get('turn_left',[]) + action_data.get('turn_right', [])
     
     for query_id in tqdm(rel_data):
         query_data = rel_data[query_id]
+
+        query_data['followed_by'] = query_data.get('followed_by',[])
+        query_data['follow'] = query_data.get('follow',[])
 
         save_path = osp.join(save_dir, f'{query_id}.json')
         sub_id = 'sub'

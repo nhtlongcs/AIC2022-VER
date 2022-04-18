@@ -4,10 +4,10 @@ TRACK_DIR=$3
 
 TEST_RELATION=$4
 TEST_NEIGHBOR=$5
-TEST_ACTION=$6
-
+CLS_DIR=$6
 SAVE_DIR=$7
 
+TEST_ACTION=$CLS_DIR/test_tracks/vehicle_prediction.json
 # # DEBUG
 # RETRIEVAL_RESULT='data/result/refinement/sub_34_fix.json'
 # SRL_CSV='data/result/srl_direct/aic22_test_notOther_10Apr.csv'
@@ -25,4 +25,4 @@ python scripts/refinement/parse_relation.py \
 
 echo run refinement, save result to $SAVE_DIR
 python scripts/refinement/main.py \
-    $RETRIEVAL_RESULT $SRL_CSV $TRACK_DIR $SAVE_DIR
+    $RETRIEVAL_RESULT $SRL_CSV $TRACK_DIR $SAVE_DIR $CLS_DIR
