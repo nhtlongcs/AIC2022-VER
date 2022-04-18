@@ -17,6 +17,7 @@ ACTION_GROUP_JSON = str(ROOT / "configs" / "action_group_v1.json")
 ACTION_GROUP_REP_JSON = ACTION_GROUP_JSON.replace('.json', '_rep.json')
 
 VEHICLE_VOCAB = json.load(open(VEHICLE_VOCAB_JSON, "r"))
+VEHICLE_VOCAB_OBJ = json.load(open(VEHICLE_OBJ_VOCAB_JSON, "r"))
 COLOR_VOCAB = json.load(open(COLOR_VOCAB_JSON, "r"))
 ACTION_VOCAB = json.load(open(ACTION_VOCAB_JSON, "r"))
 VEHICLE_GROUP_REP = json.load(open(VEHICLE_GROUP_REP_JSON, "r"))
