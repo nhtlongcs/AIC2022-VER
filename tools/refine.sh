@@ -7,7 +7,7 @@ TEST_NEIGHBOR=$5
 CLS_DIR=$6
 SAVE_DIR=$7
 
-TEST_ACTION=$CLS_DIR/test_tracks/vehicle_prediction.json
+TEST_ACTION=$CLS_DIR/test_tracks/action_prediction.json
 # # DEBUG
 # RETRIEVAL_RESULT='data/result/refinement/sub_34_fix.json'
 # SRL_CSV='data/result/srl_direct/aic22_test_notOther_10Apr.csv'

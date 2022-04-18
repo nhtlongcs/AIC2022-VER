@@ -84,12 +84,15 @@ def main():
     
     
     save_path = osp.join(SAVE_DIR, fname.replace('.json', '_full_Class.json'))
+    print('saved full class submission to:', save_path)
     save_json(final_result, save_path)
 
     save_path = osp.join(SAVE_DIR, fname.replace('.json', '_action.json'))
+    print('saved action only submission to:', save_path)
     save_json(action_result, save_path)
 
     save_path = osp.join(SAVE_DIR, fname.replace('.json', '_vehcol.json'))
+    print('saved vehcol only submission to:', save_path)
     save_json(vehcol_result, save_path)
 
 
