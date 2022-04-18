@@ -5,11 +5,11 @@ from .text_utils import (
     get_color, get_args_from_srl_sample, extract_noun_phrase
 )
 from .constant import (
-    VEHICLE_VOCAB, ACTION_VOCAB, VEHICLE_VOCAB_OBJ,
     FOLLOW, FOLLOW_BY,
     OPPOSITE,
     HAS_FOLLOW, NO_FOLLOW, NO_CONCLUSION
 )
+from external.extraction.paths import VEHICLE_VOCAB, ACTION_VOCAB, VEHICLE_VOCAB_OBJ
 
 nlp_model = spacy.load('en_core_web_sm')
 

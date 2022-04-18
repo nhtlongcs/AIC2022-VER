@@ -5,9 +5,8 @@ from .gather_utils import (
 import numpy as np
 
 class Query(object):
-    def __init__(self, query_content: dict, query_id: str, query_order: str):
+    def __init__(self, query_content: dict, query_id: str):
         self.query_id = query_id
-        self.query_order = query_order
         self.query_content = query_content
         self._setup(query_content) 
 
@@ -39,6 +38,10 @@ class Query(object):
 
         # 5. Check follow state
         self.is_follow = self.get_is_follow()
+
+        # Dummy fix for pre-proc usage
+        self.subjects = self.subject_vehicle
+        self.colors = self.subject_color
 
     def get_query_content_update(self):
         return self.query_content
@@ -111,6 +114,10 @@ class Query(object):
     def get_list_captions(self):
         list_captions = [c.caption for c in self.list_caps]
         return list_captions
+
+    def get_list_captions_str(self):
+        list_cap_str = [c.caption for c in self.list_caps]
+        return "\n".join(list_cap_str)
 
     def get_list_cleaned_captions(self):
         list_cleaned_captions = [c.cleaned_caption for c in self.list_caps]

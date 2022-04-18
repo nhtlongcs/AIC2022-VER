@@ -2,11 +2,10 @@ import json
 import numpy as np
 from tqdm import tqdm 
 
-from .constant import (
-    VEHICLE_GROUP_REP, LIST_REDUNDANT_VEHICLES, 
-    COLOR_VOCAB, ACTION_VOCAB, VEHICLE_VOCAB
+from external.extraction.paths import (
+    VEHICLE_GROUP_REP, COLOR_VOCAB, ACTION_VOCAB, VEHICLE_VOCAB
 )
-
+from .constant import LIST_REDUNDANT_VEHICLES
 
 def json_load(data_path):
     with open(data_path, 'r') as f:

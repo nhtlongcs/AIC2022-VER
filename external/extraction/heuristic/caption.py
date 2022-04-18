@@ -37,16 +37,11 @@ class Caption(object):
         list_objs = []
         main_object = None
         for arg in args:
-            # tokens = self.nlp_model(arg)
-            # tokens = nlp_model(arg)
             tokens = arg.split(" ")
             colors = get_color(tokens)
             for tok in tokens:
                 if tok in VEHICLE_VOCAB:
-                    # if ('NN' in tok.pos_) and (tok in VEHICLE_VOCAB):
-                    # list_colors.append(colors)
                     main_object = Vehicle(vehicle=tok, colors=colors)
-                    # list_objs.append(Vehicle(vehicle=tok, color=colors))
 
         return main_object
 

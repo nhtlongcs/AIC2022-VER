@@ -8,7 +8,7 @@ from external.extraction.textual.gather_utils import (
     get_label_info, get_label_vector, setup_info, 
     get_label_vector_with_split, get_rep_class
 )
-from external.extraction.textual.constant import (
+from external.extraction.paths import (
     COLOR_GROUP_JSON, VEHICLE_GROUP_JSON, ACTION_GROUP_JSON,
     COLOR_GROUP_REP_JSON, VEHICLE_GROUP_REP_JSON, ACTION_GROUP_REP_JSON,
 )
@@ -39,7 +39,7 @@ def parse(mode: str):
     
     for raw_key in tqdm(list_ids):
         query_dict = {}
-        query = Query(srl_data[raw_key], raw_key, None)
+        query = Query(srl_data[raw_key], raw_key)
         srl_data[raw_key] = query.get_query_content_update()
                 
         is_svo = False 

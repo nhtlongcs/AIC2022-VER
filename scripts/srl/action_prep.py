@@ -4,7 +4,7 @@ import os.path as osp
 from typing import List
 import numpy as np
 import pandas as pd
-from external.extraction.heuristic.query import Query
+from external.extraction.textual.query import Query
 from external.extraction.paths import ACTION_GROUP_JSON
 from tqdm import tqdm
 from pathlib import Path
