@@ -11,7 +11,7 @@ parser.add_argument('--result_folder', type=str,
 parser.add_argument('-i', '--root_dir', type=str,
                     help="Path to root dir")
 parser.add_argument('-s', '--split', type=str,
-                    help="Specified split ['test', 'pseudo-test']")
+                    help="Specified split ['test', 'train']")
 args = parser.parse_args()
 
 CONSTANTS = Constants(args.root_dir)
@@ -127,7 +127,7 @@ def main(args):
     list_caps =  query_dict['nl'] 
     list_other_caps = query_dict['nl_other_views']
 
-    if args.split == 'pseudo-test':
+    if args.split == 'train':
         col1, col2 = st.columns([1, 2])
 
         # Write out query captions
@@ -190,7 +190,7 @@ def main(args):
 
     # View text
     captions_list = []
-    if args.split == 'pseudo-test':
+    if args.split == 'train':
         # load query texts
         track_json = json.load(open(CONSTANTS.TRACKS_JSON[args.split], 'r'))
         captions_list = [track_json[i]["nl"]+['-------------'] + track_json[i]['nl_other_views'] for i in list_vid_ids]

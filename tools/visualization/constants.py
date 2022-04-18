@@ -5,53 +5,55 @@ class Constants:
         self.AIC22_ROOT = root_path
         self.AIC22_ORI_ROOT = f"{self.AIC22_ROOT}/AIC22_Track2_NL_Retrieval"
         self.AIC22_META_ROOT = f"{self.AIC22_ROOT}/meta"
-        self.SUBMISSION_DIR = f"{self.AIC22_ROOT}/results/10Apr"
 
-        ## Track data
-        self.EXTRACTED_FRAMES_DIR = f"{self.AIC22_META_ROOT}/extracted_frames"
-        self.VIDEO_DIR = {
-            'test': f"{self.AIC22_META_ROOT}/track_visualization/relation/test-convert",
-            'train': f"{self.AIC22_META_ROOT}/track_visualization/original/train-val-convert",
-            'pseudo-test': f"{self.AIC22_META_ROOT}/track_visualization/relation/pseudo-test-convert"
-        }
-        
         self.TRACKS_JSON = {
             'test': f"{self.AIC22_META_ROOT}/test_tracks.json",
             'train': f"{self.AIC22_META_ROOT}/train_tracks.json",
-            'pseudo-test': f"{self.AIC22_META_ROOT}/pseudo_test_tracks.json"
         }
 
         # Queries data
         self.QUERY_JSON = {
             'test': f"{self.AIC22_META_ROOT}/test_queries.json",
-            'pseudo-test': self.TRACKS_JSON['pseudo-test'],
+            'train': self.TRACKS_JSON['train'],
         }
 
-        # METADATA PREDICTIONS
-        self.SRL_JSON = {
-            'train': f'{self.AIC22_META_ROOT}/srl/train_srl.csv',
-            'test': f'{self.SUBMISSION_DIR}/srl_test_queries.json',
-            'pseudo-test': f'{self.AIC22_META_ROOT}/srl/srl_pseudo.json',
+        ## Extracted frames from videos, generated from `tools/extract_vdo2frms_AIC.sh`
+        self.EXTRACTED_FRAMES_DIR = f"{self.AIC22_META_ROOT}/extracted_frames"
+
+        ## Video track, generated from `tools/visualization/video_gen` 
+        self.VIDEO_DIR = {
+            'test': f"{self.AIC22_META_ROOT}/track_visualization/relation/test-convert",
+            'train': f"{self.AIC22_META_ROOT}/track_visualization/relation/train-val-convert",
         }
+        
+        # METADATA PREDICTIONS
+
+        ### Generated from `tools/preproc_srl.sh`
+        self.SRL_JSON = {
+            'train': f'{self.AIC22_META_ROOT}/srl_train_tracks.json',
+            'test': f'{self.AIC22_META_ROOT}/srl_test_queries.json',
+        }
+        
+        ### Generated from `tools/preproc_relation.sh`
         self.RELATION_JSON = {
             'train': f'{self.AIC22_META_ROOT}/relation/train_tracks_relation.json',
             'test': f'{self.AIC22_META_ROOT}/relation/test_tracks_relation.json',
-            'pseudo-test': f'{self.AIC22_META_ROOT}/relation/pseudo_test_tracks_relation.json',
-        }
-        self.STOP_TURN_JSON = {
-            'train': f'{self.AIC22_META_ROOT}/action/train_stop_turn.json',
-            'test': f'{self.SUBMISSION_DIR}/test_action_f1.json',
-            'pseudo-test': f'{self.AIC22_META_ROOT}/action/pseudo_test_stop_turn.json',
         }
 
-        ### For test tracks only (because these dont have query text)
+        ### Generated from `scripts/action/stop_turn_det.py`
+        self.STOP_TURN_JSON = {
+            'train': f'{self.AIC22_META_ROOT}/action/train_stop_turn.json',
+            'test': f'{self.AIC22_META_ROOT}/action/test_stop_turn.json',
+        }
+
+        ### For test tracks only (because these dont have query text), generated from `tools/predict_srl.sh`
         self.VEHICLE_JSON = {
-            'test': f'{self.SUBMISSION_DIR}/vehicle_prediction.json',
-            'pseudo-test': f'{self.AIC22_META_ROOT}/srl/srl_test_out/tracks_srl_out/vehicle_prediction.json',
+            'train': f'{self.AIC22_ROOT}/results/classification/train_tracks/vehicle_prediction.json',
+            'test': f'{self.AIC22_ROOT}/results/classification/test_tracks/vehicle_prediction.json',
         }
         self.COLOR_JSON = {
-            'test': f'{self.SUBMISSION_DIR}/color_prediction.json',
-            'pseudo-test': f'{self.AIC22_META_ROOT}/srl/srl_test_out/tracks_srl_out/color_prediction.json'
+            'train': f'{self.AIC22_ROOT}/results/classification/train_tracks/color_prediction.json',
+            'test': f'{self.AIC22_ROOT}/results/classification/test_tracks/color_prediction.json',
         }
         self.COLOR_MAPPING = {0: 'silver', 1: 'orange', 2: 'red', 3: 'blue', 4: 'black', 5: 'purple', 6: 'green', 7: 'white'}
         self.VEHICLE_MAPPING = {0: 'prius', 1: 'wagon', 2: 'van', 3: 'jeep', 4: 'pickup', 5: 'trailer'}
