@@ -1,20 +1,20 @@
 # AIC2022-VER (WIP)
 
-Before using this repo, please install the following packages by running the following commands:
+## Development environment
 
-```bash
-conda env create -n hcmus -f environment.yml
-pip install -r requirements.txt
-pip install -e .
+Before using this repo, please use the environment setup as below.
+
+Pre-installation
+
+Install conda according to the instructions on the homepage
+Before installing the repo, we need to install the CUDA driver version >=10.2.
+
 ```
-
-Extract data notebook: [colab](https://colab.research.google.com/drive/18Jmz-e4AvH1QAG_WVZqjlT3XgnPcWOMY)
-
-Training Retrieval Model notebook: [colab](https://colab.research.google.com/drive/1o5g9fUndIFmHr-DYKczXq9q_-aiLQh-P)
-
-Training Color Classification Model notebook: [colab](https://colab.research.google.com/drive/1KyywJ-nWrT-S8uRFfupinbpfltH0F7aA)
-
-Training Vehicle Classification Model notebook: [colab](https://colab.research.google.com/drive/13eBvCeHoHKwTcoC9pXRQv9m_zmX0PFP5)
+$ conda env create -f environment.yml
+$ conda activate hcmus
+$ pip install -r requirements.txt
+$ pip install -e .
+```
 
 ## Prepare data
 
@@ -27,26 +27,31 @@ $ cd /Users/your_short_username/path/to/where/you/want/to/put/the/symlink
 $ ln -s /Volumes/HDD_name/path/to/where/you/are/storing/the/moved/files    symbolic_link_name_you_want_to_use
 ```
 
-Ensure your data folder structure as same as our `data_sample`
+Ensure your data folder structure as same as our `data_sample` before running the code.
 
-```
-
+```bash
 $ ./tools/extract_vdo2frms_AIC.sh ./data/AIC22_Track2_NL_Retrieval/ ./data/meta/extracted_frames/
 $ cp ./data/AIC22_Track2_NL_Retrieval/*.json ./data/meta/
 $ ./tools/preproc_motion.sh ./data/meta
 $ ./tools/preproc_srl.sh ./data/meta
-$ ./tools/preproc_relation.sh ./data ./data/meta/test_tracks.json
-
-$ ./tools/predict_srl.sh configs/srl/col_infer.yml artifacts/color/model.ckpt configs/srl/veh_infer.yml artifacts/vehicle/model.ckpt ./data/meta/relation/neighbor_tracks.json data/meta/extracted_frames ./out_test_neighbors/
-
-$ ./tools/predict_srl.sh configs/srl/col_infer.yml artifacts/color/model.ckpt configs/srl/veh_infer.yml artifacts/vehicle/model.ckpt ./data/meta/test_tracks.json data/meta/extracted_frames ./out_test_tracks_colors/
 ```
 
-With artifacts/ is the directory where you store the trained classification model.
+For detail, please take a look at [extract data notebook](guides/extract_data.ipynb)
 
-For testing purpose, you can use the command `./tools/preproc.sh ./data_sample/meta`
+For testing purpose, you can use the command above with data_dir is `./data_sample/meta`
 
 Reading detail document of preprocessing part can be found in the [srl part](external/extraction/README.md) and [basic part](scripts/data/README.md) (adapted from hcmus team and alibaba team source code).
+
+## Inference
+
+We provide a simple inference script for inference purpose.
+With artifacts/ is the directory where you store the trained classification model.
+
+```bash
+$ ./tools/infer.sh ./data/meta/
+```
+
+For detail, please take a look at `Predictor` class in `src/predictor.py` or [inference notebook](guides/inference.ipynb)
 
 ## Deployment
 
@@ -73,37 +78,7 @@ To attach to the container:
 $ docker attach aic-t2
 ```
 
-## Inference
-
-We provide a simple inference script for inference purpose.
-
-```bash
-$ ./tools/infer.sh ./data/meta/
-```
-
-For detail, please take a look at `Predictor` class in `src/predictor.py`
-
-## Contribution
-
-### Development environment
-
-If you want to contribute to this repo, please use the environment setup as below.
-
-Pre-installation
-
-Install conda according to the instructions on the homepage
-Before installing the repo, we need to install the CUDA driver version >=10.2.
-
-```
-
-$ conda env create -f environment.yml
-$ conda activate hcmus
-$ pip install -r requirements.txt
-$ pip install -e .
-
-```
-
-### Contribution guide
+## Contribution guide
 
 If you want to contribute to this repo, please follow steps below:
 
@@ -115,11 +90,9 @@ If you want to contribute to this repo, please follow steps below:
 1. Push the commit(s) to your own repository
 1. Create a pull request on this repository
 
-```
-
+```bash
 pip install pytest
 python -m pytest tests/
-
 ```
 
 Expected result:
