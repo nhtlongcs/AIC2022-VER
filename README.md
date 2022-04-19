@@ -1,5 +1,7 @@
 # AIC2022-VER (WIP)
 
+Repo of our source code at the AI City challenge 2022, Track 2: natural language-based vehicle retrieval task. (updating)
+
 ## Development environment
 
 Before using this repo, please use the environment setup as below.
@@ -53,7 +55,11 @@ $ ./tools/infer.sh ./data/meta/
 
 For detail, please take a look at `Predictor` class in `src/predictor.py` or [inference notebook](guides/inference.ipynb)
 
-## Deployment
+## Training
+
+Updating
+
+## Deployment (not working yet)
 
 For deployment/training purpose, docker is an ready-to-use solution.
 
