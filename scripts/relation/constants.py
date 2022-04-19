@@ -11,7 +11,6 @@ class Constants:
         self.EXTRACTED_FRAMES_DIR = osp.join(self.AIC22_META_ROOT, "extracted_frames")
         self.TEST_TRACKS_JSON = osp.join(self.AIC22_META_ROOT, "test_tracks.json")
         self.TRAIN_TRACKS_JSON = osp.join(self.AIC22_META_ROOT, "train_tracks.json")
-        self.PSEUDO_TEST_TRACKS_JSON = osp.join(self.AIC22_META_ROOT, "pseudo_test_tracks.json")
 
         ## Camera ids
         self.TEST_CAM_IDS = [

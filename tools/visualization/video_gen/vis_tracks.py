@@ -6,21 +6,25 @@ import json
 import os
 import os.path as osp
 import cv2
-import pandas as pd
+import argparse
 from tqdm import tqdm
 from external.relation.drawing import draw_one_box
 from external.relation.bb_utils import xywh_to_xyxy_lst
+from tools.visualization.constants import Constants
 
-from scripts.relation.constants import (
-    TEST_TRACKS_JSON, PSEUDO_TEST_TRACKS_JSON,
-    TRAIN_TRACKS_JSON, 
-    EXTRACTED_FRAMES_DIR
-)
+parser = argparse.ArgumentParser(description='Streamlit visualization')
+parser.add_argument('-i', '--root_dir', type=str,
+                    help="Path to root dir")
+parser.add_argument('-o', '--out_dir', type=str,
+                    help="Path to output folder to save videos")
+parser.add_argument('-t', '--track_json', type=str,
+                    help="Path to json files contains main tracks information")
+args = parser.parse_args()
 
-
-TRACKS_JSON = PSEUDO_TEST_TRACKS_JSON
-OUTDIR = "/home/kaylode/Github/AIC2022-VER/data/meta/new/track_visualization/original/pseudo-test"
-
+CONSTANT = Constants(args.root_dir)
+OUTDIR = args.out_dir
+TRACKS_JSON = args.track_json         
+OUTDIR = args.out_dir
 
 os.makedirs(OUTDIR, exist_ok=True)
 
@@ -33,9 +37,10 @@ def run():
     for track_id in tqdm(track_ids):
         frame_names = main_data[track_id]['frames']
         boxes = xywh_to_xyxy_lst(main_data[track_id]['boxes'])
-
+        
+        # Read image sizes
         img = cv2.imread(
-            osp.join(EXTRACTED_FRAMES_DIR, frame_names[0][2:])
+            osp.join(CONSTANT.EXTRACTED_FRAMES_DIR, frame_names[0][2:])
         )
         height, width = img.shape[:-1]
 
@@ -48,7 +53,7 @@ def run():
         for frame_name, box in zip(frame_names, boxes):
             # Frame image
             img = cv2.imread(
-                osp.join(EXTRACTED_FRAMES_DIR, frame_name[2:]))
+                osp.join(CONSTANT.EXTRACTED_FRAMES_DIR, frame_name[2:]))
 
             img = draw_one_box(
                 img, 

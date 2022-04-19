@@ -1,9 +1,9 @@
 # Stop turn action detection
 
-## Run detection on test tracks
+## How to run
 
 ```
-python run.py \
-    -g data/AIC22_Track2_NL_Retrieval/test_tracks.json \
-    -o outputs/stop_turn_test.json
+python scripts/action/stop_turn_det.py \
+    -g <track json> \
+    -o <output json>
 ```

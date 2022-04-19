@@ -22,6 +22,7 @@ python scripts/relation/gen_neighbor_mapping.py \
 
 echo Refine neighbor ...
 python scripts/relation/refine_neighbor.py \
+    --image_dir $DATAPATH/meta/extracted_frames \
     --tracks_json $TRACK_JSON \
     --aux_tracks_json $AUX_JSON_PATH \
     --aux_tracks_mapping_json $AUX_MAPPING_JSON_PATH \

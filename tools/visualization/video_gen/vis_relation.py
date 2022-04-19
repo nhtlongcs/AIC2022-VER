@@ -3,6 +3,7 @@ Script for visualizing tracking annotation from AIC22 dataset
 """
 
 import json
+import argparse
 import os
 import os.path as osp
 import cv2
@@ -11,17 +12,26 @@ import pandas as pd
 from external.relation.drawing import visualize_one_frame
 from external.relation.bb_utils import xywh_to_xyxy_lst
 from external.relation.frame_utils import get_frame_ids_by_names
+from tools.visualization.constants import Constants
 
-from scripts.relation.constants import (
-    TEST_TRACKS_JSON, PSEUDO_TEST_TRACKS_JSON,
-    EXTRACTED_FRAMES_DIR
-)
+parser = argparse.ArgumentParser(description='Streamlit visualization')
+parser.add_argument('-i', '--root_dir', type=str,
+                    help="Path to root dir")
+parser.add_argument('-o', '--out_dir', type=str,
+                    help="Path to output folder to save videos")
+parser.add_argument('-t', '--track_json', type=str,
+                    help="Path to json files contains main tracks information")
+parser.add_argument('-r', '--relation_json', type=str,
+                    help="Path to json files contains relation information")
+parser.add_argument('-a', '--aux_json', type=str,
+                    help="Path to json files contains auxiliary tracks information")
+args = parser.parse_args()
 
-TRACKS_JSON = TEST_TRACKS_JSON
-OUTDIR = "/home/kaylode/Github/AIC2022-VER/data/meta/new/track_visualization/relation/pseudo-test"
-TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/originals/pseudo_test_tracks.json"
-RELATION_TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/pseudo_test_relation.json"
-AUX_TRACKS_JSON = "/home/kaylode/Github/AIC2022-VER/data/meta/new/relation/neighbor_tracks.json"
+CONSTANT = Constants(args.root_dir)
+OUTDIR = args.out_dir
+TRACKS_JSON = args.track_json
+RELATION_TRACKS_JSON = args.relation_json
+AUX_TRACKS_JSON = args.aux_json
 
 os.makedirs(OUTDIR, exist_ok=True)
 
@@ -46,7 +56,7 @@ def visualize_neighbors():
         main_frame_names = main_data[main_track_id]['frames']
 
         # Init video writer
-        tmp_path = osp.join(EXTRACTED_FRAMES_DIR, main_frame_names[0][2:])
+        tmp_path = osp.join(CONSTANT.EXTRACTED_FRAMES_DIR, main_frame_names[0][2:])
         img = cv2.imread(tmp_path)
         height, width = img.shape[:-1]
 
@@ -138,7 +148,7 @@ def visualize_neighbors():
         for frame_id, frame_name in zip(main_frame_ids, main_frame_names):
             # Frame image
             img = cv2.imread(
-                osp.join(EXTRACTED_FRAMES_DIR, frame_name[2:]))
+                osp.join(CONSTANT.EXTRACTED_FRAMES_DIR, frame_name[2:]))
 
             # All tracks in that frame
             frame_df = track_df[track_df.frame_id==frame_id]
