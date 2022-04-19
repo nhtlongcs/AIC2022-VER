@@ -2,6 +2,8 @@
 
 Repo of our source code at the AI City challenge 2022, Track 2: natural language-based vehicle retrieval task. (updating)
 
+For reproducibility, we also provide a colab notebook [![notebook](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nhtlongcs/AIC2022-VER/blob/main/guides/reproduce.ipynb) that contains the code for reproducing the results.
+
 ## Development environment
 
 Before using this repo, please use the environment setup as below.
