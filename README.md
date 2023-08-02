@@ -1,6 +1,6 @@
-# AIC2022-VER (WIP)
+# AIC2022-Video-Event-Retrieval
 
-Repo of our source code at the AI City challenge 2022, Track 2: natural language-based vehicle retrieval task. (updating)
+This repo contains the code and data for our project, which was accepted at CVPRW 2022. Our project is a new approach to a natural language-based vehicle retrieval task. [paper](https://openaccess.thecvf.com/content/CVPR2022W/AICity/papers/Nguyen-Ho_Text_Query_Based_Traffic_Video_Event_Retrieval_With_Global-Local_Fusion_CVPRW_2022_paper.pdf)
 
 For reproducibility, we also provide a colab notebook [![notebook](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nhtlongcs/AIC2022-VER/blob/main/guides/reproduce.ipynb) that contains the code for reproducing the results.
 
